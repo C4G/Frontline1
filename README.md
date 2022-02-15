@@ -1,5 +1,5 @@
-# Homelessness Backend
-This is the backend for the Homelessness project for United Way Metro Atlanta.
+# Homelessness
+This solution holds the backend for the Homelessness project for United Way Metro Atlanta.
 
 ## Steps to run locally
 1. Install PsotgreSQL locally. Make sure the username and password locally is "postgres"
