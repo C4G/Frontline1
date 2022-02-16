@@ -1,14 +1,10 @@
-﻿using Homelessness.Core.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace Homelessness.Core.Models.Identity
 {
-    public class ApplicationUser : IdentityUser<Guid>, IEntity
+    public class ApplicationUser : IdentityUser<Guid>
     {
-        [ForeignKey("ApplicationRole")]
         public Guid RoleId { get; set; }
-        public virtual ApplicationRole ApplicationRole { get; set; }
 
         public string FirstName { get; set; }
 

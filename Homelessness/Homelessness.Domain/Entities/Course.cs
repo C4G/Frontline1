@@ -1,4 +1,5 @@
 ﻿using Homelessness.Core.Interfaces;
+using Homelessness.Domain.Entities.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -20,6 +21,7 @@ namespace Homelessness.Domain.Entities
         public DateTimeOffset? UpdatedDate { get; set; }
 
         public virtual ICollection<Question> Questions { get; set; } = new HashSet<Question>();
+        public virtual ICollection<ApplicationUser> Users { get; set; } = new HashSet<ApplicationUser>();
 
         public Core.Models.Course ToModel()
         {

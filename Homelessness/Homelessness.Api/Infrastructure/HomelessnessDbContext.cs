@@ -1,5 +1,5 @@
-﻿using Homelessness.Core.Models.Identity;
-using Homelessness.Domain.Entities;
+﻿using Homelessness.Domain.Entities;
+using Homelessness.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
