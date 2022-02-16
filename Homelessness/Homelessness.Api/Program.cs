@@ -1,8 +1,10 @@
 using Homelessness.Api;
 using Homelessness.Api.Infrastructure;
+using Homelessness.Api.PipelineBehaviors;
 using Homelessness.Core.Interfaces;
 using Homelessness.Core.Models.Identity;
 using Homelessness.Core.Services;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -86,6 +88,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register MediatR
+builder.Services.AddMediatR(typeof(Program));
+
+// Register the behaviors for any TRequest and any TResponse
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 var app = builder.Build();
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

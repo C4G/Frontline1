@@ -1,4 +1,5 @@
 ﻿using Homelessness.Core.Models.Identity;
+using Homelessness.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,10 @@ namespace Homelessness.Api.Infrastructure
         public DbSet<IdentityUserRole<Guid>> IdentityUserRoles { get; set; }
         public DbSet<IdentityUserClaim<Guid>> IdentityUserClaims { get; set; }
         public DbSet<IdentityRoleClaim<Guid>> IdentityRoleClaims { get; set; }
+
+        public DbSet<Course> Courses { get; set; }
+
+        public DbSet<Question> Questions { get; set; }
 
         public HomelessnessDbContext(DbContextOptions<HomelessnessDbContext> options) : base(options)
         {

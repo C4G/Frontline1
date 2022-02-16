@@ -1,0 +1,39 @@
+﻿using Homelessness.Core.Interfaces;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Homelessness.Domain.Entities
+{
+    public class Course : IEntity
+    {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.None)]
+        public Guid Id { get; set; }
+
+        public int Index { get; set; }
+
+        public string? ContentLink { get; set; } = default;
+
+        public bool IsEnabled { get; set; }
+
+        public DateTimeOffset CreatedDate { get; set ; }
+        public DateTimeOffset? UpdatedDate { get; set; }
+
+        public virtual ICollection<Question> Questions { get; set; } = new HashSet<Question>();
+
+        public Core.Models.Course ToModel()
+        {
+            var course = new Core.Models.Course
+            {
+                Id = Id,
+                Index = Index,
+                ContentLink = ContentLink,
+                IsEnabled = IsEnabled,
+                CreatedDate = CreatedDate,
+                UpdatedDate = UpdatedDate
+            };
+
+            return course;
+        }
+    }
+}
