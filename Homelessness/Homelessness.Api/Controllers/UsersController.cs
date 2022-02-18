@@ -24,7 +24,7 @@ namespace Homelessness.Api.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> Get()
         {
             try
             {

@@ -12,6 +12,9 @@ namespace Homelessness.Domain.Entities
 
         public int Index { get; set; }
 
+        [Required]
+        public string Title { get; set; }
+
         public string? ContentLink { get; set; } = default;
 
         public bool IsEnabled { get; set; }

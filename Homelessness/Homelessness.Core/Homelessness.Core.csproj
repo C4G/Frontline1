@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="10.3.6" />
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.2" />
@@ -17,11 +18,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Homelessness.Domain\Homelessness.Domain.csproj" />
     <ProjectReference Include="..\Homelessness.Models\Homelessness.Models.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Commands\" />
-    <Folder Include="Validators\" />
   </ItemGroup>
 
 </Project>

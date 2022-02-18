@@ -76,7 +76,9 @@ builder.Services.AddSingleton<IHomesslessDbSettings>(serviceProvider =>
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 
+// Inject Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 
 builder.Services.AddCors(o =>
 {

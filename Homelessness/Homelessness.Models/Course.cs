@@ -6,6 +6,8 @@
 
         public int Index { get; set; }
 
+        public string Title { get; set; }
+
         public string? ContentLink { get; set; } = default;
 
         public bool IsEnabled { get; set; }
