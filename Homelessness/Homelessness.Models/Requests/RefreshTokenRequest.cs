@@ -1,4 +1,4 @@
-﻿namespace Homelessness.Core.Models.Requests
+﻿namespace Homelessness.Models.Requests
 {
     public class RefreshTokenRequest
     {

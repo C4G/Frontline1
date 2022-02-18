@@ -1,4 +1,4 @@
-﻿namespace Homelessness.Core.Models.Responses
+﻿namespace Homelessness.Models.Responses
 {
     public class UserDataResponse
     {

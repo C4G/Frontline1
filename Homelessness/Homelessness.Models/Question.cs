@@ -1,4 +1,4 @@
-﻿namespace Homelessness.Core.Models
+﻿namespace Homelessness.Models
 {
     public class Question
     {

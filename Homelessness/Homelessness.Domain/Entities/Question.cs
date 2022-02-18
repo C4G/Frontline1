@@ -1,5 +1,4 @@
-﻿using Homelessness.Core.Interfaces;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Homelessness.Domain.Entities
@@ -22,9 +21,9 @@ namespace Homelessness.Domain.Entities
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset? UpdatedDate { get; set; }
 
-        public Core.Models.Question ToModel()
+        public Models.Question ToModel()
         {
-            var question = new Core.Models.Question
+            var question = new Models.Question
             { 
                 Id = Id,
                 CourseId = CourseId,

@@ -1,9 +1,11 @@
 using Homelessness.Api;
 using Homelessness.Api.Infrastructure;
+using Homelessness.Api.Infrastructure.Repositories;
 using Homelessness.Api.PipelineBehaviors;
 using Homelessness.Core.Interfaces;
-using Homelessness.Core.Models.Identity;
+using Homelessness.Core.Interfaces.Repositories;
 using Homelessness.Core.Services;
+using Homelessness.Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -74,6 +76,8 @@ builder.Services.AddSingleton<IHomesslessDbSettings>(serviceProvider =>
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 builder.Services.AddCors(o =>
 {
     o.AddPolicy(AllowOrigins, options =>
@@ -90,7 +94,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Register MediatR
-builder.Services.AddMediatR(typeof(Program));
+builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
 // Register the behaviors for any TRequest and any TResponse
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homelessness.Core", "Homele
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homelessness.Domain", "Homelessness.Domain\Homelessness.Domain.csproj", "{F3771CDD-813B-4C3D-8B6B-7E062AF05621}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homelessness.Models", "Homelessness.Models\Homelessness.Models.csproj", "{3C5795E9-57C8-4569-A407-7B0471058E5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F3771CDD-813B-4C3D-8B6B-7E062AF05621}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3771CDD-813B-4C3D-8B6B-7E062AF05621}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3771CDD-813B-4C3D-8B6B-7E062AF05621}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C5795E9-57C8-4569-A407-7B0471058E5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C5795E9-57C8-4569-A407-7B0471058E5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C5795E9-57C8-4569-A407-7B0471058E5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C5795E9-57C8-4569-A407-7B0471058E5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

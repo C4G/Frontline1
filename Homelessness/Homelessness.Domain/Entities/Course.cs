@@ -1,5 +1,4 @@
-﻿using Homelessness.Core.Interfaces;
-using Homelessness.Domain.Entities.Identity;
+﻿using Homelessness.Domain.Entities.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,9 +22,9 @@ namespace Homelessness.Domain.Entities
         public virtual ICollection<Question> Questions { get; set; } = new HashSet<Question>();
         public virtual ICollection<ApplicationUser> Users { get; set; } = new HashSet<ApplicationUser>();
 
-        public Core.Models.Course ToModel()
+        public Models.Course ToModel()
         {
-            var course = new Core.Models.Course
+            var course = new Models.Course
             {
                 Id = Id,
                 Index = Index,

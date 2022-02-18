@@ -1,8 +1,8 @@
 ﻿using Homelessness.Core.Helpers.Validation;
 using Homelessness.Core.Interfaces;
-using Homelessness.Core.Models.Identity;
-using Homelessness.Core.Models.Requests;
-using Homelessness.Core.Models.Responses;
+using Homelessness.Domain.Entities.Identity;
+using Homelessness.Models.Requests;
+using Homelessness.Models.Responses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

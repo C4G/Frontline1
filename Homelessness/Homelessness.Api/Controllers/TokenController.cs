@@ -1,7 +1,7 @@
 ﻿using Homelessness.Core.Interfaces;
-using Homelessness.Core.Models.Identity;
-using Homelessness.Core.Models.Requests;
-using Homelessness.Core.Models.Responses;
+using Homelessness.Domain.Entities.Identity;
+using Homelessness.Models.Requests;
+using Homelessness.Models.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

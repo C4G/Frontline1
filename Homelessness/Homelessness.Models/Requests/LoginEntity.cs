@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Homelessness.Core.Models.Requests
+namespace Homelessness.Models.Requests
 {
     public class LoginEntity
     {

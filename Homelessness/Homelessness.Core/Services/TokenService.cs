@@ -1,6 +1,6 @@
 ﻿using Homelessness.Core.Helpers.Validation;
 using Homelessness.Core.Interfaces;
-using Homelessness.Core.Models.Identity;
+using Homelessness.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

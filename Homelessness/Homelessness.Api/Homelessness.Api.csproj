@@ -28,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Homelessness.Core\Homelessness.Core.csproj" />
     <ProjectReference Include="..\Homelessness.Domain\Homelessness.Domain.csproj" />
+    <ProjectReference Include="..\Homelessness.Models\Homelessness.Models.csproj" />
   </ItemGroup>
 
 </Project>

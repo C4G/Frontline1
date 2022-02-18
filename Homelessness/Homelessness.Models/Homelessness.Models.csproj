@@ -10,8 +10,4 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Homelessness.Models\Homelessness.Models.csproj" />
-  </ItemGroup>
-
 </Project>

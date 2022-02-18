@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Homelessness.Core.Models.Identity
+namespace Homelessness.Models.Identity
 {
     public class ApplicationUser : IdentityUser<Guid>
     {
-        public Guid RoleId { get; set; }
+        public Guid Id { get; set; }
+
+        public Guid? RoleId { get; set; }
 
         public string FirstName { get; set; }
 

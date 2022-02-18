@@ -1,4 +1,4 @@
-﻿using Homelessness.Core.Models.Identity;
+﻿using Homelessness.Domain.Entities.Identity;
 using System.Security.Claims;
 
 namespace Homelessness.Core.Interfaces

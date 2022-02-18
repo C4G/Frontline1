@@ -1,4 +1,4 @@
-﻿using Homelessness.Core.Models.Identity;
+﻿using Homelessness.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 
 namespace Homelessness.Api
