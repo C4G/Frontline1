@@ -31,6 +31,7 @@ namespace Homelessness.Domain.Entities
             {
                 Id = Id,
                 Index = Index,
+                Title = Title,
                 ContentLink = ContentLink,
                 IsEnabled = IsEnabled,
                 CreatedDate = CreatedDate,
