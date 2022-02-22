@@ -48,15 +48,18 @@ export default function LoginForm() {
           "Password": getFieldProps('password').value,
         }),
       })
-      .then(res => res.json().then(data => ({status: res.status, body: data})))
-      .then(data => {
-        if (data.status === 401) {
-          throw new Error(`${data.status} ${data.body}`);
+      .then(response => {
+        if (response.ok) {
+          return response.json();
         }
+        throw response;
+      })
+      .then(() => {
         // TODO: save auth token
         navigate('/dashboard', { replace: true });
       })
       .catch(error => {
+        console.error(error);
         setErrorMessage(error.message);
       });
     }

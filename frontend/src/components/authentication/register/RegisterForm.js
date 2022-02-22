@@ -48,10 +48,14 @@ export default function RegisterForm() {
           "LastName": getFieldProps('lastName').value,
         }),
       })
-      .then(res => res.json())
-      .then(data => {console.log(data);})
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw response;
+      })
       .catch(error => {
-        console.log("ERROR:", error);
+        console.error(error);
       });
     }
   });

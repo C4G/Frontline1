@@ -30,11 +30,8 @@ CourseCard.propTypes = {
   index: PropTypes.number
 };
 
-
-
 export default function CourseCard({ course, index }) {
-  console.log("INDEX:", index);
-  const { title, contentLink, isEnabled, createdDate } = course;
+  const { id, title, contentLink, isEnabled, createdDate } = course;
   if (!isEnabled) {
     return <></>;
   }
@@ -65,7 +62,7 @@ export default function CourseCard({ course, index }) {
           </Typography>
 
           <TitleStyle
-            to={"/dashboard/courses/" + index}
+            to={"/dashboard/courses/" + id}
             color="inherit"
             variant="subtitle2"
             underline="hover"
