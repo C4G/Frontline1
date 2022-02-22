@@ -113,7 +113,6 @@ if (app.Environment.IsDevelopment())
 
 builder.Services.EnsureHomelessnessDbIsCreated();
 
-// Disable this line for local development.
 app.UseHttpsRedirection();
 
 app.UseCors(AllowOrigins);
