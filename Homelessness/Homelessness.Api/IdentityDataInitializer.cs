@@ -21,6 +21,7 @@ namespace Homelessness.Api
                 user.FirstName = "Johnny";
                 user.LastName = "Terrory";
                 user.RefreshToken = "";
+                user.IsApproved = true;
 
                 var password = "Test1234!";
                 IdentityResult result = userManager.CreateAsync(user, password).Result;

@@ -16,6 +16,8 @@ namespace Homelessness.Domain.Entities.Identity
         public string RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
 
+        public bool IsApproved { get; set; }
+
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset? UpdatedDate { get; set; }
 
@@ -32,6 +34,7 @@ namespace Homelessness.Domain.Entities.Identity
                 Email = Email,
                 RefreshToken = RefreshToken,
                 RefreshTokenExpiryTime = RefreshTokenExpiryTime,
+                IsApproved = IsApproved,
                 CreatedDate = CreatedDate,
                 UpdatedDate = UpdatedDate
             };
