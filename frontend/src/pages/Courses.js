@@ -1,6 +1,7 @@
 import { Icon } from '@iconify/react';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
+import LoadingIcons from 'react-loading-icons'
 // material
 import { Grid, Button, Container, Stack, Typography } from '@mui/material';
 // components
@@ -8,6 +9,8 @@ import Page from '../components/Page';
 import { CourseCard, CourseSort, CourseSearch } from '../components/_dashboard/courses';
 //
 import POSTS from '../_mocks_/blog';
+import { useEffect, useState } from 'react';
+import DateRangePickerViewDesktop from '@mui/lab/DateRangePicker/DateRangePickerViewDesktop';
 
 // ----------------------------------------------------------------------
 
@@ -19,6 +22,30 @@ const SORT_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function Courses() {
+  const [courses, setCourses] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    fetch('http://localhost:5278/Courses')
+      .then(response => {
+        console.log("RESPONSE");
+        if (response.ok) {
+          return response.json();
+        }
+        throw response;
+      })
+      .then(data => {
+        setCourses(data);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+  if (loading) {
+    return <LoadingIcons.SpinningCircles />;
+  }
   return (
     <Page title="Dashboard: Courses">
       <Container>
@@ -34,8 +61,8 @@ export default function Courses() {
         </Stack>
 
         <Grid container spacing={3}>
-          {POSTS.map((post, index) => (
-            <CourseCard key={post.id} post={post} index={index} />
+          {courses.map((course, index) => (
+            <CourseCard key={course.id} course={course} index={index} />
           ))}
         </Grid>
       </Container>

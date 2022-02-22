@@ -55,21 +55,21 @@ const CoverImgStyle = styled('img')({
 
 // ----------------------------------------------------------------------
 
-BlogPostCard.propTypes = {
-  post: PropTypes.object.isRequired,
+CourseCard.propTypes = {
+  course: PropTypes.object.isRequired,
   index: PropTypes.number
 };
 
-export default function BlogPostCard({ post, index }) {
-  const { cover, title, view, comment, share, author, createdAt } = post;
+export default function CourseCard({ course, index }) {
+  const { id, title, contentLink, isEnabled, createdDate, updatedDate } = course;
+  console.log("ID:", id);
+  console.log("TITLE:", title);
+  console.log("CONTENT LINK:", contentLink);
+  console.log("IS ENABLED:", isEnabled);
+  console.log("CREATED AT:", createdDate);
+  console.log("UPDTED AT:", updatedDate);
   const latestPostLarge = index === 0;
   const latestPost = index === 1 || index === 2;
-
-  const POST_INFO = [
-    { number: comment, icon: messageCircleFill },
-    { number: view, icon: eyeFill },
-    { number: share, icon: shareFill }
-  ];
 
   return (
     <Grid item xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
@@ -107,21 +107,7 @@ export default function BlogPostCard({ post, index }) {
               ...((latestPostLarge || latestPost) && { display: 'none' })
             }}
           />
-          <AvatarStyle
-            alt={author.name}
-            src={author.avatarUrl}
-            sx={{
-              ...((latestPostLarge || latestPost) && {
-                zIndex: 9,
-                top: 24,
-                left: 24,
-                width: 40,
-                height: 40
-              })
-            }}
-          />
 
-          <CoverImgStyle alt={title} src={cover} />
         </CardMediaStyle>
 
         <CardContent
@@ -139,7 +125,7 @@ export default function BlogPostCard({ post, index }) {
             variant="caption"
             sx={{ color: 'text.disabled', display: 'block' }}
           >
-            {fDate(createdAt)}
+            {fDate(createdDate)}
           </Typography>
 
           <TitleStyle
@@ -159,22 +145,6 @@ export default function BlogPostCard({ post, index }) {
           </TitleStyle>
 
           <InfoStyle>
-            {POST_INFO.map((info, index) => (
-              <Box
-                key={index}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  ml: index === 0 ? 0 : 1.5,
-                  ...((latestPostLarge || latestPost) && {
-                    color: 'grey.500'
-                  })
-                }}
-              >
-                <Box component={Icon} icon={info.icon} sx={{ width: 16, height: 16, mr: 0.5 }} />
-                <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
-              </Box>
-            ))}
           </InfoStyle>
         </CardContent>
       </Card>
