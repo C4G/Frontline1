@@ -22,7 +22,6 @@ const SORT_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function Courses() {
-  console.log("courses comp");
   const [courses, setCourses] = useState(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
