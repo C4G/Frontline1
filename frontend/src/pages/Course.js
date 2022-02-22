@@ -21,8 +21,8 @@ const SORT_OPTIONS = [
 
 // ----------------------------------------------------------------------
 
-export default function Courses() {
-  console.log("courses comp");
+export default function Course() {
+  console.log("COURSE COMP");
   const [courses, setCourses] = useState(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -47,11 +47,11 @@ export default function Courses() {
     return <LoadingIcons.SpinningCircles />;
   }
   return (
-    <Page title="Dashboard: Courses">
+    <Page title="Dashboard: Course">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Courses
+            Course
           </Typography>
         </Stack>
 

@@ -1,15 +1,10 @@
 import PropTypes from 'prop-types';
-import { Icon } from '@iconify/react';
-import eyeFill from '@iconify/icons-eva/eye-fill';
 import { Link as RouterLink } from 'react-router-dom';
-import shareFill from '@iconify/icons-eva/share-fill';
-import messageCircleFill from '@iconify/icons-eva/message-circle-fill';
 // material
-import { alpha, styled } from '@mui/material/styles';
-import { Box, Link, Card, Grid, Avatar, Typography, CardContent } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Link, Card, Grid, Typography, CardContent } from '@mui/material';
 // utils
 import { fDate } from '../../../utils/formatTime';
-import { fShortenNumber } from '../../../utils/formatNumber';
 //
 import SvgIconStyle from '../../SvgIconStyle';
 
@@ -28,31 +23,6 @@ const TitleStyle = styled(Link)({
   WebkitBoxOrient: 'vertical'
 });
 
-const AvatarStyle = styled(Avatar)(({ theme }) => ({
-  zIndex: 9,
-  width: 32,
-  height: 32,
-  position: 'absolute',
-  left: theme.spacing(3),
-  bottom: theme.spacing(-2)
-}));
-
-const InfoStyle = styled('div')(({ theme }) => ({
-  display: 'flex',
-  flexWrap: 'wrap',
-  justifyContent: 'flex-end',
-  marginTop: theme.spacing(3),
-  color: theme.palette.text.disabled
-}));
-
-const CoverImgStyle = styled('img')({
-  top: 0,
-  width: '100%',
-  height: '100%',
-  objectFit: 'cover',
-  position: 'absolute'
-});
-
 // ----------------------------------------------------------------------
 
 CourseCard.propTypes = {
@@ -60,41 +30,18 @@ CourseCard.propTypes = {
   index: PropTypes.number
 };
 
-export default function CourseCard({ course, index }) {
-  const { id, title, contentLink, isEnabled, createdDate, updatedDate } = course;
-  console.log("ID:", id);
-  console.log("TITLE:", title);
-  console.log("CONTENT LINK:", contentLink);
-  console.log("IS ENABLED:", isEnabled);
-  console.log("CREATED AT:", createdDate);
-  console.log("UPDTED AT:", updatedDate);
-  const latestPostLarge = index === 0;
-  const latestPost = index === 1 || index === 2;
 
+
+export default function CourseCard({ course, index }) {
+  console.log("INDEX:", index);
+  const { title, contentLink, isEnabled, createdDate } = course;
+  if (!isEnabled) {
+    return <></>;
+  }
   return (
-    <Grid item xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
+    <Grid item xs={12} sm={6} md={3}>
       <Card sx={{ position: 'relative' }}>
-        <CardMediaStyle
-          sx={{
-            ...((latestPostLarge || latestPost) && {
-              pt: 'calc(100% * 4 / 3)',
-              '&:after': {
-                top: 0,
-                content: "''",
-                width: '100%',
-                height: '100%',
-                position: 'absolute',
-                bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72)
-              }
-            }),
-            ...(latestPostLarge && {
-              pt: {
-                xs: 'calc(100% * 4 / 3)',
-                sm: 'calc(100% * 3 / 4.66)'
-              }
-            })
-          }}
-        >
+        <CardMediaStyle>
           <SvgIconStyle
             color="paper"
             src="/static/icons/shape-avatar.svg"
@@ -104,22 +51,11 @@ export default function CourseCard({ course, index }) {
               zIndex: 9,
               bottom: -15,
               position: 'absolute',
-              ...((latestPostLarge || latestPost) && { display: 'none' })
             }}
           />
-
         </CardMediaStyle>
 
-        <CardContent
-          sx={{
-            pt: 4,
-            ...((latestPostLarge || latestPost) && {
-              bottom: 0,
-              width: '100%',
-              position: 'absolute'
-            })
-          }}
-        >
+        <CardContent sx={{ pt: 4 }} >
           <Typography
             gutterBottom
             variant="caption"
@@ -129,23 +65,14 @@ export default function CourseCard({ course, index }) {
           </Typography>
 
           <TitleStyle
-            to="#"
+            to={"/dashboard/courses/" + index}
             color="inherit"
             variant="subtitle2"
             underline="hover"
             component={RouterLink}
-            sx={{
-              ...(latestPostLarge && { typography: 'h5', height: 60 }),
-              ...((latestPostLarge || latestPost) && {
-                color: 'common.white'
-              })
-            }}
           >
             {title}
           </TitleStyle>
-
-          <InfoStyle>
-          </InfoStyle>
         </CardContent>
       </Card>
     </Grid>
