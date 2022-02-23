@@ -37,7 +37,7 @@ export default function LoginForm() {
     },
     validationSchema: LoginSchema,
     onSubmit: () => {
-      fetch('http://localhost:5278/Accounts/login', {
+      fetch(process.env.REACT_APP_API_SERVER_PATH + '/Accounts/login', {
         method: "POST",
         headers: {
           'Accept': 'application/json',

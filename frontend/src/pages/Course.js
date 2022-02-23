@@ -20,7 +20,7 @@ export default function Course() {
   const [response, setResponse] = useState(null);
   const handleSubmit = () => {
     // TODO: fill in API to save question response
-    fetch('http://localhost:5278/Courses/' + courseID, { method: "POST" })
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses" + courseID, { method: "POST" })
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -35,7 +35,7 @@ export default function Course() {
     setResponse(e.target.value);
   };
   useEffect(() => {
-    fetch('http://localhost:5278/Courses/' + courseID)
+    fetch(process.env.REACT_APP_API_SERVER_PATH + '/Courses/' + courseID)
       .then(response => {
         if (response.ok) {
           return response.json();

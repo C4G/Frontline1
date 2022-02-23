@@ -25,7 +25,7 @@ export default function Courses() {
   const [courses, setCourses] = useState(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    fetch('http://localhost:5278/Courses')
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses")
       .then(response => {
         if (response.ok) {
           return response.json();

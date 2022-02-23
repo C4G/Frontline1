@@ -34,7 +34,7 @@ export default function RegisterForm() {
     },
     validationSchema: RegisterSchema,
     onSubmit: () => {
-      fetch('http://localhost:5278/Accounts/register', {
+      fetch(process.env.REACT_APP_API_SERVER_PATH + "/Accounts/register", {
         method: "POST",
         headers: {
           'Accept': 'application/json',
