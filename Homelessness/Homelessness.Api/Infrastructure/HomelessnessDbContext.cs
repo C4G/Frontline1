@@ -21,6 +21,8 @@ namespace Homelessness.Api.Infrastructure
 
         public DbSet<Question> Questions { get; set; }
 
+        public DbSet<Response> Responses { get; set; }
+
         public HomelessnessDbContext(DbContextOptions<HomelessnessDbContext> options) : base(options)
         {
             Database.Migrate();

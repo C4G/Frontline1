@@ -21,6 +21,8 @@ namespace Homelessness.Domain.Entities
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset? UpdatedDate { get; set; }
 
+        public virtual ICollection<Response> Responses { get; set; } = new HashSet<Response>();
+
         public Models.Question ToModel()
         {
             var question = new Models.Question
