@@ -4,6 +4,7 @@ using Homelessness.Core.Interfaces.Repositories;
 using Homelessness.Core.Queries;
 using Homelessness.Models;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Homelessness.Core.Handlers
 {
@@ -20,7 +21,7 @@ namespace Homelessness.Core.Handlers
 
         public async Task<Course> Handle(GetCourseByIdQuery request, CancellationToken cancellationToken)
         {
-            var course = await courseRepository.GetAsync(request.CourseId);
+            var course = await courseRepository.GetSingleOrDefaultAsync(predicate: c => c.Id == request.CourseId, include: i => i.Include(c => c.Questions));
 
             if (course is null)
             {

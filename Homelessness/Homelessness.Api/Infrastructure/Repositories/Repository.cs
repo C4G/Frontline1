@@ -1,6 +1,8 @@
 ﻿using Homelessness.Core.Interfaces;
 using Homelessness.Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using System.Linq.Expressions;
 
 namespace Homelessness.Api.Infrastructure.Repositories
 {
@@ -35,6 +37,78 @@ namespace Homelessness.Api.Infrastructure.Repositories
         {
             var query = await QueryAllAsync();
             return query.AsNoTracking();
+        }
+
+        public T GetFirstOrDefault(
+            Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            bool disableTracking = true)
+        {
+            IQueryable<T> query = GetQueryable(predicate, include, disableTracking);
+
+            if (orderBy != null)
+            {
+                return orderBy(query).FirstOrDefault();
+            }
+            else
+            {
+                return query.FirstOrDefault();
+            }
+        }
+
+        public async Task<T> GetFirstOrDefaultAsync(
+           Expression<Func<T, bool>> predicate = null,
+           Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+           Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+           bool disableTracking = true)
+        {
+            IQueryable<T> query = GetQueryable(predicate, include, disableTracking);
+
+            if (orderBy != null)
+            {
+                return await orderBy(query).FirstOrDefaultAsync();
+            }
+            else
+            {
+                return await query.FirstOrDefaultAsync();
+            }
+        }
+
+        public T GetSingleOrDefault(
+            Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            bool disableTracking = true)
+        {
+            IQueryable<T> query = GetQueryable(predicate, include, disableTracking);
+
+            if (orderBy != null)
+            {
+                return orderBy(query).SingleOrDefault();
+            }
+            else
+            {
+                return query.SingleOrDefault();
+            }
+        }
+
+        public async Task<T> GetSingleOrDefaultAsync(
+            Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            bool disableTracking = true)
+        {
+            IQueryable<T> query = GetQueryable(predicate, include, disableTracking);
+
+            if (orderBy != null)
+            {
+                return await orderBy(query).SingleOrDefaultAsync();
+            }
+            else
+            {
+                return await query.SingleOrDefaultAsync();
+            }
         }
 
         public async Task<T> GetAsync(object id)
@@ -198,6 +272,31 @@ namespace Homelessness.Api.Infrastructure.Repositories
         private DbContext GetDbContext()
         {
             return context;
+        }
+
+        private IQueryable<T> GetQueryable(
+            Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            bool disableTracking = true)
+        {
+            IQueryable<T> query = this.GetDbSet();
+
+            if (disableTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            return query;
         }
     }
 }

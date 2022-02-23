@@ -38,6 +38,12 @@ namespace Homelessness.Domain.Entities
                 UpdatedDate = UpdatedDate
             };
 
+            if (Questions.Any())
+            {
+                var questions = Questions.Select(q => q.ToModel()).ToList();
+                course.Questions = questions;
+            }
+
             return course;
         }
     }
