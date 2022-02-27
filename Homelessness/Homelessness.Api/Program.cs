@@ -74,12 +74,16 @@ builder.Services.Configure<HomesslessDbSettings>(builder.Configuration.GetSectio
 builder.Services.AddSingleton<IHomesslessDbSettings>(serviceProvider =>
     serviceProvider.GetRequiredService<IOptions<HomesslessDbSettings>>().Value);
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Inject Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<IResponseRepository, ResponseRepository>();
 
 builder.Services.AddCors(o =>
 {

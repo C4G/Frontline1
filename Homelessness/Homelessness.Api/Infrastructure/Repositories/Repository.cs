@@ -123,9 +123,11 @@ namespace Homelessness.Api.Infrastructure.Repositories
 
         public int Add(T entity)
         {
-            if (entity is IEntity)
+            bool implementsIEntity = typeof(T).GetInterface(nameof(IEntity)) != null;
+            if (implementsIEntity)
             {
-                ((IEntity)entity).CreatedDate = DateTimeOffset.Now;
+                dynamic dynEntity = entity as IEntity ?? (dynamic)entity;
+                dynEntity.CreatedDate = DateTimeOffset.Now;
             }
 
             this.GetDbSet().Add(entity);
@@ -135,9 +137,11 @@ namespace Homelessness.Api.Infrastructure.Repositories
 
         public async Task<int> AddAsync(T entity)
         {
-            if (entity is IEntity)
+            bool implementsIEntity = typeof(T).GetInterface(nameof(IEntity)) != null;
+            if (implementsIEntity)
             {
-                ((IEntity)entity).CreatedDate = DateTimeOffset.Now;
+                dynamic dynEntity = entity as IEntity ?? (dynamic)entity;
+                dynEntity.CreatedDate = DateTimeOffset.Now;
             }
 
             context.Add<T>(entity);
@@ -154,9 +158,11 @@ namespace Homelessness.Api.Infrastructure.Repositories
 
         public int Update(T entity)
         {
-            if (entity is IEntity)
+            bool implementsIEntity = typeof(T).GetInterface(nameof(IEntity)) != null;
+            if (implementsIEntity)
             {
-                ((IEntity)entity).UpdatedDate = DateTimeOffset.Now;
+                dynamic dynEntity = entity as IEntity ?? (dynamic)entity;
+                dynEntity.UpdatedDate = DateTimeOffset.Now;
             }
 
             this.GetDbSet().Update(entity);
@@ -166,9 +172,11 @@ namespace Homelessness.Api.Infrastructure.Repositories
 
         public async Task<int> UpdateAsync(T entity)
         {
-            if (entity is IEntity)
+            bool implementsIEntity = typeof(T).GetInterface(nameof(IEntity)) != null;
+            if (implementsIEntity)
             {
-                ((IEntity)entity).UpdatedDate = DateTimeOffset.Now;
+                dynamic dynEntity = entity as IEntity ?? (dynamic)entity;
+                dynEntity.UpdatedDate = DateTimeOffset.Now;
             }
 
             context.Update<T>(entity);
@@ -179,9 +187,11 @@ namespace Homelessness.Api.Infrastructure.Repositories
         {
             foreach (var entity in entities)
             {
-                if (entity is IEntity)
+                bool implementsIEntity = typeof(T).GetInterface(nameof(IEntity)) != null;
+                if (implementsIEntity)
                 {
-                    ((IEntity)entity).UpdatedDate = DateTimeOffset.Now;
+                    dynamic dynEntity = entity as IEntity ?? (dynamic)entity;
+                    dynEntity.UpdatedDate = DateTimeOffset.Now;
                 }
             }
 
