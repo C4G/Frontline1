@@ -70,7 +70,7 @@ namespace Homelessness.Api.Controllers
                     appUser.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
                     await userManager.UpdateAsync(appUser);
 
-                    var rootData = new LoginResponse(authToken, appUser.RefreshToken, appUser.UserName, appUser.Email);
+                    var rootData = new LoginResponse(authToken, appUser.RefreshToken, appUser.UserName, appUser.Email, appUser.FirstName, appUser.LastName);
                     return Ok(rootData);
                 }
 
@@ -109,7 +109,7 @@ namespace Homelessness.Api.Controllers
                     await signInManager.SignInAsync(user, false);
                     var authToken = await tokenService.GenerateJwtTokenAsync(user);
 
-                    var rootData = new SignUpResponse(authToken, user.UserName, user.Email);
+                    var rootData = new SignUpResponse(authToken, user.UserName, user.Email, user.FirstName, user.LastName);
                     return Created(nameof(Register), rootData);
                 }
 
