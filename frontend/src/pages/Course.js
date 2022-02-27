@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
-import LoadingIcons from 'react-loading-icons'
+import LoadingIcons from 'react-loading-icons';
 // material
-import { Button, Container, Stack, TextField, Typography } from '@mui/material';
+import { Container, Stack, Typography } from '@mui/material';
 // components
 import Page from '../components/Page';
 import { CoursePlayer, CourseQuestion } from '../components/_dashboard/courses';
@@ -32,12 +32,12 @@ export default function Course() {
       .finally(() => {
         setCourseLoading(false);
       });
-  }, []);
+  }, [courseID]);
   if (courseLoading) {
     return <LoadingIcons.SpinningCircles />;
   }
   return (
-    <Page title="Dashboard: Course">
+    <Page title="Course">
       <Container>
         <Stack justifyContent="space-between" mb={1}>
           <Typography variant="h4" gutterBottom>

@@ -1,7 +1,8 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
-import { useFormik, ErrorMessage, Form, FormikProvider } from 'formik';
+import { useNavigate } from 'react-router-dom';
+import { useFormik, Form, FormikProvider } from 'formik';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 // material
@@ -11,6 +12,7 @@ import { LoadingButton } from '@mui/lab';
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
@@ -53,6 +55,10 @@ export default function RegisterForm() {
           return response.json();
         }
         throw response;
+      })
+      .then((user) => {
+        localStorage.setItem("user", JSON.stringify(user));
+        navigate('/dashboard', { replace: true });
       })
       .catch(error => {
         console.error(error);

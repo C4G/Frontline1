@@ -54,8 +54,8 @@ export default function LoginForm() {
         }
         throw response;
       })
-      .then(() => {
-        // TODO: save auth token
+      .then((user) => {
+        localStorage.setItem("user", JSON.stringify(user));
         navigate('/dashboard', { replace: true });
       })
       .catch(error => {

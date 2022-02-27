@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
+import jwt_decode from "jwt-decode";
 // material
 import { styled } from '@mui/material/styles';
-import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
+import { Box, Link, Drawer, Typography, Avatar } from '@mui/material';
 // components
 import Logo from '../../components/Logo';
 import Scrollbar from '../../components/Scrollbar';
@@ -11,7 +12,6 @@ import NavSection from '../../components/NavSection';
 import { MHidden } from '../../components/@material-extend';
 //
 import sidebarConfig from './SidebarConfig';
-import account from '../../_mocks_/account';
 
 // ----------------------------------------------------------------------
 
@@ -32,6 +32,8 @@ const AccountStyle = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.grey[200]
 }));
 
+const ROLE_CLAIM = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+
 // ----------------------------------------------------------------------
 
 DashboardSidebar.propTypes = {
@@ -40,6 +42,9 @@ DashboardSidebar.propTypes = {
 };
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
+  const userJson = localStorage.getItem("user");
+  const user = JSON.parse(userJson);
+
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -48,6 +53,24 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+  
+  const accountInfo = user ? (
+    <Box sx={{ mb: 5, mx: 2.5 }}>
+      <Link underline="none" component={RouterLink} to="#">
+        <AccountStyle>
+          <Avatar src={'/static/mock-images/avatars/avatar_default.jpg'} alt="photoURL" />
+          <Box sx={{ ml: 2 }}>
+            <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+              {user.firstName} {user.lastName}
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              {jwt_decode(user.authToken)[ROLE_CLAIM]}
+            </Typography>
+          </Box>
+        </AccountStyle>
+      </Link>
+    </Box>
+  ): <></>;
 
   const renderContent = (
     <Scrollbar
@@ -62,23 +85,9 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         </Box>
       </Box>
 
-      <Box sx={{ mb: 5, mx: 2.5 }}>
-        <Link underline="none" component={RouterLink} to="#">
-          <AccountStyle>
-            <Avatar src={account.photoURL} alt="photoURL" />
-            <Box sx={{ ml: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.role}
-              </Typography>
-            </Box>
-          </AccountStyle>
-        </Link>
-      </Box>
+      {accountInfo}
 
-      <NavSection navConfig={sidebarConfig} />
+      <NavSection navConfig={sidebarConfig()} />
 
     </Scrollbar>
   );

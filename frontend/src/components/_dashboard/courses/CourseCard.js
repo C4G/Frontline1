@@ -31,7 +31,7 @@ CourseCard.propTypes = {
 };
 
 export default function CourseCard({ course, index }) {
-  const { id, title, contentLink, isEnabled, createdDate } = course;
+  const { id, title, isEnabled, createdDate } = course;
   if (!isEnabled) {
     return <></>;
   }

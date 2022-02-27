@@ -1,16 +1,12 @@
-import { Icon } from '@iconify/react';
-import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink } from 'react-router-dom';
-import LoadingIcons from 'react-loading-icons'
+import LoadingIcons from 'react-loading-icons';
 // material
-import { Grid, Button, Container, Stack, Typography } from '@mui/material';
+import { Grid, Container, Stack, Typography } from '@mui/material';
 // components
 import Page from '../components/Page';
 import { CourseCard, CourseSort, CourseSearch } from '../components/_dashboard/courses';
 //
 import POSTS from '../_mocks_/blog';
 import { useEffect, useState } from 'react';
-import DateRangePickerViewDesktop from '@mui/lab/DateRangePicker/DateRangePickerViewDesktop';
 
 // ----------------------------------------------------------------------
 
@@ -46,7 +42,7 @@ export default function Courses() {
     return <LoadingIcons.SpinningCircles />;
   }
   return (
-    <Page title="Dashboard: Courses">
+    <Page title="Courses">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
