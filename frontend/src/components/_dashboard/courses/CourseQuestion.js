@@ -2,10 +2,21 @@ import React from "react";
 import { Button, TextField, Typography } from '@mui/material';
 
 function CourseQuestion(question) {
-  let response;
+  const userJson = localStorage.getItem("user");
+  const user = JSON.parse(userJson);
+  if (!user) {
+    return <></>;
+  }
+  let response = {
+    questionId: question.id,
+  };
   const handleSubmit = () => {
-    // TODO: fill in API to save question response
-    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses/" + question.courseId + "/Questions/" + question.id, {
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Responses", {
+      headers: {
+        "Authorization": "Bearer " + user.authToken,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
       method: "POST",
       body: JSON.stringify(response),
     }).then(response => {
@@ -19,8 +30,9 @@ function CourseQuestion(question) {
       });
   };
   const handleChange = (e) => {
-    response = e.target.value;
+    response.text = e.target.value;
   };
+  // TODO: need GET Response API to fill in initial value of text box
   return (
     <>
       <Typography variant="h5" gutterBottom>
