@@ -42,16 +42,38 @@ export default function Users() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const getRoleName = (roleId) => {
+    for (let i = 0; i < roles.length; i++) {
+      if (roles[i].id === roleId) {
+        return roles[i].name;
+      }
+    }
+    return "Unknown";
+  };
 
   useEffect(() => {
     const userJson = localStorage.getItem("user");
     const user = JSON.parse(userJson);
-    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users", {
-      headers: {
-        "Authorization": "Bearer " + user.authToken,
-      },
-    })
+    const headers = {
+      "Authorization": "Bearer " + user.authToken,
+    };
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Roles", { headers: headers })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw response;
+      })
+      .then(roles => {
+        setRoles(roles);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users", { headers: headers })
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -179,7 +201,7 @@ export default function Users() {
                             </Stack>
                           </TableCell>
                           <TableCell align="left">{email}</TableCell>
-                          <TableCell align="left">{roleId}</TableCell>
+                          <TableCell align="left">{getRoleName(roleId)}</TableCell>
                           <TableCell align="left">{emailConfirmed ? 'Yes' : 'No'}</TableCell>
                           <TableCell align="right">
                             <UserMoreMenu />
