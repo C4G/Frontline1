@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Homelessness.Api.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
@@ -24,7 +25,6 @@ namespace Homelessness.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Get()
         {
             try
@@ -64,7 +64,6 @@ namespace Homelessness.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Put(Guid id, UpdateUserCommand command)
         {
             command.UserId = id;
@@ -81,7 +80,6 @@ namespace Homelessness.Api.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Put(UserBulkEditCommand command)
         {
             try
