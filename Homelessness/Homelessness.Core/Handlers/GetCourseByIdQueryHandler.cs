@@ -21,7 +21,10 @@ namespace Homelessness.Core.Handlers
 
         public async Task<Course> Handle(GetCourseByIdQuery request, CancellationToken cancellationToken)
         {
-            var course = await courseRepository.GetSingleOrDefaultAsync(predicate: c => c.Id == request.CourseId, include: i => i.Include(c => c.Questions));
+            var course = await courseRepository.GetSingleOrDefaultAsync(
+                predicate: c => c.Id == request.CourseId, 
+                include: i => i.Include(c => c.Questions)
+                               .ThenInclude(q => q.Responses));
 
             if (course is null)
             {

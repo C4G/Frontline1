@@ -28,8 +28,17 @@ namespace Homelessness.Core.Handlers
                 .Select(u =>
                 {
                     var requestUser = request.UserCollection.FirstOrDefault(x => x.Id == u.Id);
-                    u.FirstName = requestUser.FirstName;
-                    u.LastName = requestUser.LastName;
+
+                    if (!string.IsNullOrWhiteSpace(requestUser.FirstName))
+                    {
+                        u.FirstName = requestUser.FirstName;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(requestUser.LastName))
+                    {
+                        u.LastName = requestUser.LastName;
+                    }
+
                     u.IsApproved = requestUser.IsApproved;
 
                     return u;

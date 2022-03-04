@@ -10,6 +10,8 @@
 
         public string Text { get; set; }
 
+        public ICollection<Response> Responses { get; set; }
+
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset? UpdatedDate { get; set; }
     }
