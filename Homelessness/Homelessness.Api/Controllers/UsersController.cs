@@ -63,6 +63,27 @@ namespace Homelessness.Api.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Post(AddUserCommand command)
+        {
+            try
+            {
+                var userResult = await mediator.Send(command);
+
+                if (userResult is null)
+                {
+                    return BadRequest();
+                }
+
+                return Created(nameof(Post), userResult);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(Guid id, UpdateUserCommand command)
         {
