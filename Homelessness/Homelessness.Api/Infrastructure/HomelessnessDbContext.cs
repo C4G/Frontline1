@@ -25,6 +25,8 @@ namespace Homelessness.Api.Infrastructure
 
         public DbSet<Saving> Savings { get; set; }
 
+        public DbSet<Domain.Entities.File> Files { get; set; }
+
         public HomelessnessDbContext(DbContextOptions<HomelessnessDbContext> options) : base(options)
         {
             Database.Migrate();
