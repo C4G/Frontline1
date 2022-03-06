@@ -20,20 +20,18 @@ import {
   TablePagination
 } from '@mui/material';
 // components
-import Page from '../components/Page';
-import Scrollbar from '../components/Scrollbar';
-import { UserListToolbar } from '../components/_dashboard/user';
-import TableListHead from '../components/TableListHead';
-import TableMoreMenu from '../components/TableMoreMenu';
-import { CreateForm } from '../components/authentication/create';
+import Page from '../../../components/Page';
+import Scrollbar from '../../../components/Scrollbar';
+import TableListHead from '../../../components/TableListHead';
+import TableMoreMenu from '../../../components/TableMoreMenu';
+import { CreateCourseForm } from '../../../components/authentication/create';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'email', label: 'Email', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
+  { id: 'title', label: 'Title', alignRight: false },
+  { id: 'link', label: 'Link', alignRight: false },
+  { id: 'isEnabled', label: 'Enabled', alignRight: false },
   { id: '' }
 ];
 
@@ -50,62 +48,34 @@ const modalStyle = {
   p: 4,
 };
 
-export default function Users() {
+export default function Courses() {
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState([]);
-  const [verified, setVerified] = useState([]);
+  const [enabled, setEnabled] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [users, setUsers] = useState([]);
-  const [roles, setRoles] = useState([]);
+  const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const getRoleName = (roleId) => {
-    for (let i = 0; i < roles.length; i++) {
-      if (roles[i].id === roleId) {
-        return roles[i].name;
-      }
-    }
-    return "Unknown";
-  };
-
+  // Fetch data for courses.
   useEffect(() => {
-    const userJson = localStorage.getItem("user");
-    const user = JSON.parse(userJson);
-    const headers = {
-      "Authorization": "Bearer " + user.authToken,
-    };
-    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Roles", { headers: headers })
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses")
       .then(response => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(roles => {
-        setRoles(roles);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users", { headers: headers })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then(users => {
-        setUsers(users);
-        let verified = [];
-        users.map((user) => {
-          if (user.isApproved) {
-            verified = verified.concat(user.id);
+      .then(data => {
+        setCourses(data);
+        let initialEnabled = [];
+        data.map((course) => {
+          if (course.isEnabled) {
+            initialEnabled = initialEnabled.concat(course.id);
           }
-          return user;
+          return course;
         });
-        setVerified(verified);
+        setEnabled(initialEnabled);
       })
       .catch(error => {
         console.log(error);
@@ -113,11 +83,11 @@ export default function Users() {
       .finally(() => {
         setLoading(false);
       });
-  }, [modalOpen]);
+    }, [modalOpen]);
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = users.map((n) => `${n.firstName} ${n.lastName}`);
+      const newSelecteds = courses.map((n) => n.title);
       setSelected(newSelecteds);
       return;
     }
@@ -142,24 +112,7 @@ export default function Users() {
     setSelected(newSelected);
   };
 
-  const handleVerifiedClick = (event, id, firstName, lastName, isApproved) => {
-    // Update checkbox.
-    const verifiedIndex = verified.indexOf(id);
-    let newVerified = [];
-    if (verifiedIndex === -1) {
-      newVerified = newVerified.concat(verified, id);
-    } else if (verifiedIndex === 0) {
-      newVerified = newVerified.concat(verified.slice(1));
-    } else if (verifiedIndex === verified.length - 1) {
-      newVerified = newVerified.concat(verified.slice(0, -1));
-    } else if (verifiedIndex > 0) {
-      newVerified = newVerified.concat(
-        verified.slice(0, verifiedIndex),
-        verified.slice(verifiedIndex + 1)
-      );
-    }
-    setVerified(newVerified);
-    // Make API Request.
+  const handleUpdateCourse = (id, index, title, contentLink, isEnabled) => {
     const userJson = localStorage.getItem("user");
     const user = JSON.parse(userJson);
     const headers = {
@@ -167,15 +120,37 @@ export default function Users() {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     };
-    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users/" + id, {
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses/" + id, {
       method: "PUT",
       headers: headers,
       body: JSON.stringify({
-        firstName: firstName,
-        lastName: lastName,
-        isApproved: !isApproved,
+        title: title,
+        index: index,
+        contentLink: contentLink,
+        isEnabled: isEnabled,
       }),
     });
+  }
+
+  const handleEnabledClick = (event, id, index, title, contentLink) => {
+    // Update checkbox.
+    const enabledIndex = enabled.indexOf(id);
+    let newEnabled = [];
+    if (enabledIndex === -1) {
+        newEnabled = newEnabled.concat(enabled, id);
+    } else if (enabledIndex === 0) {
+        newEnabled = newEnabled.concat(enabled.slice(1));
+    } else if (enabledIndex === enabled.length - 1) {
+        newEnabled = newEnabled.concat(enabled.slice(0, -1));
+    } else if (enabledIndex > 0) {
+        newEnabled = newEnabled.concat(
+        enabled.slice(0, enabledIndex),
+        enabled.slice(enabledIndex + 1)
+      );
+    }
+    setEnabled(newEnabled);
+    const isItemEnabled = newEnabled.indexOf(id) !== -1;
+    handleUpdateCourse(id, index, title, contentLink, isItemEnabled);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -187,10 +162,6 @@ export default function Users() {
     setPage(0);
   };
 
-  const handleFilterByName = (event) => {
-    setFilterName(event.target.value);
-  };
-
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
 
@@ -198,21 +169,26 @@ export default function Users() {
     return <LoadingIcons.SpinningCircles />;
   }
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - courses.length) : 0;
+
+  // Sort courses by index.
+  courses.sort(function(a, b){
+    return a.index - b.index;
+  });
 
   return (
-    <Page title="Users">
+    <Page title="Courses">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Users
+            Courses
           </Typography>
           <Button
             variant="contained"
             startIcon={<Icon icon={plusFill} />}
             onClick={handleOpen}
           >
-            New User
+            Add Course
           </Button>
           <Modal
             open={modalOpen}
@@ -221,35 +197,28 @@ export default function Users() {
             aria-describedby="modal-modal-description"
           >
             <Box sx={modalStyle}>
-              <CreateForm onSubmitHandler={handleClose}/>
+              <CreateCourseForm onSubmitHandler={handleClose}/>
             </Box>
           </Modal>
         </Stack>
 
         <Card>
-          <UserListToolbar
-            numSelected={selected.length}
-            filterName={filterName}
-            onFilterName={handleFilterByName}
-          />
-
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
                 <TableListHead
                   headLabel={TABLE_HEAD}
-                  rowCount={users.length}
+                  rowCount={courses.length}
                   numSelected={selected.length}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {users
+                  {courses
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, firstName, lastName, roleId, email } = row;
-                      const fullName = `${firstName} ${lastName}`;
-                      const isItemSelected = selected.indexOf(fullName) !== -1;
-                      const isItemVerified = verified.indexOf(id) !== -1;
+                      const { id, index, title, contentLink, questions } = row;
+                      const isItemSelected = selected.indexOf(title) !== -1;
+                      const isItemEnabled = enabled.indexOf(id) !== -1;
                       return (
                         <TableRow
                           hover
@@ -262,22 +231,15 @@ export default function Users() {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, fullName)}
+                              onChange={(event) => handleClick(event, title)}
                             />
                           </TableCell>                          
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <Typography variant="subtitle2" noWrap>
-                                {fullName}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell align="left">{email}</TableCell>
-                          <TableCell align="left">{getRoleName(roleId)}</TableCell>
+                          <TableCell align="left">{title}</TableCell>
+                          <TableCell align="left">{contentLink}</TableCell>
                           <TableCell align="left">
                             <Checkbox
-                              checked={isItemVerified}
-                              onChange={(event) => handleVerifiedClick(event, id, firstName, lastName, isItemVerified)}
+                              checked={isItemEnabled}
+                              onChange={(event) => handleEnabledClick(event, id, index, title, contentLink)}
                             />
                           </TableCell>
                           <TableCell align="right">
@@ -299,7 +261,7 @@ export default function Users() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={users.length}
+            count={courses.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

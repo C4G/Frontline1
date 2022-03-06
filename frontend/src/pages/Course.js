@@ -36,6 +36,7 @@ export default function Course() {
   if (courseLoading) {
     return <LoadingIcons.SpinningCircles />;
   }
+  course.questions.sort((a, b) => a.index  - b.index);
   return (
     <Page title="Course">
       <Container>
@@ -46,7 +47,7 @@ export default function Course() {
           <CoursePlayer embedLink={course.contentLink} />
           <br/>
         </Stack>
-        {course.questions.map((question) => CourseQuestion(question))}
+        {course.questions.map((question) => <CourseQuestion key={question.id} question={question} />)}
       </Container>
     </Page>
   );

@@ -1,12 +1,16 @@
 import React from "react";
 import { Button, TextField, Typography } from '@mui/material';
+import jwt_decode from 'jwt-decode';
 
-function CourseQuestion(question) {
+const ID_CLAIM = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+
+function CourseQuestion({question}) {
   const userJson = localStorage.getItem("user");
   const user = JSON.parse(userJson);
   if (!user) {
     return <></>;
   }
+  const userID = jwt_decode(user.authToken)[ID_CLAIM];
   let response = {
     questionId: question.id,
   };
@@ -32,7 +36,7 @@ function CourseQuestion(question) {
   const handleChange = (e) => {
     response.text = e.target.value;
   };
-  // TODO: need GET Response API to fill in initial value of text box
+  const initialResponse = question.responses.find((response) => response.userId === userID);
   return (
     <>
       <Typography variant="h5" gutterBottom>
@@ -44,6 +48,7 @@ function CourseQuestion(question) {
         rows={4}
         fullWidth
         onChange={handleChange}
+        defaultValue={(initialResponse && initialResponse.text) || ""}
       />
       <Button variant="contained" sx={{float: "right"}} onClick={handleSubmit}>Submit</Button>
     </>

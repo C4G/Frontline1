@@ -27,14 +27,10 @@ const TitleStyle = styled(Link)({
 
 CourseCard.propTypes = {
   course: PropTypes.object.isRequired,
-  index: PropTypes.number
 };
 
-export default function CourseCard({ course, index }) {
-  const { id, title, isEnabled, createdDate } = course;
-  if (!isEnabled) {
-    return <></>;
-  }
+export default function CourseCard({ course }) {
+  const { id, title, createdDate } = course;
   return (
     <Grid item xs={12} sm={6} md={3}>
       <Card sx={{ position: 'relative' }}>
