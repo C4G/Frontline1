@@ -2,15 +2,15 @@ import LoadingIcons from 'react-loading-icons';
 import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink } from 'react-router-dom';
 // material
 import {
   Card,
   Table,
   Stack,
-  Avatar,
+  Box,
   Button,
   Checkbox,
+  Modal,
   TableRow,
   TableBody,
   TableCell,
@@ -23,6 +23,7 @@ import {
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../components/_dashboard/user';
+import { CreateForm } from '../components/authentication/create';
 
 // ----------------------------------------------------------------------
 
@@ -36,10 +37,22 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 500,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};
+
 export default function Users() {
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState([]);
   const [verified, setVerified] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [users, setUsers] = useState([]);
@@ -97,7 +110,7 @@ export default function Users() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [modalOpen]);
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -175,6 +188,9 @@ export default function Users() {
     setFilterName(event.target.value);
   };
 
+  const handleOpen = () => setModalOpen(true);
+  const handleClose = () => setModalOpen(false);
+
   if (loading) {
     return <LoadingIcons.SpinningCircles />;
   }
@@ -190,12 +206,21 @@ export default function Users() {
           </Typography>
           <Button
             variant="contained"
-            component={RouterLink}
-            to="#"
             startIcon={<Icon icon={plusFill} />}
+            onClick={handleOpen}
           >
             New User
           </Button>
+          <Modal
+            open={modalOpen}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={modalStyle}>
+              <CreateForm onSubmitHandler={handleClose}/>
+            </Box>
+          </Modal>
         </Stack>
 
         <Card>

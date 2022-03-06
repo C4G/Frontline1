@@ -1,7 +1,6 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
-import { useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
@@ -11,11 +10,10 @@ import { LoadingButton } from '@mui/lab';
 
 // ----------------------------------------------------------------------
 
-export default function RegisterForm() {
-  const navigate = useNavigate();
+export default function CreateForm(props) {
   const [showPassword, setShowPassword] = useState(false);
 
-  const RegisterSchema = Yup.object().shape({
+  const CreateSchema = Yup.object().shape({
     firstName: Yup.string()
       .min(2, 'Too Short!')
       .max(50, 'Too Long!')
@@ -24,7 +22,7 @@ export default function RegisterForm() {
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required').matches(
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,}$/,
-      "Must be at least 5 characters, contain One Uppercase, One Lowercase, One Number, and one special case Character"
+      "Must be at least 4 characters, contain One Uppercase, One Lowercase, One Number, and one special case Character"
     ),
     confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match')
   });
@@ -37,31 +35,31 @@ export default function RegisterForm() {
       password: '',
       confirmPassword: '',
     },
-    validationSchema: RegisterSchema,
+    validationSchema: CreateSchema,
     onSubmit: () => {
-      fetch(process.env.REACT_APP_API_SERVER_PATH + "/Accounts/register", {
+      const userJson = localStorage.getItem("user");
+      const user = JSON.parse(userJson);
+      const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + user.authToken,
+      };
+      fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users", {
         method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
+        headers: headers,
         body: JSON.stringify({
-          "Email": getFieldProps('email').value,
-          "Password": getFieldProps('password').value,
-          "ConfirmPassword": getFieldProps('confirmPassword').value,
-          "FirstName": getFieldProps('firstName').value,
-          "LastName": getFieldProps('lastName').value,
+          "email": getFieldProps('email').value,
+          "password": getFieldProps('password').value,
+          "confirmPassword": getFieldProps('confirmPassword').value,
+          "firstName": getFieldProps('firstName').value,
+          "lastName": getFieldProps('lastName').value,
         }),
       })
       .then(response => {
-        if (response.ok) {
-          return response.json();
+        if (!response.ok) {
+          throw response;
         }
-        throw response;
-      })
-      .then((user) => {
-        localStorage.setItem("user", JSON.stringify(user));
-        navigate('/dashboard', { replace: true });
+        props.onSubmitHandler();
       })
       .catch(error => {
         console.error(error);
@@ -147,7 +145,7 @@ export default function RegisterForm() {
             variant="contained"
             loading={isSubmitting}
           >
-            Register
+            Create
           </LoadingButton>
         </Stack>
       </Form>
