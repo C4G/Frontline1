@@ -39,6 +39,7 @@ const TABLE_HEAD = [
 export default function Users() {
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState([]);
+  const [verified, setVerified] = useState([]);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [users, setUsers] = useState([]);
@@ -82,6 +83,13 @@ export default function Users() {
       })
       .then(users => {
         setUsers(users);
+        let verified = [];
+        users.map((user) => {
+          if (user.isApproved) {
+            verified = verified.concat(user.id);
+          }
+        });
+        setVerified(verified);
       })
       .catch(error => {
         console.log(error);
@@ -116,6 +124,42 @@ export default function Users() {
       );
     }
     setSelected(newSelected);
+  };
+
+  const handleVerifiedClick = (event, id, firstName, lastName, isApproved) => {
+    // Update checkbox.
+    const verifiedIndex = verified.indexOf(id);
+    let newVerified = [];
+    if (verifiedIndex === -1) {
+      newVerified = newVerified.concat(verified, id);
+    } else if (verifiedIndex === 0) {
+      newVerified = newVerified.concat(verified.slice(1));
+    } else if (verifiedIndex === verified.length - 1) {
+      newVerified = newVerified.concat(verified.slice(0, -1));
+    } else if (verifiedIndex > 0) {
+      newVerified = newVerified.concat(
+        verified.slice(0, verifiedIndex),
+        verified.slice(verifiedIndex + 1)
+      );
+    }
+    setVerified(newVerified);
+    // Make API Request.
+    const userJson = localStorage.getItem("user");
+    const user = JSON.parse(userJson);
+    const headers = {
+      "Authorization": "Bearer " + user.authToken,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    };
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users/" + id, {
+      method: "PUT",
+      headers: headers,
+      body: JSON.stringify({
+        firstName: firstName,
+        lastName: lastName,
+        isApproved: !isApproved,
+      }),
+    });
   };
 
   const handleChangePage = (event, newPage) => {
@@ -174,10 +218,10 @@ export default function Users() {
                   {users
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, firstName, lastName, roleId, email, emailConfirmed } = row;
+                      const { id, firstName, lastName, roleId, email } = row;
                       const fullName = `${firstName} ${lastName}`;
                       const isItemSelected = selected.indexOf(fullName) !== -1;
-
+                      const isItemVerified = verified.indexOf(id) !== -1;
                       return (
                         <TableRow
                           hover
@@ -192,7 +236,7 @@ export default function Users() {
                               checked={isItemSelected}
                               onChange={(event) => handleClick(event, fullName)}
                             />
-                          </TableCell>
+                          </TableCell>                          
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
                               <Typography variant="subtitle2" noWrap>
@@ -202,7 +246,12 @@ export default function Users() {
                           </TableCell>
                           <TableCell align="left">{email}</TableCell>
                           <TableCell align="left">{getRoleName(roleId)}</TableCell>
-                          <TableCell align="left">{emailConfirmed ? 'Yes' : 'No'}</TableCell>
+                          <TableCell align="left">
+                            <Checkbox
+                              checked={isItemVerified}
+                              onChange={(event) => handleVerifiedClick(event, id, firstName, lastName, isItemVerified)}
+                            />
+                          </TableCell>
                           <TableCell align="right">
                             <UserMoreMenu />
                           </TableCell>

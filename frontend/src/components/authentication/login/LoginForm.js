@@ -60,7 +60,7 @@ export default function LoginForm() {
       })
       .catch(error => {
         console.error(error);
-        setErrorMessage(error.message);
+        setErrorMessage(error.statusText);
       });
     }
   });
