@@ -24,7 +24,7 @@ import Page from '../../../components/Page';
 import Scrollbar from '../../../components/Scrollbar';
 import TableListHead from '../../../components/TableListHead';
 import TableMoreMenu from '../../../components/TableMoreMenu';
-import { CreateCourseForm } from '../../../components/authentication/create';
+import { CreateCourseForm, UpdateCourseForm } from '../../../components/authentication/create';
 
 // ----------------------------------------------------------------------
 
@@ -52,10 +52,13 @@ export default function Courses() {
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState([]);
   const [enabled, setEnabled] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [updateCourse, setUpdateCourse] = useState(null);
 
   // Fetch data for courses.
   useEffect(() => {
@@ -83,7 +86,7 @@ export default function Courses() {
       .finally(() => {
         setLoading(false);
       });
-    }, [modalOpen]);
+    }, [createModalOpen, updateModalOpen]);
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -162,8 +165,25 @@ export default function Courses() {
     setPage(0);
   };
 
-  const handleOpen = () => setModalOpen(true);
-  const handleClose = () => setModalOpen(false);
+  const handleCreateModalOpen = () => setCreateModalOpen(true);
+  const handleCreateModalClose = () => setCreateModalOpen(false);
+  const handleUpdateModalOpen = (id) => {
+    fetch(process.env.REACT_APP_API_SERVER_PATH + '/Courses/' + id)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw response;
+      })
+      .then(data => {
+        setUpdateCourse(data);
+        setUpdateModalOpen(true);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  const handleUpdateModalClose = () => setUpdateModalOpen(false);
 
   if (loading) {
     return <LoadingIcons.SpinningCircles />;
@@ -186,18 +206,31 @@ export default function Courses() {
           <Button
             variant="contained"
             startIcon={<Icon icon={plusFill} />}
-            onClick={handleOpen}
+            onClick={handleCreateModalOpen}
           >
             Add Course
           </Button>
           <Modal
-            open={modalOpen}
-            onClose={handleClose}
+            open={createModalOpen}
+            onClose={handleCreateModalClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
             <Box sx={modalStyle}>
-              <CreateCourseForm onSubmitHandler={handleClose}/>
+              <CreateCourseForm onSubmitHandler={handleCreateModalClose}/>
+            </Box>
+          </Modal>
+          <Modal
+            open={updateModalOpen}
+            onClose={handleUpdateModalClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={modalStyle}>
+              <UpdateCourseForm
+                onSubmitHandler={handleUpdateModalClose}
+                course={updateCourse}
+              />
             </Box>
           </Modal>
         </Stack>
@@ -243,7 +276,9 @@ export default function Courses() {
                             />
                           </TableCell>
                           <TableCell align="right">
-                            <TableMoreMenu />
+                            <TableMoreMenu openModal={() => {
+                              handleUpdateModalOpen(id);
+                            }}/>
                           </TableCell>
                         </TableRow>
                       );

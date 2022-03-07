@@ -9,7 +9,7 @@ import DashboardApp from './pages/DashboardApp';
 import Savings from './pages/Savings';
 import Courses from './pages/Courses';
 import Course from './pages/Course';
-import User from './pages/User';
+import Users from './pages/Users';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -22,7 +22,7 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <DashboardApp /> },
-        { path: 'user', element: <User /> },
+        { path: 'users', element: <Users /> },
         { path: 'savings', element: <Savings /> },
         { 
           path: 'courses',

@@ -10,7 +10,7 @@ import { LoadingButton } from '@mui/lab';
 
 // ----------------------------------------------------------------------
 
-export default function CreateForm(props) {
+export default function CreateUserForm(props) {
   const [showPassword, setShowPassword] = useState(false);
 
   const CreateSchema = Yup.object().shape({

@@ -44,7 +44,7 @@ export default function Course() {
           <Typography variant="h4" gutterBottom>
             {course.title}
           </Typography>
-          <CoursePlayer embedLink={course.contentLink} />
+          <CoursePlayer contentLink={course.contentLink} />
           <br/>
         </Stack>
         {course.questions.map((question) => <CourseQuestion key={question.id} question={question} />)}

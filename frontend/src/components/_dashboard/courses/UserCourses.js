@@ -34,6 +34,7 @@ export default function UserCourses() {
   if (loading) {
     return <LoadingIcons.SpinningCircles />;
   }
+  courses.sort((a, b) => a.index - b.index);
   return (
     <Page title="Courses">
       <Container>

@@ -49,7 +49,7 @@ export default function sidebarConfig() {
       },
       {
         title: 'Users',
-        path: '/dashboard/user',
+        path: '/dashboard/users',
         icon: getIcon(peopleFill)
       },
     ]

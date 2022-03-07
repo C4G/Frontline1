@@ -2,18 +2,9 @@ import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
-import { Link, Card, Grid, Typography, CardContent } from '@mui/material';
-// utils
-import { fDate } from '../../../utils/formatTime';
-//
-import SvgIconStyle from '../../SvgIconStyle';
+import { Link, Card, Grid, CardContent } from '@mui/material';
 
 // ----------------------------------------------------------------------
-
-const CardMediaStyle = styled('div')({
-  position: 'relative',
-  paddingTop: 'calc(100% * 3 / 4)'
-});
 
 const TitleStyle = styled(Link)({
   height: 44,
@@ -30,33 +21,15 @@ CourseCard.propTypes = {
 };
 
 export default function CourseCard({ course }) {
-  const { id, title, createdDate } = course;
+  const { id, title, contentLink } = course;
+  const youtubeVideoID = contentLink.match(/youtube\.com.*(\?v=|\/watch\/)(.{11})/).pop();
+  const thumbnailLink = `//img.youtube.com/vi/${youtubeVideoID}/0.jpg`
+  const thumbnail = (<img alt="course-thumbnail" src={thumbnailLink}/>);
   return (
     <Grid item xs={12} sm={6} md={3}>
       <Card sx={{ position: 'relative' }}>
-        <CardMediaStyle>
-          <SvgIconStyle
-            color="paper"
-            src="/static/icons/shape-avatar.svg"
-            sx={{
-              width: 80,
-              height: 36,
-              zIndex: 9,
-              bottom: -15,
-              position: 'absolute',
-            }}
-          />
-        </CardMediaStyle>
-
+        {thumbnail}
         <CardContent sx={{ pt: 4 }} >
-          <Typography
-            gutterBottom
-            variant="caption"
-            sx={{ color: 'text.disabled', display: 'block' }}
-          >
-            {fDate(createdDate)}
-          </Typography>
-
           <TitleStyle
             to={"/dashboard/courses/" + id}
             color="inherit"

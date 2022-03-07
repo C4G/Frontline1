@@ -18,6 +18,7 @@ export default function CreateCourseForm(props) {
     initialValues: {
       title: '',
       contentLink: '',
+      index: '',
     },
     validationSchema: CreateSchema,
     onSubmit: () => {
@@ -57,7 +58,6 @@ export default function CreateCourseForm(props) {
         <Stack spacing={3}>
           <TextField
             fullWidth
-            autoComplete="title"
             type="text"
             label="Title"
             {...getFieldProps('title')}
@@ -66,7 +66,6 @@ export default function CreateCourseForm(props) {
           />
           <TextField
             fullWidth
-            autoComplete="contentLink"
             type="text"
             label="Content Link"
             {...getFieldProps('contentLink')}
@@ -75,7 +74,6 @@ export default function CreateCourseForm(props) {
           />
           <TextField
             fullWidth
-            autoComplete="index"
             type="text"
             label="Index"
             {...getFieldProps('index')}

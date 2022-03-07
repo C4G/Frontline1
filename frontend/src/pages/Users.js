@@ -22,10 +22,9 @@ import {
 // components
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
-import { UserListToolbar } from '../components/_dashboard/user';
 import TableListHead from '../components/TableListHead';
 import TableMoreMenu from '../components/TableMoreMenu';
-import { CreateForm } from '../components/authentication/create';
+import { CreateUserForm, UpdateUserForm } from '../components/authentication/create';
 
 // ----------------------------------------------------------------------
 
@@ -54,12 +53,17 @@ export default function Users() {
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState([]);
   const [verified, setVerified] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [filterName, setFilterName] = useState('');
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [updateId, setUpdateId] = useState("");
+  const [updateFirstName, setUpdateFirstName] = useState("");
+  const [updateLastName, setUpdateLastName] = useState("");
+  const [updateIsApproved, setUpdateIsApproved] = useState("");
 
   const getRoleName = (roleId) => {
     for (let i = 0; i < roles.length; i++) {
@@ -113,7 +117,7 @@ export default function Users() {
       .finally(() => {
         setLoading(false);
       });
-  }, [modalOpen]);
+  }, [createModalOpen, updateModalOpen]);
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -187,19 +191,23 @@ export default function Users() {
     setPage(0);
   };
 
-  const handleFilterByName = (event) => {
-    setFilterName(event.target.value);
+  const handleCreateModalOpen = () => setCreateModalOpen(true);
+  const handleCreateModalClose = () => setCreateModalOpen(false);
+  const handleUpdateModalOpen = (id, firstName, lastName, isApproved) => {
+    setUpdateModalOpen(true);
+    setUpdateId(id);
+    setUpdateFirstName(firstName);
+    setUpdateLastName(lastName);
+    setUpdateIsApproved(isApproved);
   };
-
-  const handleOpen = () => setModalOpen(true);
-  const handleClose = () => setModalOpen(false);
+  const handleUpdateModalClose = () => setUpdateModalOpen(false);
 
   if (loading) {
     return <LoadingIcons.SpinningCircles />;
   }
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
-
+  users.sort((a, b) => a.id - b.id);
   return (
     <Page title="Users">
       <Container>
@@ -210,29 +218,39 @@ export default function Users() {
           <Button
             variant="contained"
             startIcon={<Icon icon={plusFill} />}
-            onClick={handleOpen}
+            onClick={handleCreateModalOpen}
           >
             New User
           </Button>
           <Modal
-            open={modalOpen}
-            onClose={handleClose}
+            open={createModalOpen}
+            onClose={handleCreateModalClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
             <Box sx={modalStyle}>
-              <CreateForm onSubmitHandler={handleClose}/>
+              <CreateUserForm onSubmitHandler={handleCreateModalClose}/>
+            </Box>
+          </Modal>
+          <Modal
+            open={updateModalOpen}
+            onClose={handleUpdateModalClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={modalStyle}>
+              <UpdateUserForm
+                onSubmitHandler={handleUpdateModalClose}
+                id={updateId}
+                firstName={updateFirstName}
+                lastName={updateLastName}
+                isApproved={updateIsApproved}
+              />
             </Box>
           </Modal>
         </Stack>
 
         <Card>
-          <UserListToolbar
-            numSelected={selected.length}
-            filterName={filterName}
-            onFilterName={handleFilterByName}
-          />
-
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -281,7 +299,9 @@ export default function Users() {
                             />
                           </TableCell>
                           <TableCell align="right">
-                            <TableMoreMenu />
+                            <TableMoreMenu openModal={() => {
+                              handleUpdateModalOpen(id, firstName, lastName, isItemVerified);
+                            }}/>
                           </TableCell>
                         </TableRow>
                       );
