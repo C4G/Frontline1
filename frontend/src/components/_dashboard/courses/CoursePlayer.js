@@ -2,7 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const CoursePlayer = (props) => {
-  const youtubeVideoID = props.contentLink.match(/youtube\.com.*(\?v=|\/watch\/)(.{11})/).pop();
+  const match = props.contentLink.match(/youtube\.com.*(\?v=|\/watch\/)(.{11})/);
+  let youtubeVideoID;
+  if (match) {
+    youtubeVideoID = match.pop();
+  }
   const embedLink = `//youtube.com/embed/${youtubeVideoID}`;
   return (
     <div className="video-responsive">

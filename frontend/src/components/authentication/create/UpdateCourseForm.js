@@ -16,7 +16,7 @@ const user = JSON.parse(userJson);
 const headers = {
   'Accept': 'application/json',
   'Content-Type': 'application/json',
-  'Authorization': "Bearer " + user.authToken,
+  'Authorization': "Bearer " + user?.authToken,
 };
 
 const putQuestion = (questionId, courseId, index, text) => {
@@ -122,13 +122,18 @@ export default function UpdateCourseForm(props) {
   });
 
   const addQuestion = () => {
-    let newQuestions = questions.concat({courseId: props.course.id});
+    let newQuestions;
+    if (!questions) {
+      newQuestions = [{courseId: props.course.id}];
+    } else {
+      newQuestions = questions?.concat({courseId: props.course.id});
+    }
     setQuestions(newQuestions);
   };
 
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps, values, dirty } = formik;
   useEffect(() => {
-    let newQuestionFields = questions.map((question, index) => {
+    let newQuestionFields = questions?.map((question, index) => {
       const questionLabel = `Question ${index+1}`;
       const questionKey = (question.id) ? `question${question.id}` : `newQuestion${index+1}`;
       return (

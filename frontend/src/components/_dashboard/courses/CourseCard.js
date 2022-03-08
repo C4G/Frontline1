@@ -22,7 +22,11 @@ CourseCard.propTypes = {
 
 export default function CourseCard({ course }) {
   const { id, title, contentLink } = course;
-  const youtubeVideoID = contentLink.match(/youtube\.com.*(\?v=|\/watch\/)(.{11})/).pop();
+  const match = contentLink.match(/youtube\.com.*(\?v=|\/watch\/)(.{11})/);
+  let youtubeVideoID;
+  if (match) {
+    youtubeVideoID = match.pop();
+  }
   const thumbnailLink = `//img.youtube.com/vi/${youtubeVideoID}/0.jpg`
   const thumbnail = (<img alt="course-thumbnail" src={thumbnailLink}/>);
   return (

@@ -36,7 +36,7 @@ function CourseQuestion({question}) {
   const handleChange = (e) => {
     response.text = e.target.value;
   };
-  const initialResponse = question.responses.find((response) => response.userId === userID);
+  const initialResponse = question.responses?.find((response) => response.userId === userID);
   return (
     <>
       <Typography variant="h5" gutterBottom>
