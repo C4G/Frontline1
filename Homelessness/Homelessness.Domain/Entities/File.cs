@@ -17,7 +17,7 @@ namespace Homelessness.Domain.Entities
         public string Name { get; set; }
 
         [Required]
-        public int Size { get; set; }
+        public long Size { get; set; }
 
         [Required]
         public byte[] Content { get; set; }
