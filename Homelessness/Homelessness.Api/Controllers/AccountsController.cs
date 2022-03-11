@@ -59,6 +59,13 @@ namespace Homelessness.Api.Controllers
         {
             if (ModelState.IsValid)
             {
+                var userEmail = await userManager.FindByEmailAsync(loginModel.Email);
+
+                if (userEmail is null)
+                {
+                    return StatusCode((int)HttpStatusCode.Unauthorized, "Email is not registered");
+                }
+
                 var result = await signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password, false, false);
 
                 if (result.Succeeded)
@@ -74,7 +81,7 @@ namespace Homelessness.Api.Controllers
                     return Ok(rootData);
                 }
 
-                return StatusCode((int)HttpStatusCode.Unauthorized, "Bad Credentials");
+                return StatusCode((int)HttpStatusCode.Unauthorized, "Incorrect Password");
             }
 
             string errorMessage = string.Join(", ", ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage));
