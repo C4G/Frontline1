@@ -19,7 +19,6 @@ namespace Homelessness.Core.Handlers
 
         public async Task<IEnumerable<Models.File>> Handle(FileUploadCommand request, CancellationToken cancellationToken)
         {
-            long globalSize = request.Files.Sum(f => f.Length);
             List<Models.File> uploadedFiles = new List<Models.File>();
 
             try

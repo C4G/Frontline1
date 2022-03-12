@@ -10,6 +10,8 @@
 
         public int FicoScore { get; set; }
 
+        public virtual ICollection<File> Files { get; set; }
+
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset? UpdatedDate { get; set; }
     }

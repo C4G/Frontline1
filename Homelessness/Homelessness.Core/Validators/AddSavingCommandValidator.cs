@@ -10,6 +10,7 @@ namespace Homelessness.Core.Validators
             RuleFor(x => x.UserId).NotNull();
             RuleFor(x => x.Amount).NotNull();
             RuleFor(x => x.FicoScore).NotNull();
+            RuleFor(x => x.Files).NotEmpty();
         }
     }
 }

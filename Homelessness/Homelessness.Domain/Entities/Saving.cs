@@ -35,6 +35,11 @@ namespace Homelessness.Domain.Entities
                 UpdatedDate = UpdatedDate
             };
 
+            if (Files.Any())
+            {
+                saving.Files = Files.Select(f => f.ToModel()).ToList();
+            }
+
             return saving;
         }
     }
