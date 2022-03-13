@@ -1,5 +1,6 @@
 ﻿using Homelessness.Core.Commands;
 using Homelessness.Core.Helpers.Validation;
+using Homelessness.Core.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,23 @@ namespace Homelessness.Api.Controllers
 
             this.mediator = mediator;
             this.logger = logger;
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> Get(Guid userId)
+        {
+            try
+            {
+                var query = new GetSavingsByUserIdQuery(userId);
+                var savingsResult = await mediator.Send(query);
+
+                return Ok(savingsResult);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
