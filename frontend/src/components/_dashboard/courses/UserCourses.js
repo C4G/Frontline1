@@ -34,7 +34,7 @@ export default function UserCourses() {
   if (loading) {
     return <LoadingIcons.SpinningCircles />;
   }
-  courses.sort((a, b) => a.index - b.index);
+  courses?.sort((a, b) => a.index - b.index);
   return (
     <Page title="Courses">
       <Container>
@@ -45,7 +45,7 @@ export default function UserCourses() {
         </Stack>
 
         <Grid container spacing={3}>
-          {courses.filter((course) => course.isEnabled).map((course) => (
+          {courses?.filter((course) => course.isEnabled).map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
         </Grid>
