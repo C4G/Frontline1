@@ -24,6 +24,24 @@ namespace Homelessness.Api.Controllers
             this.logger = logger;
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Get()
+        {
+            try
+            {
+                var query = new GetSavingsForAllUsersQuery();
+                var savingsResult = await mediator.Send(query);
+
+                return Ok(savingsResult);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("{userId}")]
         public async Task<IActionResult> Get(Guid userId)
         {

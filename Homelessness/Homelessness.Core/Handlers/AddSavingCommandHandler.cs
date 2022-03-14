@@ -60,7 +60,8 @@ namespace Homelessness.Core.Handlers
                                     SavingId = saving.Id,
                                     Name = Path.GetFileName(f.FileName),
                                     Size = memoryStream.Length,
-                                    Content = memoryStream.ToArray()
+                                    Content = memoryStream.ToArray(),
+                                    CreatedDate = DateTimeOffset.Now,
                                 };
 
                                 saving.Files.Add(file);
