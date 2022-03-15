@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
-import { Input, Stack, Typography, TextField } from '@mui/material';
+import { Input, Typography, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import jwt_decode from 'jwt-decode';
 
@@ -19,7 +19,6 @@ export default function CreateSavingsForm(props) {
 
   const CreateSchema = Yup.object().shape({
     amount: Yup.number().required('Amount is required'),
-    amountFile: Yup.object().required(),
     ficoScore: Yup.number(),
   });
 
@@ -92,8 +91,7 @@ export default function CreateSavingsForm(props) {
             label="(Required) Savings Amount"
             {...getFieldProps('amount')}
             error={Boolean(touched.amount && errors.amount)}
-            helperText={touched.amount && errors.amount}
-          />
+         />
           <br/>
           <br/>
           <Typography>
@@ -107,7 +105,6 @@ export default function CreateSavingsForm(props) {
             id="amountFile"
             name="amountFile"
             error={Boolean(touched.amountFile && errors.amountFile)}
-            helperText={touched.amountFile && errors.amountFile}
             onChange={handleAmountFileChange}
           />
           <br/>
@@ -119,7 +116,6 @@ export default function CreateSavingsForm(props) {
             label="(Optional) Credit Score"
             {...getFieldProps('ficoScore')}
             error={Boolean(touched.ficoScore && errors.ficoScore)}
-            helperText={touched.ficoScore && errors.ficoScore}
           />
           <br/>
           <br/>
