@@ -73,5 +73,21 @@ namespace Homelessness.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(Guid id, UpdateFileCommand command)
+        {
+            command.FileId = id;
+
+            try
+            {
+                return Ok(await mediator.Send(command));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
