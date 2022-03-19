@@ -24,6 +24,7 @@ namespace Homelessness.Domain.Entities
 
         public virtual ICollection<Question> Questions { get; set; } = new HashSet<Question>();
         public virtual ICollection<ApplicationUser> Users { get; set; } = new HashSet<ApplicationUser>();
+        public virtual ICollection<UserCourse> UserCourses { get; set; } = new HashSet<UserCourse>();
 
         public Models.Course ToModel()
         {

@@ -23,6 +23,7 @@ namespace Homelessness.Domain.Entities.Identity
 
         public virtual ICollection<Course> Courses { get; set; } = new HashSet<Course>();
         public virtual ICollection<Response> Responses { get; set; } = new HashSet<Response>();
+        public virtual ICollection<UserCourse> UserCourses { get; set; } = new HashSet<UserCourse>();
 
         public Models.Identity.ApplicationUser ToModel()
         {

@@ -19,6 +19,8 @@ namespace Homelessness.Api.Infrastructure
 
         public DbSet<Course> Courses { get; set; }
 
+        public DbSet<UserCourse> UserCourses { get; set; }
+
         public DbSet<Question> Questions { get; set; }
 
         public DbSet<Response> Responses { get; set; }
@@ -41,6 +43,9 @@ namespace Homelessness.Api.Infrastructure
 
             builder.Entity<IdentityUserRole<Guid>>()
                 .HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            builder.Entity<UserCourse>()
+                .HasKey(uc => new { uc.UserId, uc.CourseId });
         }
     }
 
