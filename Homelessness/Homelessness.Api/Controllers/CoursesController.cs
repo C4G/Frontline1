@@ -1,5 +1,6 @@
 ﻿using Homelessness.Core.Commands;
 using Homelessness.Core.Helpers.Validation;
+using Homelessness.Core.Notifications;
 using Homelessness.Core.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -74,6 +75,8 @@ namespace Homelessness.Api.Controllers
                 {
                     return BadRequest();
                 }
+
+                await mediator.Publish(new CourseCreatedNotification { CourseId = courseResult.Id });
 
                 return CreatedAtAction(nameof(Get), new { id = courseResult.Id }, courseResult);
             }

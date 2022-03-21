@@ -11,5 +11,9 @@ namespace Homelessness.Core.Interfaces
         Task<bool> IsAuthenticatedUserUser();
 
         Task<bool> IsUserRoleUser(Guid userId);
+
+        ApplicationRole GetAdminRole();
+
+        ApplicationRole GetUserRole();
     }
 }

@@ -73,7 +73,7 @@ namespace Homelessness.Core.Services
             return dbUser;
         }
 
-        private ApplicationRole GetAdminRole()
+        public ApplicationRole GetAdminRole()
         {
             var adminRole = roleManager.Roles
                 .SingleOrDefault(r => r.Name.ToLower() == ADMIN_ROLE_NAME.ToLower());
@@ -86,7 +86,7 @@ namespace Homelessness.Core.Services
             return adminRole;
         }
 
-        private ApplicationRole GetUserRole()
+        public ApplicationRole GetUserRole()
         {
             var userRole = roleManager.Roles
                 .SingleOrDefault(r => r.Name.ToLower() == USER_ROLE_NAME.ToLower());
