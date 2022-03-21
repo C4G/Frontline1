@@ -2,12 +2,14 @@
 using Homelessness.Core.Helpers.Validation;
 using Homelessness.Core.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Homelessness.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class CoursesController : ControllerBase
     {
         private readonly IMediator mediator;

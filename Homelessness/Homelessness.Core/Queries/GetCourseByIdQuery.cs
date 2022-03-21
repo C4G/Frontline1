@@ -1,9 +1,8 @@
-﻿using Homelessness.Models;
-using MediatR;
+﻿using MediatR;
 
 namespace Homelessness.Core.Queries
 {
-    public class GetCourseByIdQuery : IRequest<Course>
+    public class GetCourseByIdQuery : IRequest<object>
     {
         public Guid CourseId { get; set; }
 

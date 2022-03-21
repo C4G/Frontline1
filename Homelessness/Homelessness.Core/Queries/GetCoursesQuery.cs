@@ -1,9 +1,8 @@
-﻿using Homelessness.Models;
-using MediatR;
+﻿using MediatR;
 
 namespace Homelessness.Core.Queries
 {
-    public class GetCoursesQuery : IRequest<ICollection<Course>>
+    public class GetCoursesQuery : IRequest<ICollection<object>>
     {
     }
 }
