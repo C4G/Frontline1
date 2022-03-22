@@ -1,9 +1,9 @@
-﻿using Homelessness.Models.Identity;
+﻿using Homelessness.Models.Responses;
 using MediatR;
 
 namespace Homelessness.Core.Queries
 {
-    public class GetUserByIdQuery : IRequest<ApplicationUser>
+    public class GetUserByIdQuery : IRequest<UserDataResponse>
     {
         public Guid UserId { get; set; }
 

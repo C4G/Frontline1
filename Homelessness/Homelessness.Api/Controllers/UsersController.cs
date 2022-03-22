@@ -46,7 +46,7 @@ namespace Homelessness.Api.Controllers
         {
             try
             {
-                var query = new GetCourseByIdQuery(id);
+                var query = new GetUserByIdQuery(id);
                 var userResult = await mediator.Send(query);
 
                 if (userResult is null)
