@@ -1,6 +1,7 @@
 import LoadingIcons from 'react-loading-icons';
 import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import plusFill from '@iconify/icons-eva/plus-fill';
 // material
 import {
@@ -209,7 +210,7 @@ export default function Users() {
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
   users.sort((a, b) => a.id - b.id);
   return (
-    <Page title="Users">
+    <Page title="Users | Financial Achievement Club">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -282,12 +283,21 @@ export default function Users() {
                               checked={isItemSelected}
                               onChange={(event) => handleClick(event, fullName)}
                             />
-                          </TableCell>                          
+                          </TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              <Typography variant="subtitle2" noWrap>
+                              <Typography
+                                to={"/dashboard/users/" + id}
+                                color="inherit"
+                                variant="subtitle2"
+                                underline="hover"
+                                component={RouterLink}
+                              >
                                 {fullName}
                               </Typography>
+                              {/* <Typography variant="subtitle2" noWrap>
+                                {fullName}
+                              </Typography> */}
                             </Stack>
                           </TableCell>
                           <TableCell align="left">{email}</TableCell>

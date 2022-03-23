@@ -49,6 +49,13 @@ const modalStyle = {
 };
 
 export default function Courses() {
+  const userJson = localStorage.getItem("user");
+  const user = JSON.parse(userJson);
+  const headers = {
+    "Authorization": "Bearer " + user.authToken,
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  };
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState([]);
   const [enabled, setEnabled] = useState([]);
@@ -62,7 +69,7 @@ export default function Courses() {
 
   // Fetch data for courses.
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses")
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses", { headers: headers })
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -116,13 +123,6 @@ export default function Courses() {
   };
 
   const handleUpdateCourse = (id, index, title, contentLink, isEnabled) => {
-    const userJson = localStorage.getItem("user");
-    const user = JSON.parse(userJson);
-    const headers = {
-      "Authorization": "Bearer " + user.authToken,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    };
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses/" + id, {
       method: "PUT",
       headers: headers,
@@ -168,7 +168,7 @@ export default function Courses() {
   const handleCreateModalOpen = () => setCreateModalOpen(true);
   const handleCreateModalClose = () => setCreateModalOpen(false);
   const handleUpdateModalOpen = (id) => {
-    fetch(process.env.REACT_APP_API_SERVER_PATH + '/Courses/' + id)
+    fetch(process.env.REACT_APP_API_SERVER_PATH + '/Courses/' + id, { headers: headers })
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -197,7 +197,7 @@ export default function Courses() {
   });
 
   return (
-    <Page title="Courses">
+    <Page title="Courses | Financial Achievement Club">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -266,7 +266,7 @@ export default function Courses() {
                               checked={isItemSelected}
                               onChange={(event) => handleClick(event, title)}
                             />
-                          </TableCell>                          
+                          </TableCell>
                           <TableCell align="left">{title}</TableCell>
                           <TableCell align="left">{contentLink}</TableCell>
                           <TableCell align="left">

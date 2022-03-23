@@ -9,6 +9,7 @@ import DashboardApp from './pages/DashboardApp';
 import Savings from './pages/Savings';
 import Courses from './pages/Courses';
 import Course from './pages/Course';
+import User from './pages/User';
 import Users from './pages/Users';
 import NotFound from './pages/Page404';
 
@@ -22,15 +23,22 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <DashboardApp /> },
-        { path: 'users', element: <Users /> },
         { path: 'savings', element: <Savings /> },
+        {
+          path: 'users',
+          element: <Outlet />,
+          children: [
+            { path: '', element: <Users /> },
+            { path: ':id', element: <User /> },
+          ],
+        },
         { 
           path: 'courses',
           element: <Outlet />,
           children: [
             { path: '', element: <Courses /> },
             { path: ':id', element: <Course /> },
-          ]
+          ],
         },
       ]
     },

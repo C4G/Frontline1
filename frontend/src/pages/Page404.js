@@ -19,7 +19,7 @@ const RootStyle = styled(Page)(({ theme }) => ({
 
 export default function Page404() {
   return (
-    <RootStyle title="404 Page Not Found | Minimal-UI">
+    <RootStyle title="404 Page Not Found | Financial Achievement Club">
       <Container>
         <Box sx={{ maxWidth: 480, margin: 'auto', textAlign: 'center' }}>
           <Typography variant="h3" paragraph>

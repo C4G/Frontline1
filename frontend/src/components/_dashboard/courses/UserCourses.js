@@ -11,10 +11,17 @@ import { useEffect, useState } from 'react';
 // ----------------------------------------------------------------------
 
 export default function UserCourses() {
+  const userJson = localStorage.getItem("user");
+  const user = JSON.parse(userJson);
+  const headers = {
+    "Authorization": "Bearer " + user.authToken,
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  };
   const [courses, setCourses] = useState(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses")
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses", { headers: headers })
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -36,7 +43,7 @@ export default function UserCourses() {
   }
   courses?.sort((a, b) => a.index - b.index);
   return (
-    <Page title="Courses">
+    <Page title="Courses | Financial Achievement Club">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>

@@ -27,7 +27,7 @@ export default function DashboardApp() {
     firstName = user.firstName;
   }
   return (
-    <Page title="Dashboard | Homelessness">
+    <Page title="Dashboard | Financial Achievement Club">
       <Container maxWidth="xl">
         <Box sx={{ pb: 5 }}>
           <Typography variant="h4">Hi, Welcome back {firstName}</Typography>
