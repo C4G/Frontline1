@@ -51,21 +51,21 @@ const modalStyle = {
 };
 
 const displayValidated = (files, index) => {
-    if (files.length > index) {
-        let file = files[index];
-        if (file.isValidated) {
-            return "Yes";
-        }
-        return "No";
+  if (files.length > index) {
+    let file = files[index];
+    if (file.isValidated) {
+        return "Yes";
     }
-    return "-";
+    return "No";
+  }
+  return "-";
 };
 
 const displayCreditScore = (creditScore) => {
-    if (creditScore === 0) {
-        return "-";
-    }
-    return creditScore;
+  if (creditScore === 0) {
+      return "-";
+  }
+  return creditScore;
 };
 
 const ID_CLAIM = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
@@ -84,9 +84,9 @@ export default function UserSavings() {
   // Fetch data for user savings.
   useEffect(() => {
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/Savings/" + userID, {
-        headers: {
-            'Authorization': 'Bearer ' + user.authToken,
-        },
+      headers: {
+        'Authorization': 'Bearer ' + user.authToken,
+      },
     })
       .then(response => {
         if (response.ok) {

@@ -84,13 +84,13 @@ export default function CreateSavingsForm(props) {
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-
           <TextField
             fullWidth
             type="text"
             label="(Required) Savings Amount"
             {...getFieldProps('amount')}
             error={Boolean(touched.amount && errors.amount)}
+            required={true}
          />
           <br/>
           <br/>
@@ -138,6 +138,10 @@ export default function CreateSavingsForm(props) {
             type="submit"
             variant="contained"
             loading={isSubmitting}
+            disabled={
+              !getFieldProps('amount').value ||
+              !getFieldProps('amountFile').value
+            }
           >
             Submit
           </LoadingButton>
