@@ -4,12 +4,17 @@ import LoadingIcons from 'react-loading-icons';
 import { Container, Stack, Typography } from '@mui/material';
 // components
 import Page from '../components/Page';
-import { CoursePlayer, CourseQuestion } from '../components/_dashboard/courses';
 //
 import { useEffect, useState } from 'react';
 
-
 // ----------------------------------------------------------------------
+
+const displayBool = (bool) => {
+  if (bool) {
+    return "Yes";
+  }
+  return "No";
+};
 
 export default function User() {
   const userJson = localStorage.getItem("user");
@@ -20,7 +25,6 @@ export default function User() {
   let { id: userID } = useParams();
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
-  console.log(userID);
   useEffect(() => {
     fetch(process.env.REACT_APP_API_SERVER_PATH + '/Users/' + userID, { headers: headers })
       .then(response => {
@@ -43,16 +47,32 @@ export default function User() {
   if (userLoading) {
     return <LoadingIcons.SpinningCircles />;
   }
-//   course.questions?.sort((a, b) => a.index  - b.index);
+  const userCourses = user.userCourses.map((userCourse) => {
+    return (
+      <>
+        <br/>
+        <Typography variant="h6">
+          {userCourse.courseTitle}
+        </Typography>
+        <Typography>
+          Is Completed? {displayBool(userCourse.isCompleted)}
+        </Typography>
+      </>
+    );
+  });
+
   return (
     <Page title="User | Financial Achievement Club">
       <Container>
-        <Stack justifyContent="space-between" mb={1}>
-          <Typography variant="h4" gutterBottom>
-            {user.firstName} {user.lastName}
-          </Typography>
-          <br/>
-        </Stack>
+        <Typography variant="h3" gutterBottom>
+          {user.firstName} {user.lastName}
+        </Typography>
+        <br/>
+        <br/>
+        <Typography variant="h4">
+          Courses
+        </Typography>
+        {userCourses}
       </Container>
     </Page>
   );

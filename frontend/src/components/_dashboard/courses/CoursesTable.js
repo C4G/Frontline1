@@ -249,7 +249,7 @@ export default function Courses() {
                   {courses
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, index, title, contentLink, questions } = row;
+                      const { id, index, title, contentLink } = row;
                       const isItemSelected = selected.indexOf(title) !== -1;
                       const isItemEnabled = enabled.indexOf(id) !== -1;
                       return (

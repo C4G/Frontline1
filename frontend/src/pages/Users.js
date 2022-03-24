@@ -26,6 +26,7 @@ import Scrollbar from '../components/Scrollbar';
 import TableListHead from '../components/TableListHead';
 import TableMoreMenu from '../components/TableMoreMenu';
 import { CreateUserForm, UpdateUserForm } from '../components/authentication/create';
+import { fDateTime } from 'src/utils/formatTime';
 
 // ----------------------------------------------------------------------
 
@@ -34,6 +35,7 @@ const TABLE_HEAD = [
   { id: 'email', label: 'Email', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
   { id: 'isVerified', label: 'Verified', alignRight: false },
+  { id: 'lastLoginDate', label: 'Last Login Date', alignRight: false },
   { id: '' }
 ];
 
@@ -265,7 +267,9 @@ export default function Users() {
                   {users
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, firstName, lastName, roleId, email } = row;
+                      const { id, firstName, lastName, roleId, email, refreshTokenExpiryTime } = row;
+                      const loginDate = new Date(refreshTokenExpiryTime);
+                      loginDate.setDate(loginDate.getDate() - 7);
                       const fullName = `${firstName} ${lastName}`;
                       const isItemSelected = selected.indexOf(fullName) !== -1;
                       const isItemVerified = verified.indexOf(id) !== -1;
@@ -305,6 +309,7 @@ export default function Users() {
                               onChange={(event) => handleVerifiedClick(event, id, firstName, lastName, isItemVerified)}
                             />
                           </TableCell>
+                          <TableCell align="left">{fDateTime(loginDate)}</TableCell>
                           <TableCell align="right">
                             <TableMoreMenu openModal={() => {
                               handleUpdateModalOpen(id, firstName, lastName, isItemVerified);

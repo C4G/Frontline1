@@ -11,7 +11,7 @@ export default function CreateCourseForm(props) {
   const CreateSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     contentLink: Yup.string().required('Content link is required'),
-    index: Yup.number().required('Index is required'),
+    index: Yup.number().required('Course Number is required'),
   });
 
   const formik = useFormik({
@@ -75,7 +75,7 @@ export default function CreateCourseForm(props) {
           <TextField
             fullWidth
             type="text"
-            label="Index"
+            label="Course Number"
             {...getFieldProps('index')}
             error={Boolean(touched.index && errors.index)}
             helperText={touched.index && errors.index}
