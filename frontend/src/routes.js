@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import DashboardApp from './pages/DashboardApp';
 import Savings from './pages/Savings';
+import UserSavingsDetails from './pages/UserSavingsDetails';
 import Courses from './pages/Courses';
 import Course from './pages/Course';
 import User from './pages/User';
@@ -23,7 +24,14 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <DashboardApp /> },
-        { path: 'savings', element: <Savings /> },
+        {
+          path: 'savings',
+          element: <Outlet />,
+          children: [
+            { path: '', element: <Savings /> },
+            { path: ':id', element: <UserSavingsDetails /> },
+          ],
+        },
         {
           path: 'users',
           element: <Outlet />,

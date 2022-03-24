@@ -1,6 +1,6 @@
 import LoadingIcons from 'react-loading-icons';
 import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 // material
 import {
   Card,
@@ -16,39 +16,44 @@ import {
   TablePagination
 } from '@mui/material';
 // components
-import Scrollbar from './Scrollbar';
-import TableListHead from './TableListHead';
+import Scrollbar from '../components/Scrollbar';
+import TableListHead from '../components/TableListHead';
 import { fDateTime } from 'src/utils/formatTime';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'user', label: 'User', alightRight: false },
-  { id: 'lastUpdatedDate', label: 'Last Updated Date', alignRight: false },
-  { id: 'totalSaved', label: 'Total Saved', alignRight: false },
-  { id: 'latestCreditScore', label: 'Latest Credit Score', alignRight: false },
-  { id: 'validated', label: 'Validated', alignRight: false },
+  { id: 'uploadDate', label: 'Upload Date', alignRight: false },
+  { id: 'amount', label: 'Amount', alignRight: false },
+  { id: 'amountFile', label: 'Amount File', alignRight: false },
+  { id: 'amountFileValidated', label: 'Amount File Validated', alignRight: false },
+  { id: 'creditScore', label: 'Credit Score', alignRight: false },
+  { id: 'creditScoreFile', label: 'Credit Score File', alignRight: false },
+  { id: 'creditScoreFileValidated', label: 'Credit Score File Validated', alignRight: false },
   { id: '' }
 ];
 
 // ----------------------------------------------------------------------
 
-export default function UserSavings() {
+export default function UserSavingsDetails() {
+  let { id: userID } = useParams();
   const userJson = localStorage.getItem("user");
-  const user = JSON.parse(userJson);
+  const adminUser = JSON.parse(userJson);
+  const headers = {
+    'Authorization': 'Bearer ' + adminUser.authToken,
+  };
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState([]);
+  const [validatedMap, setValidatedMap] = useState(new Map());
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [savings, setSavings] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [totalSavings, setTotalSavings] = useState();
+  const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
 
   // Fetch data for user savings.
   useEffect(() => {
-    const headers = {
-      'Authorization': 'Bearer ' + user.authToken,
-    };
-    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Savings", { headers: headers })
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Savings/" + userID, { headers: headers })
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -56,52 +61,35 @@ export default function UserSavings() {
         throw response;
       })
       .then(data => {
-        let allSavings = [];
+        setSavings(data);
+        let totalSaved = 0;
         for (let i = 0; i < data.length; i++) {
-            let userId = data[i].userId;
-            let userSavings = data[i].savings;
-            let latestUserSavings = userSavings[0];
-            let latestCreditScore = latestUserSavings.ficoScore;
-            let validated = true;
-            let totalSavings = 0;
-            for (let j = 0; j < userSavings.length; j++) {
-                totalSavings += userSavings[j].amount;
-                if (latestCreditScore === 0 && userSavings[j].ficoScore !== 0) {
-                    latestCreditScore = userSavings[j].ficoScore;
-                }
-                if (userSavings[j].files) {
-                    for (let k = 0; k < userSavings[j].files.length; k++) {
-                        let file = userSavings[j].files[k];
-                        if (!file.isValidated) {
-                            validated = false;
-                        }
-                    }
-                }
+          let savings = data[i];
+          totalSaved += savings.amount;
+          if (savings.files) {
+            for (let j = 0; j < savings.files.length; j++) {
+                let file = savings.files[j];
+                let map = new Map(validatedMap.set(file.id, file.isValidated));
+                setValidatedMap(map);
             }
-            allSavings.push({
-              userId: userId,
-              lastUpdatedDate: latestUserSavings.createdDate,
-              totalSavings: totalSavings,
-              latestCreditScore: latestCreditScore,
-              validated: validated,
-            });
+          }
         }
-        setSavings(allSavings);
+        setTotalSavings(totalSaved);
       })
       .catch(error => {
         console.log(error);
       });
     
     // Fetch users to fill in user names.
-    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users", { headers: headers })
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users/" + userID, { headers: headers })
       .then(response => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(users => {
-        setUsers(users);
+      .then(user => {
+        setUser(user);
       })
       .catch(error => {
         console.log(error);
@@ -109,14 +97,7 @@ export default function UserSavings() {
       .finally(() => {
         setLoading(false);
       });
-    }, [user.authToken]);
-    
-    const displayValidated = (validated) => {
-        if (validated) {
-            return "Yes";
-        }
-        return "No";
-    };
+    }, [userID, adminUser.authToken]);
     
     const displayCreditScore = (creditScore) => {
         if (creditScore === 0) {
@@ -125,9 +106,57 @@ export default function UserSavings() {
         return creditScore;
     };
 
+    const handleValidatedClick = (event, file) => {
+      const isValidated = validatedMap.get(file.id);
+      // Make API Request.
+      let newHeaders = {
+        "Authorization": "Bearer " + adminUser.authToken,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      };
+      fetch(process.env.REACT_APP_API_SERVER_PATH + "/Files/" + file.id, {
+        method: "PUT",
+        headers: newHeaders,
+        body: JSON.stringify({
+          fileId: file.id,
+          isValidated: !isValidated,
+        }),
+      });
+      // Update state map.
+      const newMap = new Map(validatedMap.set(file.id, !isValidated));
+      setValidatedMap(newMap);
+    };
+    
+    const displayFileValidated = (files, index) => {
+      if (files && files.length > index) {
+        let file = files[index];
+        const isValidated = validatedMap.get(file.id);
+        return (
+          <Checkbox
+            checked={isValidated}
+            onChange={(event) => handleValidatedClick(event, file)}
+          />  
+        );
+      }
+      return "-";
+    };
+
+    const displayFileName = (files, index) => {
+      // TODO: fix file download
+      if (files && files.length > index) {
+        let file = files[index];
+        var blob = new Blob([file.content], {type: "image/png"});
+        var url = URL.createObjectURL(blob);
+        return (
+          <a download href={url}>{file.name}</a>
+        );
+      }
+      return "-";
+    };
+
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = savings.map((n) => n.userId);
+      const newSelected = savings.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -161,17 +190,11 @@ export default function UserSavings() {
     setPage(0);
   };
 
-  const getUserName = (userId) => {
-    const user = users.find((user) => user.id === userId);
-    return `${user.firstName} ${user.lastName}`;
-  };
-
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - savings.length) : 0;
 
   if (loading) {
     return <LoadingIcons.SpinningCircles />;
   }
-
 
   // Sort savings by index.
   savings.sort(function(a, b){
@@ -182,7 +205,10 @@ export default function UserSavings() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Savings
+            {user.firstName} {user.lastName}
+          </Typography>
+          <Typography variant="h4" gutterBottom>
+            Total Saved: {totalSavings}
           </Typography>
         </Stack>
 
@@ -200,12 +226,12 @@ export default function UserSavings() {
                   {savings
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { userId, lastUpdatedDate, totalSavings, latestCreditScore, validated } = row;
-                      const isItemSelected = selected.indexOf(userId) !== -1;
+                      const { id, createdDate, amount, ficoScore, files } = row;
+                      const isItemSelected = selected.indexOf(id) !== -1;
                       return (
                         <TableRow
                           hover
-                          key={userId}
+                          key={id}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -214,24 +240,16 @@ export default function UserSavings() {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, userId)}
+                              onChange={(event) => handleClick(event, id)}
                             />
                           </TableCell>
-                          <TableCell align="left">
-                            <Typography
-                              to={"/dashboard/savings/" + userId}
-                              color="inherit"
-                              variant="subtitle2"
-                              underline="hover"
-                              component={RouterLink}
-                            >
-                              {getUserName(userId)}
-                            </Typography>
-                          </TableCell>
-                          <TableCell align="left">{fDateTime(lastUpdatedDate)}</TableCell>
-                          <TableCell align="left">{totalSavings}</TableCell>
-                          <TableCell align="left">{displayCreditScore(latestCreditScore)}</TableCell>
-                          <TableCell align="left">{displayValidated(validated)}</TableCell>
+                          <TableCell align="left">{fDateTime(createdDate)}</TableCell>
+                          <TableCell align="left">{amount}</TableCell>
+                          <TableCell align="left">{displayFileName(files, 0)}</TableCell>
+                          <TableCell align="left">{displayFileValidated(files, 0)}</TableCell>
+                          <TableCell align="left">{displayCreditScore(ficoScore)}</TableCell>
+                          <TableCell align="left">{displayFileName(files, 1)}</TableCell>
+                          <TableCell align="left">{displayFileValidated(files, 1)}</TableCell>
                         </TableRow>
                       );
                     })}

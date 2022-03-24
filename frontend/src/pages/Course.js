@@ -12,11 +12,16 @@ import { useEffect, useState } from 'react';
 // ----------------------------------------------------------------------
 
 export default function Course() {
+  const userJson = localStorage.getItem("user");
+  const user = JSON.parse(userJson);
+  const headers = {
+    "Authorization": "Bearer " + user.authToken,
+  };
   let { id: courseID } = useParams();
   const [course, setCourse] = useState(null);
   const [courseLoading, setCourseLoading] = useState(true);
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER_PATH + '/Courses/' + courseID)
+    fetch(process.env.REACT_APP_API_SERVER_PATH + '/Courses/' + courseID, { headers: headers })
       .then(response => {
         if (response.ok) {
           return response.json();

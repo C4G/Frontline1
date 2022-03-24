@@ -22,7 +22,7 @@ export default function User() {
   const [userLoading, setUserLoading] = useState(true);
   console.log(userID);
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER_PATH + '/Courses', { headers: headers })
+    fetch(process.env.REACT_APP_API_SERVER_PATH + '/Users/' + userID, { headers: headers })
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -49,12 +49,10 @@ export default function User() {
       <Container>
         <Stack justifyContent="space-between" mb={1}>
           <Typography variant="h4" gutterBottom>
-            {user.firstName}
+            {user.firstName} {user.lastName}
           </Typography>
-          {/* <CoursePlayer contentLink={course.contentLink} /> */}
           <br/>
         </Stack>
-        {/* {course.questions?.map((question) => <CourseQuestion key={question.id} question={question} />)} */}
       </Container>
     </Page>
   );

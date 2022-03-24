@@ -51,7 +51,7 @@ const modalStyle = {
 };
 
 const displayValidated = (files, index) => {
-  if (files.length > index) {
+  if (files && files.length > index) {
     let file = files[index];
     if (file.isValidated) {
         return "Yes";

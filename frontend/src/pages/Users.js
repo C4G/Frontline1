@@ -295,9 +295,6 @@ export default function Users() {
                               >
                                 {fullName}
                               </Typography>
-                              {/* <Typography variant="subtitle2" noWrap>
-                                {fullName}
-                              </Typography> */}
                             </Stack>
                           </TableCell>
                           <TableCell align="left">{email}</TableCell>
