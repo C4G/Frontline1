@@ -55,6 +55,7 @@ namespace Homelessness.Core.Handlers
                 Title = dbCourse.Title,
                 ContentLink = dbCourse.ContentLink,
                 IsEnabled = dbCourse.IsEnabled,
+                Questions = dbCourse.Questions.Select(q => q.ToModel()),
                 CreatedDate = dbCourse.CreatedDate,
                 UpdatedDate = dbCourse.UpdatedDate
             };
@@ -76,6 +77,7 @@ namespace Homelessness.Core.Handlers
                     Title = dbCourse.Title,
                     ContentLink = dbCourse.ContentLink,
                     IsEnabled = dbCourse.IsEnabled,
+                    Questions = dbCourse.Questions.Select(q => q.ToModel()),
                     IsCompleted = IsCourseCompletedByUser(dbUser.Id, courseFromUserCourses.Id),
                     CreatedDate = dbCourse.CreatedDate,
                     UpdatedDate = dbCourse.UpdatedDate
