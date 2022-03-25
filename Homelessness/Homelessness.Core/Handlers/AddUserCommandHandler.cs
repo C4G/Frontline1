@@ -1,4 +1,5 @@
 ﻿using Homelessness.Core.Commands;
+using Homelessness.Core.Exceptions;
 using Homelessness.Core.Helpers.Validation;
 using Homelessness.Core.Interfaces;
 using Homelessness.Domain.Entities.Identity;
@@ -28,7 +29,21 @@ namespace Homelessness.Core.Handlers
 
         public async Task<SignUpResponse> Handle(AddUserCommand request, CancellationToken cancellationToken)
         {
+            var existingUser = await userManager.FindByEmailAsync(request.Email);
+
+            if (existingUser is not null)
+            {
+                throw new EntityEntryAlreadyExistsException($"{nameof(ApplicationUser)} already exists.");
+            }
+
             var roles = roleManager.Roles.ToList();
+
+            var requestRoleName = roles.SingleOrDefault(r => r.Id == request.RoleId)?.Name;
+
+            if (string.IsNullOrWhiteSpace(requestRoleName))
+            {
+                throw new EntityNotFoundException(nameof(ApplicationRole), request.RoleId);
+            }
 
             var user = new ApplicationUser
             {
@@ -37,7 +52,7 @@ namespace Homelessness.Core.Handlers
                 UserName = request.Email,
                 Email = request.Email,
                 RefreshToken = "",
-                RoleId = roles.SingleOrDefault(r => r.Name.Equals("User")).Id,
+                RoleId = request.RoleId,
                 IsApproved = true,
                 CreatedDate = DateTime.Now
             };

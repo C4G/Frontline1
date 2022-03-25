@@ -48,6 +48,13 @@ namespace Homelessness.Api
                 role.Name = "Administrator";
                 IdentityResult roleResult = roleManager.CreateAsync(role).Result;
             }
+
+            if (!roleManager.RoleExistsAsync("Volunteer").Result)
+            {
+                ApplicationRole role = new ApplicationRole();
+                role.Name = "Volunteer";
+                IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+            }
         }
     }
 }

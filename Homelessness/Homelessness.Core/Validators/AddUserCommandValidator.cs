@@ -19,6 +19,7 @@ namespace Homelessness.Core.Validators
 
             RuleFor(x => x.FirstName).NotNull().NotEmpty();
             RuleFor(x => x.LastName).NotNull().NotEmpty();
+            RuleFor(x => x.RoleId).NotNull();
         }
     }
 }
