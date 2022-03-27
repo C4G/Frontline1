@@ -31,6 +31,8 @@ namespace Homelessness.Api.Infrastructure
 
         public DbSet<WelcomeMessage> WelcomeMessages { get; set; }
 
+        public DbSet<Resource> Resources { get; set; }
+
         public HomelessnessDbContext(DbContextOptions<HomelessnessDbContext> options) : base(options)
         {
             Database.Migrate();
@@ -53,14 +55,6 @@ namespace Homelessness.Api.Infrastructure
 
     public static class HomelessnessDbContextExtensions
     {
-        //public static void EnsureHomelessnessDbIsCreated(this IApplicationBuilder app)
-        //{
-        //    using var scope = app.ApplicationServices.CreateScope();
-        //    var context = scope.ServiceProvider.GetService<HomelessnessDbContext>();
-        //    context.Database.EnsureCreated();
-        //    context.Database.CloseConnection();
-        //}
-
         public static void EnsureHomelessnessDbIsCreated(this IServiceCollection services)
         {
             using var serviceProvider = services.BuildServiceProvider();

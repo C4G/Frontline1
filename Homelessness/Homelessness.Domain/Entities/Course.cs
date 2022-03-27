@@ -23,6 +23,7 @@ namespace Homelessness.Domain.Entities
         public DateTimeOffset? UpdatedDate { get; set; }
 
         public virtual ICollection<Question> Questions { get; set; } = new HashSet<Question>();
+        public virtual ICollection<Resource> Resources { get; set; } = new HashSet<Resource>();
         public virtual ICollection<ApplicationUser> Users { get; set; } = new HashSet<ApplicationUser>();
         public virtual ICollection<UserCourse> UserCourses { get; set; } = new HashSet<UserCourse>();
 
@@ -43,6 +44,12 @@ namespace Homelessness.Domain.Entities
             {
                 var questions = Questions.Select(q => q.ToModel()).ToList();
                 course.Questions = questions;
+            }
+
+            if (Resources.Any())
+            {
+                var resources = Resources.Select(r => r.ToModel()).ToList();
+                course.Resources = resources;
             }
 
             return course;

@@ -13,6 +13,7 @@
         public bool IsEnabled { get; set; }
 
         public ICollection<Question> Questions { get; set; }
+        public ICollection<Resource> Resources { get; set; }
 
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset? UpdatedDate { get; set; }
