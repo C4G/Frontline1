@@ -6,16 +6,20 @@ import GlobalStyles from './theme/globalStyles';
 // components
 import ScrollToTop from './components/ScrollToTop';
 import { BaseOptionChartStyle } from './components/charts/BaseOptionChart';
+// providers
+import { AuthenticatedUserProvider } from './providers/UserProvider';
 
 // ----------------------------------------------------------------------
 
 export default function App() {
   return (
     <ThemeConfig>
-      <ScrollToTop />
-      <GlobalStyles />
-      <BaseOptionChartStyle />
-      <Router />
+      <AuthenticatedUserProvider>
+        <ScrollToTop />
+        <GlobalStyles />
+        <BaseOptionChartStyle />
+        <Router />
+      </AuthenticatedUserProvider>
     </ThemeConfig>
   );
 }

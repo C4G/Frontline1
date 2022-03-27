@@ -1,6 +1,7 @@
 import LoadingIcons from 'react-loading-icons';
 import { Icon } from '@iconify/react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthenticatedUser } from 'src/providers/UserProvider';
 import plusFill from '@iconify/icons-eva/plus-fill';
 // material
 import {
@@ -49,15 +50,8 @@ const modalStyle = {
 };
 
 export default function Courses() {
-  const userJson = localStorage.getItem("user");
-  const user = JSON.parse(userJson);
-  const headers = {
-    "Authorization": "Bearer " + user.authToken,
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-  };
+  const { headers } = useContext(AuthenticatedUser);
   const [page, setPage] = useState(0);
-  const [selected, setSelected] = useState([]);
   const [enabled, setEnabled] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
@@ -94,33 +88,6 @@ export default function Courses() {
         setLoading(false);
       });
     }, [createModalOpen, updateModalOpen]);
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = courses.map((n) => n.title);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
-  };
 
   const handleUpdateCourse = (id, index, title, contentLink, isEnabled) => {
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses/" + id, {
@@ -201,7 +168,7 @@ export default function Courses() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Courses
+            Manage Courses
           </Typography>
           <Button
             variant="contained"
@@ -241,16 +208,12 @@ export default function Courses() {
               <Table>
                 <TableListHead
                   headLabel={TABLE_HEAD}
-                  rowCount={courses.length}
-                  numSelected={selected.length}
-                  onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
                   {courses
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                       const { id, index, title, contentLink } = row;
-                      const isItemSelected = selected.indexOf(title) !== -1;
                       const isItemEnabled = enabled.indexOf(id) !== -1;
                       return (
                         <TableRow
@@ -258,15 +221,7 @@ export default function Courses() {
                           key={id}
                           tabIndex={-1}
                           role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
                         >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, title)}
-                            />
-                          </TableCell>
                           <TableCell align="left">{title}</TableCell>
                           <TableCell align="left">{contentLink}</TableCell>
                           <TableCell align="left">

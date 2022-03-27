@@ -1,18 +1,13 @@
-// components
-import { UserCourses, CoursesTable } from '../components/_dashboard/courses';
-// 
-import jwt_decode from "jwt-decode";
-
-const ROLE_CLAIM = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+import React, { useContext } from 'react';
+import { AuthenticatedUser } from 'src/providers/UserProvider';
+import { UserCoursesTable, CoursesTable } from '../components/_dashboard/courses';
 
 // ----------------------------------------------------------------------
 
 export default function Courses() {
-  const userJson = localStorage.getItem("user");
-  const user = JSON.parse(userJson);
-  const role = jwt_decode(user.authToken)[ROLE_CLAIM];
+  const { role } = useContext(AuthenticatedUser);
   if (role === "Administrator") {
     return <CoursesTable/>;
   }
-  return <UserCourses/>;
+  return <UserCoursesTable/>;
 }

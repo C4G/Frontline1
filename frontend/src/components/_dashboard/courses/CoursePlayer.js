@@ -6,6 +6,13 @@ const CoursePlayer = (props) => {
   let youtubeVideoID;
   if (match) {
     youtubeVideoID = match.pop();
+  } else {
+    return (
+      <>
+        <br/>
+        <div>{props.contentLink}</div>
+      </>
+    );
   }
   const embedLink = `//youtube.com/embed/${youtubeVideoID}`;
   return (

@@ -1,12 +1,11 @@
 import LoadingIcons from 'react-loading-icons';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import {
   Card,
   Table,
   Stack,
-  Checkbox,
   TableRow,
   TableBody,
   TableCell,
@@ -19,12 +18,13 @@ import {
 import Scrollbar from './Scrollbar';
 import TableListHead from './TableListHead';
 import { fDateTime } from 'src/utils/formatTime';
+import { AuthenticatedUser } from 'src/providers/UserProvider';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'user', label: 'User', alightRight: false },
-  { id: 'lastUpdatedDate', label: 'Last Updated Date', alignRight: false },
+  { id: 'lastUpdated', label: 'Last Updated', alignRight: false },
   { id: 'totalSaved', label: 'Total Saved', alignRight: false },
   { id: 'latestCreditScore', label: 'Latest Credit Score', alignRight: false },
   { id: 'validated', label: 'Validated', alignRight: false },
@@ -34,10 +34,8 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 export default function UserSavings() {
-  const userJson = localStorage.getItem("user");
-  const user = JSON.parse(userJson);
+  const { headers } = useContext(AuthenticatedUser);
   const [page, setPage] = useState(0);
-  const [selected, setSelected] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [savings, setSavings] = useState([]);
   const [users, setUsers] = useState([]);
@@ -45,111 +43,81 @@ export default function UserSavings() {
 
   // Fetch data for user savings.
   useEffect(() => {
-    const headers = {
-      'Authorization': 'Bearer ' + user.authToken,
-    };
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/Savings", { headers: headers })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then(data => {
-        let allSavings = [];
-        for (let i = 0; i < data.length; i++) {
-            let userId = data[i].userId;
-            let userSavings = data[i].savings;
-            let latestUserSavings = userSavings[0];
-            let latestCreditScore = latestUserSavings.ficoScore;
-            let validated = true;
-            let totalSavings = 0;
-            for (let j = 0; j < userSavings.length; j++) {
-                totalSavings += userSavings[j].amount;
-                if (latestCreditScore === 0 && userSavings[j].ficoScore !== 0) {
-                    latestCreditScore = userSavings[j].ficoScore;
-                }
-                if (userSavings[j].files) {
-                    for (let k = 0; k < userSavings[j].files.length; k++) {
-                        let file = userSavings[j].files[k];
-                        if (!file.isValidated) {
-                            validated = false;
-                        }
-                    }
-                }
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw response;
+    })
+    .then(data => {
+      let allSavings = [];
+      for (let i = 0; i < data.length; i++) {
+        let userId = data[i].userId;
+        let userSavings = data[i].savings;
+        let latestUserSavings = userSavings[0];
+        let latestCreditScore = latestUserSavings.ficoScore;
+        let validated = true;
+        let totalSavings = 0;
+        for (let j = 0; j < userSavings.length; j++) {
+          totalSavings += userSavings[j].amount;
+          if (latestCreditScore === 0 && userSavings[j].ficoScore !== 0) {
+            latestCreditScore = userSavings[j].ficoScore;
+          }
+          if (userSavings[j].files) {
+            for (let k = 0; k < userSavings[j].files.length; k++) {
+              let file = userSavings[j].files[k];
+              if (!file.isValidated) {
+                validated = false;
+              }
             }
-            allSavings.push({
-              userId: userId,
-              lastUpdatedDate: latestUserSavings.createdDate,
-              totalSavings: totalSavings,
-              latestCreditScore: latestCreditScore,
-              validated: validated,
-            });
+          }
         }
-        setSavings(allSavings);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+        allSavings.push({
+          userId: userId,
+          lastUpdatedDate: latestUserSavings.createdDate,
+          totalSavings: totalSavings,
+          latestCreditScore: latestCreditScore,
+          validated: validated,
+        });
+      }
+      setSavings(allSavings);
+    })
+    .catch(error => {
+      console.log(error);
+    });
     
     // Fetch users to fill in user names.
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users", { headers: headers })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then(users => {
-        setUsers(users);
-      })
-      .catch(error => {
-        console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-    }, [user.authToken]);
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw response;
+    })
+    .then(users => {
+      setUsers(users);
+    })
+    .catch(error => {
+      console.log(error);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+  }, []);
     
-    const displayValidated = (validated) => {
-        if (validated) {
-            return "Yes";
-        }
-        return "No";
-    };
-    
-    const displayCreditScore = (creditScore) => {
-        if (creditScore === 0) {
-            return "-";
-        }
-        return creditScore;
-    };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelected = savings.map((n) => n.userId);
-      setSelected(newSelected);
-      return;
+  const displayValidated = (validated) => {
+    if (validated) {
+      return "Yes";
     }
-    setSelected([]);
+    return "No";
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
+  const displayCreditScore = (creditScore) => {
+    if (creditScore === 0) {
+      return "Not Entered";
     }
-    setSelected(newSelected);
+    return creditScore;
   };
 
   const handleChangePage = (event, newPage) => {
@@ -172,7 +140,6 @@ export default function UserSavings() {
     return <LoadingIcons.SpinningCircles />;
   }
 
-
   // Sort savings by index.
   savings.sort(function(a, b){
     return a.createdDate - b.createdDate;
@@ -192,31 +159,19 @@ export default function UserSavings() {
               <Table>
                 <TableListHead
                   headLabel={TABLE_HEAD}
-                  rowCount={savings.length}
-                  numSelected={selected.length}
-                  onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
                   {savings
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                       const { userId, lastUpdatedDate, totalSavings, latestCreditScore, validated } = row;
-                      const isItemSelected = selected.indexOf(userId) !== -1;
                       return (
                         <TableRow
                           hover
                           key={userId}
                           tabIndex={-1}
                           role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
                         >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, userId)}
-                            />
-                          </TableCell>
                           <TableCell align="left">
                             <Typography
                               to={"/dashboard/savings/" + userId}
@@ -229,7 +184,7 @@ export default function UserSavings() {
                             </Typography>
                           </TableCell>
                           <TableCell align="left">{fDateTime(lastUpdatedDate)}</TableCell>
-                          <TableCell align="left">{totalSavings}</TableCell>
+                          <TableCell align="left">${totalSavings}</TableCell>
                           <TableCell align="left">{displayCreditScore(latestCreditScore)}</TableCell>
                           <TableCell align="left">{displayValidated(validated)}</TableCell>
                         </TableRow>

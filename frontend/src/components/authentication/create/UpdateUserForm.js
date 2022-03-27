@@ -1,3 +1,5 @@
+import React, { useContext } from 'react';
+import { AuthenticatedUser } from 'src/providers/UserProvider';
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
@@ -7,6 +9,7 @@ import { LoadingButton } from '@mui/lab';
 // ----------------------------------------------------------------------
 
 export default function UpdateUserForm(props) {
+  const { headers } = useContext(AuthenticatedUser);
   const UpdateSchema = Yup.object().shape({
     firstName: Yup.string()
       .min(2, 'Too Short!')
@@ -22,13 +25,6 @@ export default function UpdateUserForm(props) {
     },
     validationSchema: UpdateSchema,
     onSubmit: () => {
-      const userJson = localStorage.getItem("user");
-      const user = JSON.parse(userJson);
-      const headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + user.authToken,
-      };
       fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users/" + props.id, {
         method: "PUT",
         headers: headers,

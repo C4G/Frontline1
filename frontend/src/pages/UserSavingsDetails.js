@@ -1,6 +1,6 @@
 import LoadingIcons from 'react-loading-icons';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 // material
 import {
   Card,
@@ -19,6 +19,7 @@ import {
 import Scrollbar from '../components/Scrollbar';
 import TableListHead from '../components/TableListHead';
 import { fDateTime } from 'src/utils/formatTime';
+import { AuthenticatedUser } from 'src/providers/UserProvider';
 
 // ----------------------------------------------------------------------
 
@@ -36,14 +37,10 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 export default function UserSavingsDetails() {
+  const navigate = useNavigate();
   let { id: userID } = useParams();
-  const userJson = localStorage.getItem("user");
-  const adminUser = JSON.parse(userJson);
-  const headers = {
-    'Authorization': 'Bearer ' + adminUser.authToken,
-  };
+  const { role, headers } = useContext(AuthenticatedUser);
   const [page, setPage] = useState(0);
-  const [selected, setSelected] = useState([]);
   const [validatedMap, setValidatedMap] = useState(new Map());
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [savings, setSavings] = useState([]);
@@ -97,88 +94,65 @@ export default function UserSavingsDetails() {
       .finally(() => {
         setLoading(false);
       });
-    }, [userID, adminUser.authToken]);
+  }, [userID]);
+
+  if (role !== "Administrator") {
+    navigate('/404', { replace: true });
+    return <></>;
+  }
     
-    const displayCreditScore = (creditScore) => {
-        if (creditScore === 0) {
-            return "-";
-        }
-        return creditScore;
-    };
-
-    const handleValidatedClick = (event, file) => {
-      const isValidated = validatedMap.get(file.id);
-      // Make API Request.
-      let newHeaders = {
-        "Authorization": "Bearer " + adminUser.authToken,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      };
-      fetch(process.env.REACT_APP_API_SERVER_PATH + "/Files/" + file.id, {
-        method: "PUT",
-        headers: newHeaders,
-        body: JSON.stringify({
-          fileId: file.id,
-          isValidated: !isValidated,
-        }),
-      });
-      // Update state map.
-      const newMap = new Map(validatedMap.set(file.id, !isValidated));
-      setValidatedMap(newMap);
-    };
-    
-    const displayFileValidated = (files, index) => {
-      if (files && files.length > index) {
-        let file = files[index];
-        const isValidated = validatedMap.get(file.id);
-        return (
-          <Checkbox
-            checked={isValidated}
-            onChange={(event) => handleValidatedClick(event, file)}
-          />  
-        );
-      }
-      return "-";
-    };
-
-    const displayFileName = (files, index) => {
-      // TODO: fix file download
-      if (files && files.length > index) {
-        let file = files[index];
-        var blob = new Blob([file.content], {type: "image/png"});
-        var url = URL.createObjectURL(blob);
-        return (
-          <a download href={url}>{file.name}</a>
-        );
-      }
-      return "-";
-    };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelected = savings.map((n) => n.id);
-      setSelected(newSelected);
-      return;
+  const displayCreditScore = (creditScore) => {
+    if (creditScore === 0) {
+      return "Not Entered";
     }
-    setSelected([]);
+    return creditScore;
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
+  const handleValidatedClick = (event, file) => {
+    const isValidated = validatedMap.get(file.id);
+    // Make API Request.
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Files/" + file.id, {
+      method: "PUT",
+      headers: headers,
+      body: JSON.stringify({
+        fileId: file.id,
+        isValidated: !isValidated,
+      }),
+    });
+    // Update state map.
+    const newMap = new Map(validatedMap.set(file.id, !isValidated));
+    setValidatedMap(newMap);
+  };
+    
+  const displayFileValidated = (files, index) => {
+    if (files && files.length > index) {
+      let file = files[index];
+      const isValidated = validatedMap.get(file.id);
+      return (
+        <Checkbox
+          checked={isValidated}
+          onChange={(event) => handleValidatedClick(event, file)}
+        />
       );
     }
-    setSelected(newSelected);
+    return "Not Uploaded";
+  };
+
+  const displayFileName = (files, index) => {
+    if (files && files.length > index) {
+      let file = files[index];
+      let type = "";
+      if (file.name.endsWith(".png")) {
+        type = "image/png";
+      } else if (file.name.endsWith(".jpg")) {
+        type = "image/jpeg";
+      }
+      var blob = new Blob([Buffer.from(file.content, 'base64')], {type: type});
+      return (
+        <a download={file.name} href={URL.createObjectURL(blob)}>{file.name}</a>
+      );
+    }
+    return "-";
   };
 
   const handleChangePage = (event, newPage) => {
@@ -208,7 +182,7 @@ export default function UserSavingsDetails() {
             {user.firstName} {user.lastName}
           </Typography>
           <Typography variant="h4" gutterBottom>
-            Total Saved: {totalSavings}
+            Total Saved: ${totalSavings}
           </Typography>
         </Stack>
 
@@ -218,33 +192,21 @@ export default function UserSavingsDetails() {
               <Table>
                 <TableListHead
                   headLabel={TABLE_HEAD}
-                  rowCount={savings.length}
-                  numSelected={selected.length}
-                  onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
                   {savings
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                       const { id, createdDate, amount, ficoScore, files } = row;
-                      const isItemSelected = selected.indexOf(id) !== -1;
                       return (
                         <TableRow
                           hover
                           key={id}
                           tabIndex={-1}
                           role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
                         >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, id)}
-                            />
-                          </TableCell>
                           <TableCell align="left">{fDateTime(createdDate)}</TableCell>
-                          <TableCell align="left">{amount}</TableCell>
+                          <TableCell align="left">${amount}</TableCell>
                           <TableCell align="left">{displayFileName(files, 0)}</TableCell>
                           <TableCell align="left">{displayFileValidated(files, 0)}</TableCell>
                           <TableCell align="left">{displayCreditScore(ficoScore)}</TableCell>

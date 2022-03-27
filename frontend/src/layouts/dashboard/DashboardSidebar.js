@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import jwt_decode from "jwt-decode";
 // material
 import { styled } from '@mui/material/styles';
 import { Box, Link, Drawer, Typography, Avatar } from '@mui/material';
@@ -12,6 +11,7 @@ import NavSection from '../../components/NavSection';
 import { MHidden } from '../../components/@material-extend';
 //
 import sidebarConfig from './SidebarConfig';
+import { AuthenticatedUser } from 'src/providers/UserProvider';
 
 // ----------------------------------------------------------------------
 
@@ -32,8 +32,6 @@ const AccountStyle = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.grey[200]
 }));
 
-const ROLE_CLAIM = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-
 // ----------------------------------------------------------------------
 
 DashboardSidebar.propTypes = {
@@ -42,8 +40,7 @@ DashboardSidebar.propTypes = {
 };
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
-  const userJson = localStorage.getItem("user");
-  const user = JSON.parse(userJson);
+  const { user, role } = useContext(AuthenticatedUser);
 
   const { pathname } = useLocation();
 
@@ -64,7 +61,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
               {user.firstName} {user.lastName}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {jwt_decode(user.authToken)[ROLE_CLAIM]}
+              {role}
             </Typography>
           </Box>
         </AccountStyle>

@@ -34,7 +34,6 @@ export default function User() {
         throw response;
       })
       .then(data => {
-        console.log("USER:", data);
         setUser(data);
       })
       .catch(error => {

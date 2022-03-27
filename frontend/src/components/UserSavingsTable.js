@@ -1,6 +1,7 @@
 import LoadingIcons from 'react-loading-icons';
 import { Icon } from '@iconify/react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthenticatedUser } from 'src/providers/UserProvider';
 import plusFill from '@iconify/icons-eva/plus-fill';
 // material
 import {
@@ -9,7 +10,6 @@ import {
   Stack,
   Box,
   Button,
-  Checkbox,
   Modal,
   TableRow,
   TableBody,
@@ -23,7 +23,6 @@ import {
 import Scrollbar from './Scrollbar';
 import TableListHead from './TableListHead';
 import { CreateSavingsForm } from './authentication/create';
-import jwt_decode from 'jwt-decode';
 import { fDateTime } from 'src/utils/formatTime';
 
 // ----------------------------------------------------------------------
@@ -58,24 +57,20 @@ const displayValidated = (files, index) => {
     }
     return "No";
   }
-  return "-";
+  return "Not Uploaded";
 };
 
 const displayCreditScore = (creditScore) => {
   if (creditScore === 0) {
-      return "-";
+      return "Not Entered";
   }
   return creditScore;
 };
 
-const ID_CLAIM = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
 
 export default function UserSavings() {
-  const userJson = localStorage.getItem("user");
-  const user = JSON.parse(userJson);
-  const userID = jwt_decode(user.authToken)[ID_CLAIM];
+  const { userID, headers } = useContext(AuthenticatedUser);
   const [page, setPage] = useState(0);
-  const [selected, setSelected] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [savings, setSavings] = useState([]);
@@ -84,9 +79,7 @@ export default function UserSavings() {
   // Fetch data for user savings.
   useEffect(() => {
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/Savings/" + userID, {
-      headers: {
-        'Authorization': 'Bearer ' + user.authToken,
-      },
+      headers: headers,
     })
       .then(response => {
         if (response.ok) {
@@ -104,33 +97,6 @@ export default function UserSavings() {
         setLoading(false);
       });
     }, [createModalOpen]);
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelected = savings.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
-  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -186,33 +152,21 @@ export default function UserSavings() {
               <Table>
                 <TableListHead
                   headLabel={TABLE_HEAD}
-                  rowCount={savings.length}
-                  numSelected={selected.length}
-                  onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
                   {savings
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                       const { id, createdDate, amount, ficoScore, files } = row;
-                      const isItemSelected = selected.indexOf(id) !== -1;
                       return (
                         <TableRow
                           hover
                           key={id}
                           tabIndex={-1}
                           role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
                         >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, id)}
-                            />
-                          </TableCell>                          
                           <TableCell align="left">{fDateTime(createdDate)}</TableCell>
-                          <TableCell align="left">{amount}</TableCell>
+                          <TableCell align="left">${amount}</TableCell>
                           <TableCell align="left">{displayValidated(files, 0)}</TableCell>
                           <TableCell align="left">{displayCreditScore(ficoScore)}</TableCell>
                           <TableCell align="left">{displayValidated(files, 1)}</TableCell>

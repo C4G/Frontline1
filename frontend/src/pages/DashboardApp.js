@@ -1,3 +1,4 @@
+import React, { useContext } from 'react';
 // material
 import { Box, Grid, Container, Typography } from '@mui/material';
 // components
@@ -16,12 +17,12 @@ import {
   AppCurrentSubject,
   AppConversionRates
 } from '../components/_dashboard/app';
+import { AuthenticatedUser } from 'src/providers/UserProvider';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardApp() {
-  const userJson = localStorage.getItem("user");
-  const user = JSON.parse(userJson);
+  const { user } = useContext(AuthenticatedUser);
   let firstName = "";
   if (user) {
     firstName = user.firstName;

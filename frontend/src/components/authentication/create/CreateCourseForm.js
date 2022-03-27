@@ -1,3 +1,5 @@
+import React, { useContext } from 'react';
+import { AuthenticatedUser } from 'src/providers/UserProvider';
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
@@ -7,7 +9,7 @@ import { LoadingButton } from '@mui/lab';
 // ----------------------------------------------------------------------
 
 export default function CreateCourseForm(props) {
-
+  const { headers } = useContext(AuthenticatedUser);
   const CreateSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     contentLink: Yup.string().required('Content link is required'),
@@ -22,13 +24,6 @@ export default function CreateCourseForm(props) {
     },
     validationSchema: CreateSchema,
     onSubmit: () => {
-      const userJson = localStorage.getItem("user");
-      const user = JSON.parse(userJson);
-      const headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + user.authToken,
-      };
       fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses", {
         method: "POST",
         headers: headers,

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { AuthenticatedUser } from 'src/providers/UserProvider';
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
@@ -11,66 +12,60 @@ import { Icon } from '@iconify/react';
 
 const question = "question";
 
-const userJson = localStorage.getItem("user");
-const user = JSON.parse(userJson);
-const headers = {
-  'Accept': 'application/json',
-  'Content-Type': 'application/json',
-  'Authorization': "Bearer " + user?.authToken,
-};
-
-const putQuestion = (questionId, courseId, index, text) => {
-  fetch(process.env.REACT_APP_API_SERVER_PATH + "/Questions/" + questionId, {
-    method: "PUT",
-    headers: headers,
-    body: JSON.stringify({
-      "questionId": questionId,
-      "courseId": courseId,
-      "index": index,
-      "text": text,
-    }),
-  })
-  .catch(error => {
-    console.error(error);
-  });
-};
-
-const deleteQuestion = (questionId, courseId) => {
-  fetch(process.env.REACT_APP_API_SERVER_PATH + "/Questions/" + questionId, {
-    method: "DELETE",
-    headers: headers,
-    body: JSON.stringify({
-      "questionId": questionId,
-      "courseId": courseId,
-    }),
-  })
-  .catch(error => {
-    console.error(error);
-  });
-};
-
-const postQuestion = (courseId, index, text) => {
-  fetch(process.env.REACT_APP_API_SERVER_PATH + "/Questions", {
-    method: "POST",
-    headers: headers,
-    body: JSON.stringify({
-      "courseId": courseId,
-      "index": index,
-      "text": text,
-    }),
-  })
-  .catch(error => {
-    console.error(error);
-  });
-};
-
-const UpdateSchema = Yup.object().shape({
-  title: Yup.string().required('Title is required'),
-  contentLink: Yup.string().required('Content link is required'),
-  index: Yup.number().required('Index is required'),
-});
-
 export default function UpdateCourseForm(props) {
+  const { headers } = useContext(AuthenticatedUser);
+
+  const putQuestion = (questionId, courseId, index, text) => {
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Questions/" + questionId, {
+      method: "PUT",
+      headers: headers,
+      body: JSON.stringify({
+        "questionId": questionId,
+        "courseId": courseId,
+        "index": index,
+        "text": text,
+      }),
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  };
+
+  const deleteQuestion = (questionId, courseId) => {
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Questions/" + questionId, {
+      method: "DELETE",
+      headers: headers,
+      body: JSON.stringify({
+        "questionId": questionId,
+        "courseId": courseId,
+      }),
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  };
+
+  const postQuestion = (courseId, index, text) => {
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Questions", {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({
+        "courseId": courseId,
+        "index": index,
+        "text": text,
+      }),
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  };
+
+  const UpdateSchema = Yup.object().shape({
+    title: Yup.string().required('Title is required'),
+    contentLink: Yup.string().required('Content link is required'),
+    index: Yup.number().required('Index is required'),
+  });
+
   const [questions, setQuestions] = useState(props.course.questions);
   const [questionFields, setQuestionFields] = useState();
   let initialValues = {
@@ -181,7 +176,7 @@ export default function UpdateCourseForm(props) {
           <TextField
             fullWidth
             type="text"
-            label="Index"
+            label="Course Number"
             {...getFieldProps('index')}
             error={Boolean(touched.index && errors.index)}
             helperText={touched.index && errors.index}

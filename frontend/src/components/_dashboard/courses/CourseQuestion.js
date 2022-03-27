@@ -1,42 +1,36 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Button, TextField, Typography } from '@mui/material';
-import jwt_decode from 'jwt-decode';
-
-const ID_CLAIM = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+import { AuthenticatedUser } from 'src/providers/UserProvider';
 
 function CourseQuestion({question}) {
-  const userJson = localStorage.getItem("user");
-  const user = JSON.parse(userJson);
-  if (!user) {
-    return <></>;
-  }
-  const userID = jwt_decode(user.authToken)[ID_CLAIM];
+  const { userID, headers } = useContext(AuthenticatedUser);
+  const [submitted, setSubmitted] = useState(false);
+
   let response = {
     questionId: question.id,
   };
   const handleSubmit = () => {
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/Responses", {
-      headers: {
-        "Authorization": "Bearer " + user.authToken,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: headers,
       method: "POST",
       body: JSON.stringify(response),
     }).then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .catch(error => {
-        console.log(error);
-      });
+      setSubmitted(true);
+      if (response.ok) {
+        return response.json();
+      }
+      throw response;
+    })
+    .catch(error => {
+      console.log(error);
+    });
   };
   const handleChange = (e) => {
     response.text = e.target.value;
+    setSubmitted(false);
   };
   const initialResponse = question.responses?.find((response) => response.userId === userID);
+  const buttonText = submitted ? "Saved" : "Submit";
   return (
     <>
       <Typography variant="h5" gutterBottom>
@@ -50,7 +44,7 @@ function CourseQuestion({question}) {
         onChange={handleChange}
         defaultValue={(initialResponse && initialResponse.text) || ""}
       />
-      <Button variant="contained" sx={{float: "right"}} onClick={handleSubmit}>Submit</Button>
+      <Button variant="contained" sx={{float: "right"}} onClick={handleSubmit} disabled={submitted}>{buttonText}</Button>
     </>
   );
 }

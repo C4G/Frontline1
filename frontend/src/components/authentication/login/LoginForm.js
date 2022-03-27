@@ -56,7 +56,8 @@ export default function LoginForm() {
       })
       .then((user) => {
         localStorage.setItem("user", JSON.stringify(user));
-        navigate('/dashboard', { replace: true });
+        navigate('/dashboard');
+        window.location.reload();
       })
       .catch(error => {
         console.error(error);

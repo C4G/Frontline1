@@ -1,11 +1,11 @@
+import React, { useContext } from 'react';
+import { AuthenticatedUser } from 'src/providers/UserProvider';
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
 import { Input, Typography, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import jwt_decode from 'jwt-decode';
 
-const ID_CLAIM = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
 const KEY_AMOUNT = "amount";
 const KEY_FICO_SCORE = "ficoScore";
 const KEY_FILES = "files";
@@ -13,12 +13,13 @@ const KEY_FILES = "files";
 // ----------------------------------------------------------------------
 
 export default function CreateSavingsForm(props) {
-  const userJson = localStorage.getItem("user");
-  const user = JSON.parse(userJson);
-  const userID = jwt_decode(user.authToken)[ID_CLAIM];
+  const { userID, headers } = useContext(AuthenticatedUser);
+
+  const types = ['image/png', 'image/jpeg'];
 
   const CreateSchema = Yup.object().shape({
     amount: Yup.number().required('Amount is required'),
+    amountFile: Yup.mixed().test('fileType', "Unsupported File Format", value => { if (value) return types.includes(value.type)} ),
     ficoScore: Yup.number(),
   });
 
@@ -53,10 +54,7 @@ export default function CreateSavingsForm(props) {
 
       fetch(process.env.REACT_APP_API_SERVER_PATH + "/Savings", {
         method: "POST",
-        headers: {
-          'Authorization': 'Bearer ' + user.authToken,
-          'Accept': '*/*',
-        },
+        headers: headers,
         body: body,
       })
       .then(response => {
@@ -95,7 +93,7 @@ export default function CreateSavingsForm(props) {
           <br/>
           <br/>
           <Typography>
-            (Required) Upload an image to verify savings amount:
+            (Required) Upload a JPG or PNG image to verify savings amount:
           </Typography>
           <br/>
           <Input
@@ -120,7 +118,7 @@ export default function CreateSavingsForm(props) {
           <br/>
           <br/>
           <Typography>
-            (Optional) Upload an image to verify credit score:
+            (Optional) Upload a JPG or PNG image to verify credit score:
           </Typography>
           <br/>
           <Input

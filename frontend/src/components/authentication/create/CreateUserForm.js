@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import eyeFill from '@iconify/icons-eva/eye-fill';
@@ -7,10 +7,12 @@ import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 // material
 import { Stack, TextField, IconButton, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { AuthenticatedUser } from 'src/providers/UserProvider';
 
 // ----------------------------------------------------------------------
 
 export default function CreateUserForm(props) {
+  const { headers } = useContext(AuthenticatedUser);
   const [showPassword, setShowPassword] = useState(false);
 
   const CreateSchema = Yup.object().shape({
@@ -37,13 +39,6 @@ export default function CreateUserForm(props) {
     },
     validationSchema: CreateSchema,
     onSubmit: () => {
-      const userJson = localStorage.getItem("user");
-      const user = JSON.parse(userJson);
-      const headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + user.authToken,
-      };
       fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users", {
         method: "POST",
         headers: headers,

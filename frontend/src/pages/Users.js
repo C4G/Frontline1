@@ -1,6 +1,7 @@
 import LoadingIcons from 'react-loading-icons';
 import { Icon } from '@iconify/react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthenticatedUser } from 'src/providers/UserProvider';
 import { Link as RouterLink } from 'react-router-dom';
 import plusFill from '@iconify/icons-eva/plus-fill';
 // material
@@ -54,7 +55,6 @@ const modalStyle = {
 
 export default function Users() {
   const [page, setPage] = useState(0);
-  const [selected, setSelected] = useState([]);
   const [verified, setVerified] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
@@ -68,6 +68,8 @@ export default function Users() {
   const [updateLastName, setUpdateLastName] = useState("");
   const [updateIsApproved, setUpdateIsApproved] = useState("");
 
+  const { headers } = useContext(AuthenticatedUser);
+
   const getRoleName = (roleId) => {
     for (let i = 0; i < roles.length; i++) {
       if (roles[i].id === roleId) {
@@ -78,11 +80,6 @@ export default function Users() {
   };
 
   useEffect(() => {
-    const userJson = localStorage.getItem("user");
-    const user = JSON.parse(userJson);
-    const headers = {
-      "Authorization": "Bearer " + user.authToken,
-    };
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/Roles", { headers: headers })
       .then(response => {
         if (response.ok) {
@@ -122,33 +119,6 @@ export default function Users() {
       });
   }, [createModalOpen, updateModalOpen]);
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = users.map((n) => `${n.firstName} ${n.lastName}`);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
-  };
-
   const handleVerifiedClick = (event, id, firstName, lastName, isApproved) => {
     // Update checkbox.
     const verifiedIndex = verified.indexOf(id);
@@ -167,13 +137,6 @@ export default function Users() {
     }
     setVerified(newVerified);
     // Make API Request.
-    const userJson = localStorage.getItem("user");
-    const user = JSON.parse(userJson);
-    const headers = {
-      "Authorization": "Bearer " + user.authToken,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    };
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users/" + id, {
       method: "PUT",
       headers: headers,
@@ -216,7 +179,7 @@ export default function Users() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Users
+            Manage Users
           </Typography>
           <Button
             variant="contained"
@@ -259,9 +222,6 @@ export default function Users() {
               <Table>
                 <TableListHead
                   headLabel={TABLE_HEAD}
-                  rowCount={users.length}
-                  numSelected={selected.length}
-                  onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
                   {users
@@ -271,7 +231,6 @@ export default function Users() {
                       const loginDate = new Date(refreshTokenExpiryTime);
                       loginDate.setDate(loginDate.getDate() - 7);
                       const fullName = `${firstName} ${lastName}`;
-                      const isItemSelected = selected.indexOf(fullName) !== -1;
                       const isItemVerified = verified.indexOf(id) !== -1;
                       return (
                         <TableRow
@@ -279,27 +238,17 @@ export default function Users() {
                           key={id}
                           tabIndex={-1}
                           role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
                         >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, fullName)}
-                            />
-                          </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <Typography
-                                to={"/dashboard/users/" + id}
-                                color="inherit"
-                                variant="subtitle2"
-                                underline="hover"
-                                component={RouterLink}
-                              >
-                                {fullName}
-                              </Typography>
-                            </Stack>
+                          <TableCell align="left">
+                            <Typography
+                              to={"/dashboard/users/" + id}
+                              color="inherit"
+                              variant="subtitle2"
+                              underline="hover"
+                              component={RouterLink}
+                            >
+                              {fullName}
+                            </Typography>
                           </TableCell>
                           <TableCell align="left">{email}</TableCell>
                           <TableCell align="left">{getRoleName(roleId)}</TableCell>

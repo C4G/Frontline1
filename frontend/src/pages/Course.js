@@ -6,17 +6,13 @@ import { Container, Stack, Typography } from '@mui/material';
 import Page from '../components/Page';
 import { CoursePlayer, CourseQuestion } from '../components/_dashboard/courses';
 //
-import { useEffect, useState } from 'react';
-
+import { useContext, useEffect, useState } from 'react';
+import { AuthenticatedUser } from 'src/providers/UserProvider';
 
 // ----------------------------------------------------------------------
 
 export default function Course() {
-  const userJson = localStorage.getItem("user");
-  const user = JSON.parse(userJson);
-  const headers = {
-    "Authorization": "Bearer " + user.authToken,
-  };
+  const { headers } = useContext(AuthenticatedUser);
   let { id: courseID } = useParams();
   const [course, setCourse] = useState(null);
   const [courseLoading, setCourseLoading] = useState(true);
