@@ -2,12 +2,14 @@
 using Homelessness.Core.Helpers.Validation;
 using Homelessness.Core.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Homelessness.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class QuestionsController : ControllerBase
     {
         private readonly IMediator mediator;
@@ -45,6 +47,7 @@ namespace Homelessness.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Post(AddQuestionCommand command)
         {
             try
@@ -66,6 +69,7 @@ namespace Homelessness.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Put(Guid id, UpdateQuestionCommand command)
         {
             command.QuestionId = id;
@@ -82,6 +86,7 @@ namespace Homelessness.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(Guid id, DeleteQuestionCommand command)
         {
             command.QuestionId = id;

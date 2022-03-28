@@ -41,7 +41,8 @@ namespace Homelessness.Core.Handlers
             var dbCourse = await courseRepository.GetSingleOrDefaultAsync(
                     predicate: c => c.Id == request.CourseId,
                     include: i => i.Include(c => c.Questions)
-                               .ThenInclude(q => q.Responses));
+                               .ThenInclude(q => q.Responses)
+                               .Include(c => c.Resources));
 
             if (dbCourse is null)
             {
@@ -56,6 +57,7 @@ namespace Homelessness.Core.Handlers
                 ContentLink = dbCourse.ContentLink,
                 IsEnabled = dbCourse.IsEnabled,
                 Questions = dbCourse.Questions.Select(q => q.ToModel()),
+                Resources = dbCourse.Resources.Select(r => r.ToModel()),
                 CreatedDate = dbCourse.CreatedDate,
                 UpdatedDate = dbCourse.UpdatedDate
             };
@@ -78,6 +80,7 @@ namespace Homelessness.Core.Handlers
                     ContentLink = dbCourse.ContentLink,
                     IsEnabled = dbCourse.IsEnabled,
                     Questions = dbCourse.Questions.Select(q => q.ToModel()),
+                    Resources = dbCourse.Resources.Select(r => r.ToModel()),
                     IsCompleted = IsCourseCompletedByUser(dbUser.Id, courseFromUserCourses.Id),
                     CreatedDate = dbCourse.CreatedDate,
                     UpdatedDate = dbCourse.UpdatedDate

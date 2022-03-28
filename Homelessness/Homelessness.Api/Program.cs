@@ -88,6 +88,7 @@ builder.Services.AddScoped<ISavingRepository, SavingRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IUserCourseRepository, UserCourseRepository>();
 builder.Services.AddScoped<IWelcomeMessageRepository, WelcomeMessageRepository>();
+builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
 
 builder.Services.AddCors(o =>
 {
