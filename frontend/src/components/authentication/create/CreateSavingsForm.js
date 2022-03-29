@@ -54,7 +54,10 @@ export default function CreateSavingsForm(props) {
 
       fetch(process.env.REACT_APP_API_SERVER_PATH + "/Savings", {
         method: "POST",
-        headers: headers,
+        headers: {
+          "Authorization": headers["Authorization"],
+          "Accept": "*/*",
+        },
         body: body,
       })
       .then(response => {
