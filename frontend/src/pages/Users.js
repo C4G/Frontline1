@@ -228,8 +228,13 @@ export default function Users() {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                       const { id, firstName, lastName, roleId, email, refreshTokenExpiryTime } = row;
-                      const loginDate = new Date(refreshTokenExpiryTime);
-                      loginDate.setDate(loginDate.getDate() - 7);
+                      let loginDate;
+                      if (refreshTokenExpiryTime === "0001-01-01T00:00:00") {
+                        loginDate = 0;
+                      } else {
+                        loginDate = new Date(refreshTokenExpiryTime);
+                        loginDate.setDate(loginDate.getDate() - 7);
+                      }
                       const fullName = `${firstName} ${lastName}`;
                       const isItemVerified = verified.indexOf(id) !== -1;
                       return (

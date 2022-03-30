@@ -1,11 +1,11 @@
 import * as Yup from 'yup';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 // material
-import { Stack, TextField, IconButton, InputAdornment } from '@mui/material';
+import { Stack, TextField, IconButton, InputAdornment, InputLabel, Select, MenuItem } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { AuthenticatedUser } from 'src/providers/UserProvider';
 
@@ -14,6 +14,25 @@ import { AuthenticatedUser } from 'src/providers/UserProvider';
 export default function CreateUserForm(props) {
   const { headers } = useContext(AuthenticatedUser);
   const [showPassword, setShowPassword] = useState(false);
+  const [roles, setRoles] = useState([]);
+  const [selectedRole, setSelectedRole] = useState("");
+
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Roles", { headers: headers })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw response;
+    })
+    .then(roles => {
+      setRoles(roles);
+      setSelectedRole(roles[0]);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }, [headers])
 
   const CreateSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -26,7 +45,8 @@ export default function CreateUserForm(props) {
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,}$/,
       "Must be at least 5 characters, contain One Uppercase, One Lowercase, One Number, and one special case Character"
     ),
-    confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match')
+    confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match'),
+    roleId: Yup.string().required(),
   });
 
   const formik = useFormik({
@@ -36,6 +56,7 @@ export default function CreateUserForm(props) {
       email: '',
       password: '',
       confirmPassword: '',
+      roleId: '',
     },
     validationSchema: CreateSchema,
     onSubmit: () => {
@@ -48,6 +69,7 @@ export default function CreateUserForm(props) {
           "confirmPassword": getFieldProps('confirmPassword').value,
           "firstName": getFieldProps('firstName').value,
           "lastName": getFieldProps('lastName').value,
+          "roleId": getFieldProps('roleId').value,
         }),
       })
       .then(response => {
@@ -62,7 +84,12 @@ export default function CreateUserForm(props) {
     }
   });
 
-  const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
+  const { errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue } = formik;
+
+  const handleRoleChange = (event) => {
+    setFieldValue("roleId", event.target.value.id);
+    setSelectedRole(event.target.value);
+  };
 
   return (
     <FormikProvider value={formik}>
@@ -131,7 +158,20 @@ export default function CreateUserForm(props) {
             }}
             error={Boolean(touched.confirmPassword && errors.confirmPassword)}
             helperText={touched.confirmPassword && errors.confirmPassword}
-          /> 
+          />
+
+          <InputLabel id="role-label">Select A Role</InputLabel>
+          <Select
+            labelId="role-label"
+            id="role"
+            value={selectedRole}
+            label="Role"
+            onChange={handleRoleChange}
+          >
+            {roles.map((role) => {
+              return <MenuItem key={role.id} value={role}>{role.name}</MenuItem>;
+            })}
+          </Select>
 
           <LoadingButton
             fullWidth
