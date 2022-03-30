@@ -354,3 +354,4 @@ MigrationBackup/
 **/.DS_Store
 
 frontend/.eslintcache
+/Homelessness/Homelessness.Api/Properties/ServiceDependencies/homelessness-api-dev - Web Deploy1/profile.arm.json
