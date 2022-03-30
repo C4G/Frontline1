@@ -49,7 +49,7 @@ namespace Homelessness.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("ScheduledDate")
+                    b.Property<DateTimeOffset>("ScheduledDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTimeOffset?>("UpdatedDate")

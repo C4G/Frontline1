@@ -4,7 +4,7 @@
     {
         public Guid Id { get; set; }
 
-        public DateTime ScheduledDate { get; set; }
+        public DateTimeOffset ScheduledDate { get; set; }
 
         public string Description { get; set; }
 
