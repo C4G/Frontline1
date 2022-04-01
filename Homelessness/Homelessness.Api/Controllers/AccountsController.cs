@@ -71,6 +71,12 @@ namespace Homelessness.Api.Controllers
                 if (result.Succeeded)
                 {
                     var appUser = userManager.Users.SingleOrDefault(r => r.Email == loginModel.Email);
+
+                    if (!appUser.IsApproved)
+                    {
+                        return StatusCode((int)HttpStatusCode.Unauthorized, "Profile not approved by an Administrator");
+                    }
+
                     var authToken = await tokenService.GenerateJwtTokenAsync(appUser);
 
                     appUser.RefreshToken = tokenService.GenerateRefreshToken();
@@ -113,7 +119,6 @@ namespace Homelessness.Api.Controllers
                 {
                     await userManager.AddToRoleAsync(user, "User"); // Assigning User role by default
 
-                    await signInManager.SignInAsync(user, false);
                     var authToken = await tokenService.GenerateJwtTokenAsync(user);
 
                     var rootData = new SignUpResponse(authToken, user.UserName, user.Email, user.FirstName, user.LastName);

@@ -61,7 +61,7 @@ namespace Homelessness.Core.Handlers
 
             if (identityResult.Succeeded)
             {
-                await userManager.AddToRoleAsync(user, "User"); // Assigning User role by default
+                await userManager.AddToRoleAsync(user, requestRoleName);
 
                 var authToken = await tokenService.GenerateJwtTokenAsync(user);
 
