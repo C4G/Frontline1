@@ -1,5 +1,4 @@
 import LoadingIcons from 'react-loading-icons';
-import { Link as RouterLink } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { useContext, useEffect, useState } from 'react';
 import { AuthenticatedUser } from 'src/providers/UserProvider';
@@ -11,8 +10,6 @@ import {
   Stack,
   Box,
   Button,
-  Checkbox,
-  Link,
   Modal,
   TableRow,
   TableBody,
@@ -23,18 +20,17 @@ import {
   TablePagination
 } from '@mui/material';
 // components
-import Page from '../../../components/Page';
 import Scrollbar from '../../../components/Scrollbar';
 import TableListHead from '../../../components/TableListHead';
 import TableMoreMenu from '../../../components/TableMoreMenu';
-import { CreateCourseForm, UpdateCourseForm } from '../../../components/authentication/create';
+import { CreateResourceForm, UpdateResourceForm } from '../../../components/authentication/create';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'title', label: 'Title', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false },
   { id: 'link', label: 'Link', alignRight: false },
-  { id: 'isEnabled', label: 'Enabled', alignRight: false },
+  { id: 'description', label: 'Description', alignRight: false },
   { id: '' }
 ];
 
@@ -51,21 +47,18 @@ const modalStyle = {
   p: 4,
 };
 
-export default function Courses() {
+export default function CourseResourcesTable(props) {
   const { headers } = useContext(AuthenticatedUser);
-  const [page, setPage] = useState(0);
-  const [enabled, setEnabled] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [courses, setCourses] = useState([]);
+  const [selectedResource, setSelectedResource] = useState();
+  const [resources, setResources] = useState(props.course.resources);
   const [loading, setLoading] = useState(true);
-
-  const [updateCourse, setUpdateCourse] = useState(null);
-
-  // Fetch data for courses.
+  const [deleteFlag, setDeleteFlag] = useState(false);
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses", { headers: headers })
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses/" + props.course.id, { headers: headers })
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -73,15 +66,7 @@ export default function Courses() {
         throw response;
       })
       .then(data => {
-        setCourses(data);
-        let initialEnabled = [];
-        data.map((course) => {
-          if (course.isEnabled) {
-            initialEnabled = initialEnabled.concat(course.id);
-          }
-          return course;
-        });
-        setEnabled(initialEnabled);
+        setResources(data.resources);
       })
       .catch(error => {
         console.log(error);
@@ -89,40 +74,21 @@ export default function Courses() {
       .finally(() => {
         setLoading(false);
       });
-    }, [createModalOpen, updateModalOpen]);
+    }, [createModalOpen, updateModalOpen, deleteFlag]);
 
-  const handleUpdateCourse = (id, index, title, contentLink, isEnabled) => {
-    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses/" + id, {
-      method: "PUT",
+  const deleteResource = (resourceId) => {
+    setDeleteFlag(!deleteFlag);
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Resources/" + resourceId, {
+      method: "DELETE",
       headers: headers,
       body: JSON.stringify({
-        title: title,
-        index: index,
-        contentLink: contentLink,
-        isEnabled: isEnabled,
+        "resourceId": resourceId,
+        "courseId": props.course.id,
       }),
+    })
+    .catch(error => {
+      console.error(error);
     });
-  }
-
-  const handleEnabledClick = (event, id, index, title, contentLink) => {
-    // Update checkbox.
-    const enabledIndex = enabled.indexOf(id);
-    let newEnabled = [];
-    if (enabledIndex === -1) {
-        newEnabled = newEnabled.concat(enabled, id);
-    } else if (enabledIndex === 0) {
-        newEnabled = newEnabled.concat(enabled.slice(1));
-    } else if (enabledIndex === enabled.length - 1) {
-        newEnabled = newEnabled.concat(enabled.slice(0, -1));
-    } else if (enabledIndex > 0) {
-        newEnabled = newEnabled.concat(
-        enabled.slice(0, enabledIndex),
-        enabled.slice(enabledIndex + 1)
-      );
-    }
-    setEnabled(newEnabled);
-    const isItemEnabled = newEnabled.indexOf(id) !== -1;
-    handleUpdateCourse(id, index, title, contentLink, isItemEnabled);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -136,48 +102,32 @@ export default function Courses() {
 
   const handleCreateModalOpen = () => setCreateModalOpen(true);
   const handleCreateModalClose = () => setCreateModalOpen(false);
-  const handleUpdateModalOpen = (id) => {
-    fetch(process.env.REACT_APP_API_SERVER_PATH + '/Courses/' + id, { headers: headers })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then(data => {
-        setUpdateCourse(data);
-        setUpdateModalOpen(true);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
+  const handleUpdateModalOpen = () => setUpdateModalOpen(true);
   const handleUpdateModalClose = () => setUpdateModalOpen(false);
+
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - resources.length) : 0;
 
   if (loading) {
     return <LoadingIcons.SpinningCircles />;
   }
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - courses.length) : 0;
-
-  // Sort courses by index.
-  courses.sort(function(a, b){
+  // Sort resources by index.
+  resources.sort(function(a, b){
     return a.index - b.index;
   });
 
   return (
-    <Page title="Courses | Financial Achievement Club">
       <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Manage Courses
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1}>
+          <Typography variant="h5">
+            Resources
           </Typography>
           <Button
             variant="contained"
             startIcon={<Icon icon={plusFill} />}
             onClick={handleCreateModalOpen}
           >
-            Add Course
+            Add Resource
           </Button>
           <Modal
             open={createModalOpen}
@@ -186,7 +136,7 @@ export default function Courses() {
             aria-describedby="modal-modal-description"
           >
             <Box sx={modalStyle}>
-              <CreateCourseForm onSubmitHandler={handleCreateModalClose}/>
+              <CreateResourceForm onSubmitHandler={handleCreateModalClose} courseId={props.course.id}/>
             </Box>
           </Modal>
           <Modal
@@ -196,9 +146,10 @@ export default function Courses() {
             aria-describedby="modal-modal-description"
           >
             <Box sx={modalStyle}>
-              <UpdateCourseForm
+              <UpdateResourceForm
                 onSubmitHandler={handleUpdateModalClose}
-                course={updateCourse}
+                resource={selectedResource}
+                courseId={props.course.id}
               />
             </Box>
           </Modal>
@@ -212,11 +163,10 @@ export default function Courses() {
                   headLabel={TABLE_HEAD}
                 />
                 <TableBody>
-                  {courses
+                  {resources
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, index, title, contentLink } = row;
-                      const isItemEnabled = enabled.indexOf(id) !== -1;
+                      const { id, name, link, description } = row;
                       return (
                         <TableRow
                           hover
@@ -224,27 +174,15 @@ export default function Courses() {
                           tabIndex={-1}
                           role="checkbox"
                         >
-                          <TableCell align="left">
-                            <Link
-                              to={"/dashboard/courses/" + id}
-                              color="inherit"
-                              variant="subtitle2"
-                              underline="always"
-                              component={RouterLink}
-                            >
-                              {title}
-                            </Link>
-                          </TableCell>
-                          <TableCell align="left">{contentLink}</TableCell>
-                          <TableCell align="left">
-                            <Checkbox
-                              checked={isItemEnabled}
-                              onChange={(event) => handleEnabledClick(event, id, index, title, contentLink)}
-                            />
-                          </TableCell>
+                          <TableCell align="left">{name}</TableCell>
+                          <TableCell align="left">{link}</TableCell>
+                          <TableCell align="left">{description}</TableCell>
                           <TableCell align="right">
                             <TableMoreMenu openModal={() => {
-                              handleUpdateModalOpen(id);
+                              setSelectedResource(row);
+                              handleUpdateModalOpen();
+                            }} deleteEnabled deleteHandler={()=> {
+                              deleteResource(id);
                             }}/>
                           </TableCell>
                         </TableRow>
@@ -263,7 +201,7 @@ export default function Courses() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={courses.length}
+            count={resources.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -271,6 +209,5 @@ export default function Courses() {
           />
         </Card>
       </Container>
-    </Page>
   );
 }

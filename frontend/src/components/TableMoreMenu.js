@@ -8,7 +8,7 @@ import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/mat
 
 // ----------------------------------------------------------------------
 
-export default function TableMoreMenu({openModal, deleteEnabled = false}) {
+export default function TableMoreMenu({openModal, deleteEnabled = false, deleteHandler = null}) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -20,9 +20,9 @@ export default function TableMoreMenu({openModal, deleteEnabled = false}) {
   const deleteMenu = deleteEnabled ? (
     <MenuItem sx={{ color: 'text.secondary' }}>
       <ListItemIcon>
-        <Icon icon={trash2Outline} width={24} height={24} />
+        <Icon icon={trash2Outline} width={24} height={24} onClick={deleteHandler}/>
       </ListItemIcon>
-      <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
+      <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} onClick={deleteHandler}/>
     </MenuItem>
   ): null;
 

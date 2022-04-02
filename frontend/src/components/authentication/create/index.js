@@ -3,3 +3,7 @@ export { default as UpdateUserForm } from './UpdateUserForm';
 export { default as CreateCourseForm } from './CreateCourseForm';
 export { default as UpdateCourseForm } from './UpdateCourseForm';
 export { default as CreateSavingsForm } from './CreateSavingsForm';
+export { default as CreateQuestionForm } from './CreateQuestionForm';
+export { default as UpdateQuestionForm } from './UpdateQuestionForm';
+export { default as CreateResourceForm } from './CreateResourceForm';
+export { default as UpdateResourceForm } from './UpdateResourceForm';
