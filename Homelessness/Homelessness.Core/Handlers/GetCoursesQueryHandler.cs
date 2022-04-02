@@ -43,7 +43,10 @@ namespace Homelessness.Core.Handlers
             bool isAuthUserRoleUser = await authService.IsAuthenticatedUserUser();
             if (isAuthUserRoleUser)
             {
-                courseList = dbCoursesFromUser.Select(c => c.ToModel()).ToList();
+                courseList = dbCoursesFromUser
+                    .Where(c => !c.IsDeleted)
+                    .Select(c => c.ToModel())
+                    .ToList();
 
                 List<dynamic> userCourses = new List<dynamic>();
                 foreach (var course in courseList)
@@ -68,7 +71,7 @@ namespace Homelessness.Core.Handlers
             else
             {
                 var coursesQuery = await courseRepository.QueryAllReadOnlyAsync();
-                var courses = await coursesQuery.ToListAsync();
+                var courses = await coursesQuery.Where(c => !c.IsDeleted).ToListAsync();
                 courseList = courses.Select(c => c.ToModel()).ToList();
 
                 List<dynamic> courseCollection = new List<dynamic>();

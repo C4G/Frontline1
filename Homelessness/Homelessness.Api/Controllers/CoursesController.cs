@@ -102,5 +102,22 @@ namespace Homelessness.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Delete(Guid id, DeleteCourseCommand command)
+        {
+            command.CourseId = id;
+
+            try
+            {
+                return Ok(await mediator.Send(command));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

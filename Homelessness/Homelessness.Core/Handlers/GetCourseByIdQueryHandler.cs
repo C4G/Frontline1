@@ -36,10 +36,13 @@ namespace Homelessness.Core.Handlers
                     predicate: u => u.Id == authUser.Id,
                     include: i => i.Include(u => u.UserCourses).ThenInclude(uc => uc.Course));
             dbUserCourses = dbUser.UserCourses.ToList();
-            dbCoursesFromUser = dbUser.UserCourses.Select(uc => uc.Course).ToList();
+            dbCoursesFromUser = dbUser.UserCourses
+                .Select(uc => uc.Course)
+                .Where(c => !c.IsDeleted)
+                .ToList();
 
             var dbCourse = await courseRepository.GetSingleOrDefaultAsync(
-                    predicate: c => c.Id == request.CourseId,
+                    predicate: c => c.Id == request.CourseId && !c.IsDeleted,
                     include: i => i.Include(c => c.Questions)
                                .ThenInclude(q => q.Responses)
                                .Include(c => c.Resources));

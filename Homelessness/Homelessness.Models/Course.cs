@@ -12,6 +12,8 @@
 
         public bool IsEnabled { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public ICollection<Question> Questions { get; set; }
         public ICollection<Resource> Resources { get; set; }
 
