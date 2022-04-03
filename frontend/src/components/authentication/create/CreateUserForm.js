@@ -5,7 +5,7 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 // material
-import { Stack, TextField, IconButton, InputAdornment, InputLabel, Select, MenuItem } from '@mui/material';
+import { Alert, Collapse, Stack, TextField, IconButton, InputAdornment, InputLabel, Select, MenuItem } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { AuthenticatedUser } from 'src/providers/UserProvider';
 
@@ -16,6 +16,8 @@ export default function CreateUserForm(props) {
   const [showPassword, setShowPassword] = useState(false);
   const [roles, setRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState("");
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertText, setAlertText] = useState("");
 
   useEffect(() => {
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/Roles", { headers: headers })
@@ -28,6 +30,7 @@ export default function CreateUserForm(props) {
     .then(roles => {
       setRoles(roles);
       setSelectedRole(roles[0]);
+      setFieldValue("roleId", roles[0].id);
     })
     .catch(error => {
       console.log(error);
@@ -74,17 +77,22 @@ export default function CreateUserForm(props) {
       })
       .then(response => {
         if (!response.ok) {
-          throw response;
+          return response.json();
         }
         props.onSubmitHandler();
       })
+      .then(error => {
+        throw error;
+      })
       .catch(error => {
-        console.error(error);
+        setAlertVisible(true);
+        setSubmitting(false);
+        setAlertText(error);
       });
     }
   });
 
-  const { errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue } = formik;
+  const { errors, touched, handleSubmit, setSubmitting, isSubmitting, getFieldProps, setFieldValue } = formik;
 
   const handleRoleChange = (event) => {
     setFieldValue("roleId", event.target.value.id);
@@ -103,7 +111,6 @@ export default function CreateUserForm(props) {
               error={Boolean(touched.firstName && errors.firstName)}
               helperText={touched.firstName && errors.firstName}
             />
-
             <TextField
               fullWidth
               label="Last name"
@@ -172,6 +179,10 @@ export default function CreateUserForm(props) {
               return <MenuItem key={role.id} value={role}>{role.name}</MenuItem>;
             })}
           </Select>
+
+          <Collapse in={alertVisible}>
+            <Alert onClose={() => {setAlertVisible(false);}} severity="error">{alertText}</Alert>
+          </Collapse>
 
           <LoadingButton
             fullWidth
