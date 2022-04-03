@@ -3,17 +3,21 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // material
 import {
+  Box,
   Card,
   Table,
   Stack,
   Checkbox,
+  Modal,
+  Link,
   TableRow,
   TableBody,
   TableCell,
   Container,
   Typography,
+  TextField,
   TableContainer,
-  TablePagination
+  TablePagination,
 } from '@mui/material';
 // components
 import Scrollbar from 'src/components/Scrollbar';
@@ -29,6 +33,17 @@ const TABLE_HEAD = [
   { id: 'completedOn', label: 'Completed On', alignRight: false },
   { id: '' }
 ];
+
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 500,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};
     
 // ----------------------------------------------------------------------
 
@@ -40,6 +55,26 @@ export default function UserCoursesTable(props) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
+  const [questionModalOpen, setQuestionModalOpen] = useState(false);
+  const [questions, setQuestions] = useState([]);
+
+  const QuestionResponse = (props) => {
+    let response = "None";
+    if (props.question.responses) {
+      response = props.question.responses[0].text;
+    }
+    return (
+      <>
+        <br/>
+        <TextField
+          fullWidth
+          label={props.question.text}
+          value={response}
+        />
+        <br/>
+      </>
+    );
+  };
 
   useEffect(() => {
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users/" + props.userID, { headers: headers })
@@ -112,6 +147,8 @@ export default function UserCoursesTable(props) {
     return <LoadingIcons.SpinningCircles />;
   }
 
+  const handleQuestionModalClose = () => setQuestionModalOpen(false);
+
   // user.userCourses.sort(function(a, b){
   //   return a.createdDate - b.createdDate;
   // });
@@ -122,6 +159,19 @@ export default function UserCoursesTable(props) {
           <Typography variant="h4" gutterBottom>
             Courses
           </Typography>
+          <Modal
+            open={questionModalOpen}
+            onClose={handleQuestionModalClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={modalStyle}>
+              <Typography variant="h4">
+                Responses
+              </Typography>
+              {questions.map((question) => <QuestionResponse question={question} key={question.id} />)}
+            </Box>
+          </Modal>
         </Stack>
         <Card>
           <Scrollbar>
@@ -134,14 +184,21 @@ export default function UserCoursesTable(props) {
                   {user.userCourses
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { courseId, courseTitle } = row;
+                      const { courseId, courseTitle, questions } = row;
                       return (
                         <TableRow
                           hover
                           key={courseId}
                           tabIndex={-1}
                         >
-                          <TableCell align="left">{courseTitle}</TableCell>
+                          <TableCell align="left">
+                            <Link color="inherit" onClick={() => {
+                              setQuestions(questions);
+                              setQuestionModalOpen(true);
+                            }}>
+                              {courseTitle}
+                            </Link>
+                          </TableCell>
                           <TableCell align="left">{displayIsCompleted(courseId)}</TableCell>
                           <TableCell align="left">-</TableCell>
                         </TableRow>
