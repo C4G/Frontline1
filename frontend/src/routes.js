@@ -7,7 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import DashboardApp from './pages/DashboardApp';
 import Savings from './pages/Savings';
-import UserSavingsDetails from './pages/UserSavingsDetails';
+import UserDetails from './pages/Details';
 import Courses from './pages/Courses';
 import Course from './pages/Course';
 import User from './pages/User';
@@ -28,8 +28,8 @@ export default function Router() {
           path: 'details',
           element: <Outlet />,
           children: [
-            { path: '', element: <Savings /> },
-            { path: ':id', element: <UserSavingsDetails /> },
+            { path: '', element: <UserDetails /> },
+            { path: ':id', element: <User /> },
           ],
         },
         {
@@ -37,7 +37,6 @@ export default function Router() {
           element: <Outlet />,
           children: [
             { path: '', element: <Savings /> },
-            { path: ':id', element: <UserSavingsDetails /> },
           ],
         },
         {
@@ -45,7 +44,6 @@ export default function Router() {
           element: <Outlet />,
           children: [
             { path: '', element: <Users /> },
-            { path: ':id', element: <User /> },
           ],
         },
         { 

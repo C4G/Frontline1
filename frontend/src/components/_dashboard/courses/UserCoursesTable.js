@@ -63,7 +63,7 @@ export default function UserCourses() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [headers]);
   const [page, setPage] = useState(0);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -72,8 +72,9 @@ export default function UserCourses() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - courses.length) : 0;
   courses?.sort((a, b) => a.index - b.index);
+  let filteredCourses = courses?.filter((course) => course.isEnabled);
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredCourses.length) : 0;
   if (loading) {
     return <LoadingIcons.SpinningCircles />;
   }
@@ -92,14 +93,13 @@ export default function UserCourses() {
               <Table>
                 <TableListHead
                   headLabel={TABLE_HEAD}
-                  rowCount={courses.length}
+                  rowCount={filteredCourses.length}
                 />
                 <TableBody>
-                  {courses
-                    .filter((course) => course.isEnabled)
+                  {filteredCourses
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, title, contentLink, isCompleted, updatedDate } = row;
+                      const { id, title, contentLink, isCompleted } = row;
                       return (
                         <TableRow
                           hover
@@ -135,7 +135,7 @@ export default function UserCourses() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={courses.length}
+            count={filteredCourses.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

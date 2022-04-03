@@ -2,7 +2,6 @@ import LoadingIcons from 'react-loading-icons';
 import { Icon } from '@iconify/react';
 import { useContext, useEffect, useState } from 'react';
 import { AuthenticatedUser } from 'src/providers/UserProvider';
-import { Link as RouterLink } from 'react-router-dom';
 import plusFill from '@iconify/icons-eva/plus-fill';
 // material
 import {
@@ -117,7 +116,7 @@ export default function Users() {
       .finally(() => {
         setLoading(false);
       });
-  }, [createModalOpen, updateModalOpen]);
+  }, [createModalOpen, updateModalOpen, headers]);
 
   const handleVerifiedClick = (event, id, firstName, lastName, isApproved) => {
     // Update checkbox.
@@ -179,7 +178,7 @@ export default function Users() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Manage Users
+            User Management
           </Typography>
           <Button
             variant="contained"
@@ -244,17 +243,7 @@ export default function Users() {
                           tabIndex={-1}
                           role="checkbox"
                         >
-                          <TableCell align="left">
-                            <Typography
-                              to={"/dashboard/users/" + id}
-                              color="inherit"
-                              variant="subtitle2"
-                              underline="hover"
-                              component={RouterLink}
-                            >
-                              {fullName}
-                            </Typography>
-                          </TableCell>
+                          <TableCell align="left">{fullName}</TableCell>
                           <TableCell align="left">{email}</TableCell>
                           <TableCell align="left">{getRoleName(roleId)}</TableCell>
                           <TableCell align="left">

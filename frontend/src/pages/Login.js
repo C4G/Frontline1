@@ -65,7 +65,6 @@ export default function Login() {
             </Typography>
             <Typography sx={{ color: 'text.secondary' }}>Enter your details below.</Typography>
           </Stack>
-          {/* <AuthSocial /> */}
 
           <LoginForm />
 

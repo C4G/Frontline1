@@ -17,9 +17,7 @@ const Resource = (resource) => {
       <Typography variant="h5" gutterBottom>
         {resource.name}
       </Typography>
-      <Typography>
-        {resource.link}
-      </Typography>
+      <a href={resource.link} target="_blank">{resource.link}</a>
       <Typography>
         {resource.description}
       </Typography>
@@ -49,7 +47,7 @@ export default function UserCourse() {
       .finally(() => {
         setCourseLoading(false);
       });
-  }, [courseID]);
+  }, [courseID, headers]);
   if (courseLoading) {
     return <LoadingIcons.SpinningCircles />;
   }
@@ -73,6 +71,7 @@ export default function UserCourse() {
         <Typography variant="h4" gutterBottom>
           Resources
         </Typography>
+        <br/>
         {course.resources?.map((resource) => Resource(resource))}
       </Container>
     </Page>

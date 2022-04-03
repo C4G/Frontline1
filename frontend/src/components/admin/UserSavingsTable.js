@@ -1,6 +1,6 @@
 import LoadingIcons from 'react-loading-icons';
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // material
 import {
   Card,
@@ -16,8 +16,8 @@ import {
   TablePagination
 } from '@mui/material';
 // components
-import Scrollbar from '../components/Scrollbar';
-import TableListHead from '../components/TableListHead';
+import Scrollbar from 'src/components/Scrollbar';
+import TableListHead from 'src/components/TableListHead';
 import { fDateTime } from 'src/utils/formatTime';
 import { AuthenticatedUser } from 'src/providers/UserProvider';
 
@@ -36,21 +36,19 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-export default function UserSavingsDetails() {
+export default function UserSavingsTable(props) {
   const navigate = useNavigate();
-  let { id: userID } = useParams();
   const { role, headers } = useContext(AuthenticatedUser);
   const [page, setPage] = useState(0);
   const [validatedMap, setValidatedMap] = useState(new Map());
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [savings, setSavings] = useState([]);
   const [totalSavings, setTotalSavings] = useState();
-  const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
 
   // Fetch data for user savings.
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Savings/" + userID, { headers: headers })
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Savings/" + props.userID, { headers: headers })
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -75,26 +73,11 @@ export default function UserSavingsDetails() {
       })
       .catch(error => {
         console.log(error);
-      });
-    
-    // Fetch users to fill in user names.
-    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users/" + userID, { headers: headers })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then(user => {
-        setUser(user);
-      })
-      .catch(error => {
-        console.log(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [userID]);
+  }, [props.userID, headers]);
 
   if (role !== "Administrator") {
     navigate('/404', { replace: true });
@@ -179,13 +162,12 @@ export default function UserSavingsDetails() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            {user.firstName} {user.lastName}
+            Savings
           </Typography>
           <Typography variant="h4" gutterBottom>
             Total Saved: ${totalSavings}
           </Typography>
         </Stack>
-
         <Card>
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>

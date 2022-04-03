@@ -33,7 +33,7 @@ export default function CourseDetail() {
       .finally(() => {
         setLoading(false);
       });
-    }, []);
+    }, [courseID, headers]);
 
   if (loading) {
     return <LoadingIcons.SpinningCircles />;

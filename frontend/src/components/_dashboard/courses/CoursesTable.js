@@ -89,7 +89,7 @@ export default function Courses() {
       .finally(() => {
         setLoading(false);
       });
-    }, [createModalOpen, updateModalOpen]);
+    }, [createModalOpen, updateModalOpen, headers]);
 
   const handleUpdateCourse = (id, index, title, contentLink, isEnabled) => {
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses/" + id, {
@@ -170,7 +170,7 @@ export default function Courses() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Manage Courses
+            Course Management
           </Typography>
           <Button
             variant="contained"

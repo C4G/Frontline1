@@ -73,7 +73,7 @@ export default function CourseQuestionsTable(props) {
       .finally(() => {
         setLoading(false);
       });
-    }, [createModalOpen, updateModalOpen, deleteFlag]);
+    }, [createModalOpen, updateModalOpen, deleteFlag, props.course.id, headers]);
 
   const deleteQuestion = (questionId) => {
     setDeleteFlag(!deleteFlag);

@@ -36,7 +36,7 @@ export default function AccountPopover() {
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate('/dashboard');
-    window.location.reload();
+    window.location.reload(true);
   };
 
   if (!user) {

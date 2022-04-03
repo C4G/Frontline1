@@ -74,7 +74,7 @@ export default function CourseResourcesTable(props) {
       .finally(() => {
         setLoading(false);
       });
-    }, [createModalOpen, updateModalOpen, deleteFlag]);
+    }, [createModalOpen, updateModalOpen, deleteFlag, props.course.id, headers]);
 
   const deleteResource = (resourceId) => {
     setDeleteFlag(!deleteFlag);

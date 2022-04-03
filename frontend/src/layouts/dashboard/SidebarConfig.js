@@ -34,19 +34,19 @@ export default function SidebarConfig() {
     // Administrators can view the Courses page, User page, and Savings page.
     return [
       {
-        title: 'Manage Courses',
+        title: 'Course Management',
         path: '/dashboard/courses',
         icon: getIcon(pieChart2Fill)
-      },
-      {
-        title: 'Manage Users',
-        path: '/dashboard/users',
-        icon: getIcon(personAddFill)
       },
       {
         title: 'User Details',
         path: '/dashboard/details',
         icon: getIcon(peopleFill)
+      },
+      {
+        title: 'User Management',
+        path: '/dashboard/users',
+        icon: getIcon(personAddFill)
       },
     ]
   }

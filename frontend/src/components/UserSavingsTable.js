@@ -96,7 +96,7 @@ export default function UserSavings() {
       .finally(() => {
         setLoading(false);
       });
-    }, [createModalOpen]);
+    }, [createModalOpen, headers, userID]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
