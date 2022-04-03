@@ -9,5 +9,7 @@
         public string CourseTitle { get; set; }
 
         public bool IsCompleted { get; set; }
+
+        public List<Question> Questions { get; set; }
     }
 }

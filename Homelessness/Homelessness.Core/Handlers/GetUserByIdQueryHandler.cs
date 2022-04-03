@@ -25,7 +25,9 @@ namespace Homelessness.Core.Handlers
             var user = await userRepository.GetSingleOrDefaultAsync(
                 predicate: u => u.Id == request.UserId, 
                 include: i => i.Include(u => u.UserCourses)
-                               .ThenInclude(uc => uc.Course));
+                               .ThenInclude(uc => uc.Course)
+                               .ThenInclude(c => c.Questions)
+                               .ThenInclude(q => q.Responses));
 
             if (user is null)
             {
@@ -33,14 +35,17 @@ namespace Homelessness.Core.Handlers
             }
 
             List<UserCourse> userCourses = new List<UserCourse>();
-            foreach (var dbUserCourse in user.UserCourses)
+            var userCoursesNotDeleted = user.UserCourses.Where(uc => !uc.Course.IsDeleted);
+
+            foreach (var dbUserCourse in userCoursesNotDeleted)
             {
                 UserCourse userCourse = new UserCourse
                 {
                     UserId = user.Id,
                     CourseId = dbUserCourse.CourseId,
                     CourseTitle = dbUserCourse.Course.Title,
-                    IsCompleted = dbUserCourse.IsCompleted
+                    IsCompleted = dbUserCourse.IsCompleted,
+                    Questions = dbUserCourse.Course.Questions.Select(q => q.ToModel()).ToList()
                 };
 
                 userCourses.Add(userCourse);
