@@ -35,6 +35,8 @@ namespace Homelessness.Api.Infrastructure
 
         public DbSet<ClassSchedule> ClassSchedules { get; set; }
 
+        public DbSet<RegistrationField> RegistrationFields { get; set; }
+
         public HomelessnessDbContext(DbContextOptions<HomelessnessDbContext> options) : base(options)
         {
             Database.Migrate();

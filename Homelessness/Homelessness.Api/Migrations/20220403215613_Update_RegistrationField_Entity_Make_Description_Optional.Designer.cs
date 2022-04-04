@@ -3,6 +3,7 @@ using System;
 using Homelessness.Api.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Homelessness.Api.Migrations
 {
     [DbContext(typeof(HomelessnessDbContext))]
-    partial class HomelessnessDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220403215613_Update_RegistrationField_Entity_Make_Description_Optional")]
+    partial class Update_RegistrationField_Entity_Make_Description_Optional
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

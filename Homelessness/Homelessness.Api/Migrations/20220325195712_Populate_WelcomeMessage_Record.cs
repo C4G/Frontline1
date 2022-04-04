@@ -1,5 +1,6 @@
 ﻿using Homelessness.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 #nullable disable
 
@@ -18,10 +19,10 @@ namespace Homelessness.Api.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(@$"
-                truncate table {tableName}
-                Go
-            ");
+            migrationBuilder.Operations.Add(new SqlOperation
+            {
+                Sql = "delete from public.\"WelcomeMessages\""
+            });
         }
     }
 }
