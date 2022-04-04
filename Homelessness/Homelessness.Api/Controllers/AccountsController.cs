@@ -113,6 +113,16 @@ namespace Homelessness.Api.Controllers
                     CreatedDate = DateTime.Now
                 };
 
+                if (registerModel.UserName is not null)
+                {
+                    user.UserName = registerModel.UserName;
+                }
+
+                if (registerModel.PhoneNumber is not null)
+                {
+                    user.PhoneNumber = registerModel.PhoneNumber;
+                }
+
                 var result = await userManager.CreateAsync(user, registerModel.Password);
 
                 if (result.Succeeded)

@@ -1,5 +1,4 @@
-﻿using Homelessness.Core.Exceptions;
-using Homelessness.Core.Helpers.Validation;
+﻿using Homelessness.Core.Helpers.Validation;
 using Homelessness.Core.Interfaces.Repositories;
 using Homelessness.Core.Queries;
 using Homelessness.Models;
@@ -24,7 +23,7 @@ namespace Homelessness.Core.Handlers
 
             if (classSchedule is null)
             {
-                throw new EntityNotFoundException(nameof(Domain.Entities.ClassSchedule));
+                return null;
             }
 
             bool currentScheduledDateIsInFuture = classSchedule.ScheduledDate.CompareTo(DateTimeOffset.Now) > 0;

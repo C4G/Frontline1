@@ -27,5 +27,9 @@ namespace Homelessness.Models.Requests
         [Required]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
+
+        public string? UserName { get; set; }
+
+        public string? PhoneNumber { get; set; }
     }
 }

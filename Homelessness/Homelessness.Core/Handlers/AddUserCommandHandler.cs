@@ -57,6 +57,16 @@ namespace Homelessness.Core.Handlers
                 CreatedDate = DateTime.Now
             };
 
+            if (request.UserName is not null)
+            {
+                user.UserName = request.UserName;
+            }
+
+            if (request.PhoneNumber is not null)
+            {
+                user.PhoneNumber = request.PhoneNumber;
+            }
+
             var identityResult = await userManager.CreateAsync(user, request.Password);
 
             if (identityResult.Succeeded)

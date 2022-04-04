@@ -16,5 +16,9 @@ namespace Homelessness.Core.Commands
         public string LastName { get; set; }
 
         public Guid RoleId { get; set; }
+
+        public string? UserName { get; set; }
+
+        public string? PhoneNumber { get; set; }
     }
 }
