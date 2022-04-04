@@ -6,6 +6,7 @@ import peopleFill from '@iconify/icons-eva/people-fill';
 import shoppingBagFill from '@iconify/icons-eva/shopping-bag-fill';
 import lockFill from '@iconify/icons-eva/lock-fill';
 import personAddFill from '@iconify/icons-eva/person-add-fill';
+import homeFill from '@iconify/icons-eva/home-fill';
 
 // ----------------------------------------------------------------------
 
@@ -48,6 +49,11 @@ export default function SidebarConfig() {
         path: '/dashboard/users',
         icon: getIcon(personAddFill)
       },
+      {
+        title: 'Homepage Management',
+        path: '/dashboard/homepage',
+        icon: getIcon(homeFill)
+      }
     ]
   }
 

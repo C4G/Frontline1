@@ -1,31 +1,52 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 // material
-import { Box, Grid, Container, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 // components
 import Page from '../components/Page';
-import {
-  AppTasks,
-  AppNewUsers,
-  AppBugReports,
-  AppItemOrders,
-  AppNewsUpdate,
-  AppWeeklySales,
-  AppOrderTimeline,
-  AppCurrentVisits,
-  AppWebsiteVisits,
-  AppTrafficBySite,
-  AppCurrentSubject,
-  AppConversionRates
-} from '../components/_dashboard/app';
 import { AuthenticatedUser } from 'src/providers/UserProvider';
+import { fDateTime } from 'src/utils/formatTime';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardApp() {
-  const { user } = useContext(AuthenticatedUser);
+  const { user, headers } = useContext(AuthenticatedUser);
+  const [welcomeMessage, setWelcomeMessage] = useState("");
+  const [classSchedule, setClassSchedule] = useState();
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/WelcomeMessages", { headers: headers })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw response;
+    })
+    .then(welcomeMessage => {
+      setWelcomeMessage(welcomeMessage.message);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/ClassSchedules", { headers: headers })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw response;
+    })
+    .then(classSchedule => {
+      setClassSchedule(classSchedule);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }, [headers]);
+
   let firstName = "";
   if (user) {
     firstName = user.firstName;
+  } else {
+    return <></>;
   }
   return (
     <Page title="Dashboard | Financial Achievement Club">
@@ -33,52 +54,12 @@ export default function DashboardApp() {
         <Box sx={{ pb: 5 }}>
           <Typography variant="h4">Hi, Welcome back {firstName}</Typography>
         </Box>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWeeklySales />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppNewUsers />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppItemOrders />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppBugReports />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AppWebsiteVisits />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentVisits />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AppConversionRates />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentSubject />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AppNewsUpdate />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppOrderTimeline />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppTrafficBySite />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AppTasks />
-          </Grid>
-        </Grid>
+        <Typography>{welcomeMessage}</Typography>
+        <br/>
+        <br/>
+        <Typography variant="h6">{classSchedule ? "Next Class" : ""}</Typography>
+        <Typography>{classSchedule ? classSchedule.description : ""}</Typography>
+        <Typography>{classSchedule ? fDateTime(classSchedule.scheduledDate) : ""}</Typography>
       </Container>
     </Page>
   );

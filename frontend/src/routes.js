@@ -13,6 +13,7 @@ import Course from './pages/Course';
 import User from './pages/User';
 import Users from './pages/Users';
 import NotFound from './pages/Page404';
+import ManageHomepage from './pages/ManageHomepage';
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +25,10 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <DashboardApp /> },
+        {
+          path: 'homepage',
+          element: <ManageHomepage />,
+        },
         {
           path: 'details',
           element: <Outlet />,
