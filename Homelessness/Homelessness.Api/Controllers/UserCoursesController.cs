@@ -8,7 +8,7 @@ namespace Homelessness.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Administrator, Volunteer")]
+    [Authorize(Roles = "Administrator")]
     public class UserCoursesController : ControllerBase
     {
         private readonly IMediator mediator;

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Homelessness.Api.Controllers
 {
-    [Authorize(Roles = "Administrator")]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
@@ -24,6 +23,7 @@ namespace Homelessness.Api.Controllers
             this.logger = logger;
         }
 
+        [Authorize(Roles = "Administrator, Volunteer")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -41,6 +41,7 @@ namespace Homelessness.Api.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrator, Volunteer")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
@@ -63,6 +64,7 @@ namespace Homelessness.Api.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> Post(AddUserCommand command)
         {
@@ -84,6 +86,7 @@ namespace Homelessness.Api.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(Guid id, UpdateUserCommand command)
         {
@@ -100,6 +103,7 @@ namespace Homelessness.Api.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPut]
         public async Task<IActionResult> Put(UserBulkEditCommand command)
         {
