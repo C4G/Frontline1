@@ -17,7 +17,7 @@ const Resource = (resource) => {
       <Typography variant="h5" gutterBottom>
         {resource.name}
       </Typography>
-      <a href={resource.link} target="_blank" rel="noreferrer">{resource.link}</a>
+      <a href={`//${resource.link}`} target="_blank" rel="noreferrer">{resource.link}</a>
       <Typography>
         {resource.description}
       </Typography>
