@@ -24,6 +24,7 @@ import Scrollbar from 'src/components/Scrollbar';
 import TableListHead from 'src/components/TableListHead';
 // import { fDateTime } from 'src/utils/formatTime';
 import { AuthenticatedUser } from 'src/providers/UserProvider';
+import { fDateTime } from 'src/utils/formatTime';
 
 // ----------------------------------------------------------------------
 
@@ -114,6 +115,14 @@ export default function UserCoursesTable(props) {
       />
     );
   };
+
+  const displayCompletedTime = (courseID, updatedDate) => {
+    const isCompleted = isCompletedMap.get(courseID);
+    if (isCompleted) {
+      return fDateTime(updatedDate);
+    }
+    return "-";
+  };
   
   const handleIsCompletedClick = (event, courseID) => {
     const isCompleted = isCompletedMap.get(courseID);
@@ -149,9 +158,9 @@ export default function UserCoursesTable(props) {
 
   const handleQuestionModalClose = () => setQuestionModalOpen(false);
 
-  // user.userCourses.sort(function(a, b){
-  //   return a.createdDate - b.createdDate;
-  // });
+  user.userCourses.sort(function(a, b){
+    return a.courseIndex - b.courseIndex;
+  });
 
   return (
       <Container>
@@ -184,7 +193,7 @@ export default function UserCoursesTable(props) {
                   {user.userCourses
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { courseId, courseTitle, questions } = row;
+                      const { courseId, courseTitle, updatedDate, questions } = row;
                       return (
                         <TableRow
                           hover
@@ -200,7 +209,7 @@ export default function UserCoursesTable(props) {
                             </Link>
                           </TableCell>
                           <TableCell align="left">{displayIsCompleted(courseId)}</TableCell>
-                          <TableCell align="left">-</TableCell>
+                          <TableCell align="left">{displayCompletedTime(courseId, updatedDate)}</TableCell>
                         </TableRow>
                       );
                     })}
