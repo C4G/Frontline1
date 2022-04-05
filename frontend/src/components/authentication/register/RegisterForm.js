@@ -61,7 +61,7 @@ export default function RegisterForm() {
       })
       .then((user) => {
         localStorage.setItem("user", JSON.stringify(user));
-        navigate('/dashboard', { replace: true });
+        navigate('/dashboard/app', { replace: true });
       })
       .catch(error => {
         console.error(error);
