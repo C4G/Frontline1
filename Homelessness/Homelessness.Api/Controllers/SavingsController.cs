@@ -25,7 +25,7 @@ namespace Homelessness.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, Volunteer")]
         public async Task<IActionResult> Get()
         {
             try

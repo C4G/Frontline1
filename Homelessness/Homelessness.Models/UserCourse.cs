@@ -8,7 +8,11 @@
 
         public string CourseTitle { get; set; }
 
+        public int CourseIndex { get; set; }
+
         public bool IsCompleted { get; set; }
+
+        public DateTimeOffset? UpdatedDate { get; set; }
 
         public List<Question> Questions { get; set; }
     }

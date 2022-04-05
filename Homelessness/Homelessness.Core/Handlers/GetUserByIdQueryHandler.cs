@@ -44,7 +44,9 @@ namespace Homelessness.Core.Handlers
                     UserId = user.Id,
                     CourseId = dbUserCourse.CourseId,
                     CourseTitle = dbUserCourse.Course.Title,
+                    CourseIndex = dbUserCourse.Course.Index,
                     IsCompleted = dbUserCourse.IsCompleted,
+                    UpdatedDate = dbUserCourse.UpdatedDate,
                     Questions = dbUserCourse.Course.Questions.Select(q => q.ToModel()).ToList()
                 };
 
