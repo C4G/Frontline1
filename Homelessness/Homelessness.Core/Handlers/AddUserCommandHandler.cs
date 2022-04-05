@@ -2,6 +2,7 @@
 using Homelessness.Core.Exceptions;
 using Homelessness.Core.Helpers.Validation;
 using Homelessness.Core.Interfaces;
+using Homelessness.Core.Notifications;
 using Homelessness.Domain.Entities.Identity;
 using Homelessness.Models.Responses;
 using MediatR;
@@ -15,16 +16,23 @@ namespace Homelessness.Core.Handlers
         private readonly RoleManager<ApplicationRole> roleManager;
 
         private readonly ITokenService tokenService;
+        private readonly IMediator mediator;
 
-        public AddUserCommandHandler(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ITokenService tokenService)
+        public AddUserCommandHandler(
+            UserManager<ApplicationUser> userManager,
+            RoleManager<ApplicationRole> roleManager,
+            ITokenService tokenService, 
+            IMediator mediator)
         {
             Verify.NotNull(nameof(userManager), userManager);
             Verify.NotNull(nameof(roleManager), roleManager);
             Verify.NotNull(nameof(tokenService), tokenService);
+            Verify.NotNull(nameof(mediator), mediator);
 
             this.userManager = userManager;
             this.roleManager = roleManager;
             this.tokenService = tokenService;
+            this.mediator = mediator;
         }
 
         public async Task<SignUpResponse> Handle(AddUserCommand request, CancellationToken cancellationToken)
@@ -72,6 +80,12 @@ namespace Homelessness.Core.Handlers
             if (identityResult.Succeeded)
             {
                 await userManager.AddToRoleAsync(user, requestRoleName);
+
+                bool isRoleUser = requestRoleName == "User";
+                if (isRoleUser)
+                {
+                    await mediator.Publish(new UserApprovedNotification { UserId = user.Id });
+                }
 
                 var authToken = await tokenService.GenerateJwtTokenAsync(user);
 
