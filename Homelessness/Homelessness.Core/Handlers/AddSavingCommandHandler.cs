@@ -26,8 +26,8 @@ namespace Homelessness.Core.Handlers
             {
                 Id = savingId,
                 ApplicationUserId = request.UserId,
-                Amount = request.Amount,
-                FicoScore = request.FicoScore
+                Value = request.Value,
+                SavingsType = request.SavingsType
             };
 
             await AddFilesToSaving(saving, request.Files);

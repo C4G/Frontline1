@@ -1,4 +1,5 @@
 ﻿using Homelessness.Models;
+using Homelessness.Models.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
@@ -8,9 +9,9 @@ namespace Homelessness.Core.Commands
     {
         public Guid UserId { get; set; }
 
-        public double Amount { get; set; }
+        public double Value { get; set; }
 
-        public int FicoScore { get; set; }
+        public SavingsTypes SavingsType { get; set; }
 
         public List<IFormFile> Files { get; set; }
     }

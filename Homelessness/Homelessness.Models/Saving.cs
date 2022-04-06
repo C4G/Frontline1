@@ -1,4 +1,6 @@
-﻿namespace Homelessness.Models
+﻿using Homelessness.Models.Enums;
+
+namespace Homelessness.Models
 {
     public class Saving
     {
@@ -6,9 +8,9 @@
 
         public Guid UserId { get; set; }
 
-        public double Amount { get; set; }
+        public double Value { get; set; }
 
-        public int FicoScore { get; set; }
+        public SavingsTypes SavingsType { get; set; }
 
         public virtual ICollection<File> Files { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using Homelessness.Domain.Entities.Identity;
+using Homelessness.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,9 +15,9 @@ namespace Homelessness.Domain.Entities
         public Guid ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
 
-        public double Amount { get; set; }
+        public double Value { get; set; }
 
-        public int FicoScore { get; set; }
+        public SavingsTypes SavingsType { get; set; }
 
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset? UpdatedDate { get; set; }
@@ -29,8 +30,8 @@ namespace Homelessness.Domain.Entities
             {
                 Id = Id,
                 UserId = ApplicationUserId,
-                Amount = Amount,
-                FicoScore = FicoScore,
+                Value = Value,
+                SavingsType = SavingsType,
                 CreatedDate = CreatedDate,
                 UpdatedDate = UpdatedDate
             };

@@ -8,8 +8,8 @@ namespace Homelessness.Core.Validators
         public AddSavingCommandValidator()
         {
             RuleFor(x => x.UserId).NotNull();
-            RuleFor(x => x.Amount).NotNull();
-            RuleFor(x => x.FicoScore).NotNull();
+            RuleFor(x => x.Value).NotNull();
+            RuleFor(x => x.SavingsType).NotNull();
             RuleFor(x => x.Files).NotEmpty();
         }
     }
