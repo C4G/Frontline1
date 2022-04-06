@@ -14,6 +14,8 @@
 
         public bool IsDeleted { get; set; }
 
+        public DateTimeOffset? NextClassDate { get; set; }
+
         public ICollection<Question> Questions { get; set; }
         public ICollection<Resource> Resources { get; set; }
 

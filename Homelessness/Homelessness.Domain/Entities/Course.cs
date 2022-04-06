@@ -21,6 +21,8 @@ namespace Homelessness.Domain.Entities
 
         public bool IsDeleted { get; set; } = false;
 
+        public DateTimeOffset? NextClassDate { get; set; }
+
         public DateTimeOffset CreatedDate { get; set ; }
         public DateTimeOffset? UpdatedDate { get; set; }
 
@@ -39,6 +41,7 @@ namespace Homelessness.Domain.Entities
                 ContentLink = ContentLink,
                 IsEnabled = IsEnabled,
                 IsDeleted = IsDeleted,
+                NextClassDate = NextClassDate,
                 CreatedDate = CreatedDate,
                 UpdatedDate = UpdatedDate
             };

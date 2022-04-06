@@ -33,8 +33,6 @@ namespace Homelessness.Api.Infrastructure
 
         public DbSet<Resource> Resources { get; set; }
 
-        public DbSet<ClassSchedule> ClassSchedules { get; set; }
-
         public DbSet<RegistrationField> RegistrationFields { get; set; }
 
         public HomelessnessDbContext(DbContextOptions<HomelessnessDbContext> options) : base(options)
