@@ -40,7 +40,7 @@ const modalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 500,
+  width: 1000,
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
@@ -163,9 +163,9 @@ export default function UserCoursesTable(props) {
   });
 
   return (
-      <Container>
+      <Container sx={{minWidth: 1500}}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h3" gutterBottom>
             Courses
           </Typography>
           <Modal

@@ -6,7 +6,7 @@ import { AuthenticatedUser } from 'src/providers/UserProvider';
 import Page from '../../../components/Page';
 import CourseQuestionsTable from 'src/components/_dashboard/courses/CourseQuestions';
 import CourseResourcesTable from 'src/components/_dashboard/courses/CourseResources';
-import { Typography } from '@mui/material';
+import { Typography, Container } from '@mui/material';
 // ----------------------------------------------------------------------
 
 export default function CourseDetail() {
@@ -41,10 +41,9 @@ export default function CourseDetail() {
 
   return (
     <Page title="Course | Financial Achievement Club">
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h3" gutterBottom>
         {course.title}
       </Typography>
-      <br/>
       <br/>
       <br/>
       <CourseQuestionsTable course={course}/>

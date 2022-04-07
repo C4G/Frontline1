@@ -13,8 +13,9 @@ import { Box, List, Collapse, ListItemText, ListItemIcon, ListItemButton } from 
 const ListItemStyle = styled((props) => <ListItemButton disableGutters {...props} />)(
   ({ theme }) => ({
     ...theme.typography.body2,
-    height: 48,
+    height: 150,
     position: 'relative',
+    fontSize: 25,
     textTransform: 'capitalize',
     paddingLeft: theme.spacing(5),
     paddingRight: theme.spacing(2.5),

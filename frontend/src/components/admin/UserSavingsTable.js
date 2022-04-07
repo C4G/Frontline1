@@ -159,12 +159,12 @@ export default function UserSavingsTable(props) {
   });
 
   return (
-      <Container>
+      <Container sx={{minWidth: 1500}}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h3" gutterBottom>
             Savings
           </Typography>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h3" gutterBottom>
             Total Saved: ${totalSavings}
           </Typography>
         </Stack>

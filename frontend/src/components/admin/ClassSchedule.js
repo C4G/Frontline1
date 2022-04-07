@@ -83,7 +83,7 @@ export default function ClassSchedule() {
   }
 
   return (
-    <Container>
+    <Container  sx={{minWidth: 1400}}>
       <Stack spacing={1}>
         <Typography variant="h5" gutterBottom>
           Next Class

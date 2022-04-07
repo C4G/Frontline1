@@ -52,14 +52,14 @@ export default function DashboardApp() {
     <Page title="Dashboard | Financial Achievement Club">
       <Container maxWidth="xl">
         <Box sx={{ pb: 5 }}>
-          <Typography variant="h4">Hi, Welcome back {firstName}</Typography>
+          <Typography variant="h3">Hi, Welcome back {firstName}</Typography>
         </Box>
-        <Typography>{welcomeMessage}</Typography>
+        <Typography variant="h3">{welcomeMessage}</Typography>
         <br/>
         <br/>
-        <Typography variant="h6">{classSchedule ? "Next Class" : ""}</Typography>
-        <Typography>{classSchedule ? classSchedule.description : ""}</Typography>
-        <Typography>{classSchedule ? fDateTime(classSchedule.scheduledDate) : ""}</Typography>
+        <Typography variant="h3">{classSchedule ? "Next Class" : ""}</Typography>
+        <Typography variant="h3">{classSchedule ? classSchedule.description : ""}</Typography>
+        <Typography variant="h3">{classSchedule ? fDateTime(classSchedule.scheduledDate) : ""}</Typography>
       </Container>
     </Page>
   );

@@ -80,9 +80,9 @@ export default function UserCourses() {
   }
   return (
     <Page title="Courses | Financial Achievement Club">
-      <Container>
+      <Container sx={{minWidth: 1500}}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h3" gutterBottom>
             Courses
           </Typography>
         </Stack>
@@ -90,7 +90,7 @@ export default function UserCourses() {
         <Card>
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
+              <Table sx={{minHeight: 600}}>
                 <TableListHead
                   headLabel={TABLE_HEAD}
                   rowCount={filteredCourses.length}

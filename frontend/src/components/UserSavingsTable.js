@@ -122,9 +122,9 @@ export default function UserSavings() {
   });
 
   return (
-      <Container>
+      <Container sx={{ minWidth: 1500 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h3" gutterBottom>
             Savings
           </Typography>
           <Button
@@ -148,8 +148,8 @@ export default function UserSavings() {
 
         <Card>
           <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
+            <TableContainer>
+              <Table sx={{minHeight: 600}}>
                 <TableListHead
                   headLabel={TABLE_HEAD}
                 />

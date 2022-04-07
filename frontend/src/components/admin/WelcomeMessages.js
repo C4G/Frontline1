@@ -69,7 +69,7 @@ export default function WelcomeMessage() {
   }
 
   return (
-    <Container>
+    <Container  sx={{minWidth: 1400}}>
       <Stack spacing={1}>
         <Typography variant="h5" gutterBottom>
           Welcome Message
