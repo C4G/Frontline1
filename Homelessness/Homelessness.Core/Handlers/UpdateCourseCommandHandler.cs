@@ -30,6 +30,7 @@ namespace Homelessness.Core.Handlers
             course.Title = request.Title;
             course.ContentLink = request.ContentLink;
             course.IsEnabled = request.IsEnabled;
+            course.NextClassDate = request.NextClassDate;
 
             return await courseRepository.UpdateAsync(course);
         }

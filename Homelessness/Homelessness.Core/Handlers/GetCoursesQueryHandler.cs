@@ -58,6 +58,7 @@ namespace Homelessness.Core.Handlers
                         Title = course.Title,
                         ContentLink = course.ContentLink,
                         IsEnabled = course.IsEnabled,
+                        NextClassDate = course.NextClassDate,
                         IsCompleted = IsCourseCompletedByUser(dbUser.Id, course.Id),
                         CreatedDate = course.CreatedDate,
                         UpdatedDate = course.UpdatedDate
@@ -85,6 +86,7 @@ namespace Homelessness.Core.Handlers
                         Title = course.Title,
                         ContentLink = course.ContentLink,
                         IsEnabled = course.IsEnabled,
+                        NextClassDate = course.NextClassDate,
                         CreatedDate = course.CreatedDate,
                         UpdatedDate = course.UpdatedDate
                     });

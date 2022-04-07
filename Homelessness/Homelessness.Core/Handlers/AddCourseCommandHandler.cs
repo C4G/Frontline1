@@ -36,7 +36,8 @@ namespace Homelessness.Core.Handlers
                 Index = request.Index,
                 Title = request.Title,
                 ContentLink = request.ContentLink,
-                IsEnabled = true
+                IsEnabled = true,
+                NextClassDate = request.NextClassDate
             };
 
             await courseRepository.AddAsync(course);

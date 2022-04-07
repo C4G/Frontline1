@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Homelessness.Core.Handlers
 {
-    public class GetClassScheduleQueryHandler : IRequestHandler<GetClassScheduleQuery, ClassSchedule?>
+    /*public class GetClassScheduleQueryHandler : IRequestHandler<GetClassScheduleQuery, ClassSchedule?>
     {
         private readonly IClassScheduleRepository classScheduleRepository;
 
@@ -34,5 +34,5 @@ namespace Homelessness.Core.Handlers
 
             return classSchedule.ToModel();
         }
-    }
+    }*/
 }

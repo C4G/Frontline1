@@ -10,5 +10,7 @@ namespace Homelessness.Core.Commands
         public string Title { get; set; }
 
         public string? ContentLink { get; set; }
+
+        public DateTimeOffset? NextClassDate { get; set; }
     }
 }
