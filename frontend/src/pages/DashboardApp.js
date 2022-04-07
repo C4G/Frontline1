@@ -11,7 +11,7 @@ import { fDateTime } from 'src/utils/formatTime';
 export default function DashboardApp() {
   const { user, headers } = useContext(AuthenticatedUser);
   const [welcomeMessage, setWelcomeMessage] = useState("");
-  const [classSchedule, setClassSchedule] = useState();
+  // const [classSchedule, setClassSchedule] = useState();
   useEffect(() => {
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/WelcomeMessages", { headers: headers })
     .then(response => {
@@ -27,19 +27,19 @@ export default function DashboardApp() {
       console.log(error);
     });
 
-    fetch(process.env.REACT_APP_API_SERVER_PATH + "/ClassSchedules", { headers: headers })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      throw response;
-    })
-    .then(classSchedule => {
-      setClassSchedule(classSchedule);
-    })
-    .catch(error => {
-      console.log(error);
-    });
+    // fetch(process.env.REACT_APP_API_SERVER_PATH + "/ClassSchedules", { headers: headers })
+    // .then(response => {
+    //   if (response.ok) {
+    //     return response.json();
+    //   }
+    //   throw response;
+    // })
+    // .then(classSchedule => {
+    //   setClassSchedule(classSchedule);
+    // })
+    // .catch(error => {
+    //   console.log(error);
+    // });
   }, [headers]);
 
   let firstName = "";
@@ -57,9 +57,9 @@ export default function DashboardApp() {
         <Typography variant="h3">{welcomeMessage}</Typography>
         <br/>
         <br/>
-        <Typography variant="h3">{classSchedule ? "Next Class" : ""}</Typography>
+        {/* <Typography variant="h3">{classSchedule ? "Next Class" : ""}</Typography>
         <Typography variant="h3">{classSchedule ? classSchedule.description : ""}</Typography>
-        <Typography variant="h3">{classSchedule ? fDateTime(classSchedule.scheduledDate) : ""}</Typography>
+        <Typography variant="h3">{classSchedule ? fDateTime(classSchedule.scheduledDate) : ""}</Typography> */}
       </Container>
     </Page>
   );

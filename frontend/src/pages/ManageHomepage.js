@@ -12,7 +12,7 @@ export default function User() {
       <br/>
       <br/>
       <br/>
-      <ClassSchedule />
+      {/* <ClassSchedule /> */}
     </Page>
   );
 }
