@@ -90,7 +90,7 @@ export default function UserCourses() {
         <Card>
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
-              <Table sx={{minHeight: 600}}>
+              <Table>
                 <TableListHead
                   headLabel={TABLE_HEAD}
                   rowCount={filteredCourses.length}

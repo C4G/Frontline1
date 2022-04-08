@@ -26,6 +26,7 @@ const TABLE_HEAD = [
   { id: 'coursesCompleted', label: 'Courses Completed', alignRight: false },
   { id: 'totalSaved', label: 'Total Saved', alignRight: false },
   { id: 'latestCreditScore', label: 'Latest Credit Score', alignRight: false },
+  { id: 'latestIncome', label: 'Latest Income', alignRight: false },
   { id: 'allSavingsValidated', label: 'Savings Validated', alignRight: false },
   { id: '' }
 ];
@@ -68,14 +69,24 @@ export default function UserSummariesTable() {
       for (let i = 0; i < data.length; i++) {
         let userId = data[i].userId;
         let userSavings = data[i].savings;
-        let latestUserSavings = userSavings[0];
-        let latestCreditScore = latestUserSavings.ficoScore;
+        let latestCreditScore = 0;
+        let latestIncome = 0;
         let validated = true;
         let totalSavings = 0;
         for (let j = 0; j < userSavings.length; j++) {
-          totalSavings += userSavings[j].amount;
-          if (latestCreditScore === 0 && userSavings[j].ficoScore !== 0) {
-            latestCreditScore = userSavings[j].ficoScore;
+          if (userSavings[j].savingsType === 2) {
+            // Savings
+            totalSavings += userSavings[j].value;
+          } else if (userSavings[j].savingsType === 1) {
+            // Credit Score
+            if (latestCreditScore === 0 && userSavings[j].value !== 0) {
+              latestCreditScore = userSavings[j].value;
+            }
+          } else if (userSavings[j].savingsType === 0) {
+            // Income
+            if (latestIncome === 0 && userSavings[j].value !== 0) {
+              latestIncome = userSavings[j].value;
+            }
           }
           if (userSavings[j].files) {
             for (let k = 0; k < userSavings[j].files.length; k++) {
@@ -90,6 +101,7 @@ export default function UserSummariesTable() {
           userId: userId,
           totalSavings: totalSavings,
           latestCreditScore: latestCreditScore,
+          latestIncome: latestIncome,
           validated: validated,
         });
       }
@@ -125,11 +137,11 @@ export default function UserSummariesTable() {
     return "No";
   };
 
-  const displayCreditScore = (creditScore) => {
-    if (creditScore === 0) {
+  const displayValue = (value) => {
+    if (value === 0) {
       return "Not Entered";
     }
-    return creditScore;
+    return value;
   };
 
   const handleChangePage = (event, newPage) => {
@@ -182,14 +194,17 @@ export default function UserSummariesTable() {
                     const userSavings = savings.find((saving) => saving.userId === id);
                     let totalSavings;
                     let latestCreditScore;
+                    let latestIncome;
                     let validated;
                     if (!userSavings) {
                       totalSavings = 0;
                       latestCreditScore = 0;
+                      latestIncome = 0;
                       validated = false;
                     } else {
                       totalSavings = userSavings.totalSavings;
                       latestCreditScore = userSavings.latestCreditScore;
+                      latestIncome = userSavings.latestIncome;
                       validated = userSavings.validated;
                     }
                     return (
@@ -212,7 +227,8 @@ export default function UserSummariesTable() {
                         </TableCell>
                         <TableCell align="left">-</TableCell>
                         <TableCell align="left">${totalSavings}</TableCell>
-                        <TableCell align="left">{displayCreditScore(latestCreditScore)}</TableCell>
+                        <TableCell align="left">{displayValue(latestCreditScore)}</TableCell>
+                        <TableCell align="left">{displayValue(latestIncome)}</TableCell>
                         <TableCell align="left">{displayValidated(validated)}</TableCell>
                       </TableRow>
                     );

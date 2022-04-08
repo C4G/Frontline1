@@ -29,12 +29,13 @@ import { fDateTime } from 'src/utils/formatTime';
 
 const TABLE_HEAD = [
   { id: 'date', label: 'Date', alignRight: false },
-  { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'amountVerified', label: 'Amount Verified?', alignRight: false },
-  { id: 'creditScore', label: 'Credit Score', alignRight: false },
-  { id: 'creditScoreVerified', label: 'Credit Score Verified?', alignRight: false },
+  { id: 'savingsType', label: 'Type', alignRight: false },
+  { id: 'value', label: 'Value', alignRight: false },
+  { id: 'fileVerified', label: 'Verified?', alignRight: false },
   { id: '' }
 ];
+
+const savingTypes = ["Income", "Credit Score", "Savings"];
 
 // ----------------------------------------------------------------------
 
@@ -59,14 +60,6 @@ const displayValidated = (files, index) => {
   }
   return "Not Uploaded";
 };
-
-const displayCreditScore = (creditScore) => {
-  if (creditScore === 0) {
-      return "Not Entered";
-  }
-  return creditScore;
-};
-
 
 export default function UserSavings() {
   const { userID, headers } = useContext(AuthenticatedUser);
@@ -149,7 +142,7 @@ export default function UserSavings() {
         <Card>
           <Scrollbar>
             <TableContainer>
-              <Table sx={{minHeight: 600}}>
+              <Table>
                 <TableListHead
                   headLabel={TABLE_HEAD}
                 />
@@ -157,7 +150,8 @@ export default function UserSavings() {
                   {savings
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, createdDate, amount, ficoScore, files } = row;
+                      const { id, createdDate, value, savingsType, files } = row;
+                      console.log(value, savingsType);
                       return (
                         <TableRow
                           hover
@@ -166,10 +160,9 @@ export default function UserSavings() {
                           role="checkbox"
                         >
                           <TableCell align="left">{fDateTime(createdDate)}</TableCell>
-                          <TableCell align="left">${amount}</TableCell>
+                          <TableCell align="left">{savingTypes[savingsType]}</TableCell>
+                          <TableCell align="left">{value}</TableCell>
                           <TableCell align="left">{displayValidated(files, 0)}</TableCell>
-                          <TableCell align="left">{displayCreditScore(ficoScore)}</TableCell>
-                          <TableCell align="left">{displayValidated(files, 1)}</TableCell>
                         </TableRow>
                       );
                     })}

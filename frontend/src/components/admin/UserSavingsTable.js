@@ -25,14 +25,14 @@ import { AuthenticatedUser } from 'src/providers/UserProvider';
 
 const TABLE_HEAD = [
   { id: 'uploadDate', label: 'Upload Date', alignRight: false },
-  { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'amountFile', label: 'Amount File', alignRight: false },
-  { id: 'amountFileValidated', label: 'Amount File Validated', alignRight: false },
-  { id: 'creditScore', label: 'Credit Score', alignRight: false },
-  { id: 'creditScoreFile', label: 'Credit Score File', alignRight: false },
-  { id: 'creditScoreFileValidated', label: 'Credit Score File Validated', alignRight: false },
+  { id: 'savingsType', label: 'Type', alignRight: false },
+  { id: 'value', label: 'Value', alignRight: false },
+  { id: 'file', label: 'File', alignRight: false },
+  { id: 'fileValidated', label: 'Validated', alignRight: false },
   { id: '' }
 ];
+
+const savingTypes = ["Income", "Credit Score", "Savings"];
 
 // ----------------------------------------------------------------------
 
@@ -60,7 +60,9 @@ export default function UserSavingsTable(props) {
         let totalSaved = 0;
         for (let i = 0; i < data.length; i++) {
           let savings = data[i];
-          totalSaved += savings.amount;
+          if (savings.savingsType === 2) {
+            totalSaved += savings.value;
+          }
           if (savings.files) {
             for (let j = 0; j < savings.files.length; j++) {
                 let file = savings.files[j];
@@ -83,13 +85,6 @@ export default function UserSavingsTable(props) {
     navigate('/404', { replace: true });
     return <></>;
   }
-    
-  const displayCreditScore = (creditScore) => {
-    if (creditScore === 0) {
-      return "Not Entered";
-    }
-    return creditScore;
-  };
 
   const handleValidatedClick = (event, file) => {
     const isValidated = validatedMap.get(file.id);
@@ -179,7 +174,7 @@ export default function UserSavingsTable(props) {
                   {savings
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, createdDate, amount, ficoScore, files } = row;
+                      const { id, createdDate, value, savingsType, files } = row;
                       return (
                         <TableRow
                           hover
@@ -188,12 +183,10 @@ export default function UserSavingsTable(props) {
                           role="checkbox"
                         >
                           <TableCell align="left">{fDateTime(createdDate)}</TableCell>
-                          <TableCell align="left">${amount}</TableCell>
+                          <TableCell align="left">{savingTypes[savingsType]}</TableCell>
+                          <TableCell align="left">{value}</TableCell>
                           <TableCell align="left">{displayFileName(files, 0)}</TableCell>
                           <TableCell align="left">{displayFileValidated(files, 0)}</TableCell>
-                          <TableCell align="left">{displayCreditScore(ficoScore)}</TableCell>
-                          <TableCell align="left">{displayFileName(files, 1)}</TableCell>
-                          <TableCell align="left">{displayFileValidated(files, 1)}</TableCell>
                         </TableRow>
                       );
                     })}

@@ -1,54 +1,46 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { AuthenticatedUser } from 'src/providers/UserProvider';
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
-import { Input, Typography, TextField } from '@mui/material';
+import { Input, InputLabel, MenuItem, Select, Typography, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
-const KEY_AMOUNT = "amount";
-const KEY_FICO_SCORE = "ficoScore";
+const KEY_VALUE = "value";
+const KEY_SAVINGS_TYPE = "savingsType";
 const KEY_FILES = "files";
 
 // ----------------------------------------------------------------------
 
 export default function CreateSavingsForm(props) {
   const { userID, headers } = useContext(AuthenticatedUser);
-
+  const [selectedType, setSelectedType] = useState(2);
+  const savingTypes = ["Income", "Credit Score", "Savings"];
   const types = ['image/png', 'image/jpeg'];
 
   const CreateSchema = Yup.object().shape({
-    amount: Yup.number().required('Amount is required'),
-    amountFile: Yup.mixed().test('fileType', "Unsupported File Format", value => { if (value) return types.includes(value.type)} ),
-    ficoScore: Yup.number(),
+    value: Yup.number().required('Value is required'),
+    file: Yup.mixed().test('fileType', "Unsupported File Format", value => { if (value) return types.includes(value.type)} ),
   });
 
   const formik = useFormik({
     initialValues: {
-      amount: '',
-      amountFile: null,
-      ficoScore: '',
-      creditScoreFile: null,
+      value: '',
+      file: null,
+      savingsTypeId: 2,
     },
     validationSchema: CreateSchema,
     onSubmit: () => {
       let body = new FormData();
 
-      const amount = getFieldProps(KEY_AMOUNT).value;
-      body.append(KEY_AMOUNT, amount);
+      const value = getFieldProps(KEY_VALUE).value;
+      body.append(KEY_VALUE, value);
 
-      const ficoScore = getFieldProps(KEY_FICO_SCORE).value;
-      if (ficoScore !== "") {
-        body.append(KEY_FICO_SCORE, ficoScore);
-      }
+      const file = getFieldProps('file').value;
+      body.append(KEY_FILES, file);
 
-      const amountFile = getFieldProps('amountFile').value;
-      body.append(KEY_FILES, amountFile);
-
-      const creditScoreFile = getFieldProps('creditScoreFile').value;
-      if (creditScoreFile !== null) {
-        body.append(KEY_FILES, creditScoreFile);
-      }
+      const savingsTypeId = getFieldProps('savingsTypeId').value;
+      body.append(KEY_SAVINGS_TYPE, savingsTypeId);
 
       body.append("userId", userID);
 
@@ -74,78 +66,70 @@ export default function CreateSavingsForm(props) {
 
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue } = formik;
 
-  const handleAmountFileChange = (event) => {
-    setFieldValue("amountFile", event.currentTarget.files[0]);
+  const handleFileChange = (event) => {
+    setFieldValue("file", event.currentTarget.files[0]);
   };
 
-  const handleCreditScoreFileChange = (event) => {
-    setFieldValue("creditScoreFile", event.currentTarget.files[0]);
+  const handleTypeChange = (event) => {
+    setFieldValue("savingsTypeId", event.target.value);
+    setSelectedType(event.target.value);
   };
 
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            type="text"
-            label="(Required) Savings Amount"
-            {...getFieldProps('amount')}
-            error={Boolean(touched.amount && errors.amount)}
-            required={true}
-         />
-          <br/>
-          <br/>
-          <Typography>
-            (Required) Upload a JPG or PNG image to verify savings amount:
-          </Typography>
-          <br/>
-          <Input
-            fullWidth
-            required
-            type="file"
-            id="amountFile"
-            name="amountFile"
-            error={Boolean(touched.amountFile && errors.amountFile)}
-            onChange={handleAmountFileChange}
-          />
-          <br/>
-          <br/>
-          <br/>
-          <TextField
-            fullWidth
-            type="text"
-            label="(Optional) Credit Score"
-            {...getFieldProps('ficoScore')}
-            error={Boolean(touched.ficoScore && errors.ficoScore)}
-          />
-          <br/>
-          <br/>
-          <Typography>
-            (Optional) Upload a JPG or PNG image to verify credit score:
-          </Typography>
-          <br/>
-          <Input
-            fullWidth
-            type="file"
-            id="creditScoreFile"
-            name="creditScoreFile"
-            onChange={handleCreditScoreFileChange}
-          />
-          <br/>
-          <br/>
-          <LoadingButton
-            fullWidth
-            size="large"
-            type="submit"
-            variant="contained"
-            loading={isSubmitting}
-            disabled={
-              !getFieldProps('amount').value ||
-              !getFieldProps('amountFile').value
-            }
-          >
-            Submit
-          </LoadingButton>
+        <InputLabel id="type-label">Select A Type</InputLabel>
+        <Select
+          labelId="type-label"
+          id="type"
+          value={selectedType}
+          label="Type"
+          onChange={handleTypeChange}
+        >
+          {savingTypes.map((savingsType, index) => {
+            return <MenuItem key={index} value={index}>{savingsType}</MenuItem>;
+          })}
+        </Select>
+        <br/>
+        <br/>
+        <TextField
+          fullWidth
+          type="text"
+          label="Value"
+          {...getFieldProps('value')}
+          error={Boolean(touched.amount && errors.amount)}
+          required={true}
+        />
+        <br/>
+        <br/>
+        <Typography>
+          (Required) Upload a JPG or PNG image to verify savings amount:
+        </Typography>
+        <br/>
+        <Input
+          fullWidth
+          required
+          type="file"
+          id="file"
+          name="file"
+          error={Boolean(touched.file && errors.file)}
+          onChange={handleFileChange}
+        />
+        <br/>
+        <br/>
+        <LoadingButton
+          fullWidth
+          size="large"
+          type="submit"
+          variant="contained"
+          loading={isSubmitting}
+          disabled={
+            !getFieldProps('value').value ||
+            !getFieldProps('file').value
+          }
+        >
+          Submit
+        </LoadingButton>
       </Form>
     </FormikProvider>
   );
