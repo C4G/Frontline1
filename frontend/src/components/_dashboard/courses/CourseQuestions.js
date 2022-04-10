@@ -180,7 +180,7 @@ export default function CourseQuestionsTable(props) {
                               setSelectedQuestionId(id);
                               setSelectedQuestionText(text);
                               handleUpdateModalOpen(id);
-                            }} deleteEnabled deleteHandler={()=> {
+                            }} deleteEnabled deleteHandler={() => {
                               deleteQuestion(id);
                             }}/>
                           </TableCell>

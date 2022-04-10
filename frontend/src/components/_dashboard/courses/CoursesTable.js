@@ -27,6 +27,7 @@ import Page from '../../../components/Page';
 import Scrollbar from '../../../components/Scrollbar';
 import TableListHead from '../../../components/TableListHead';
 import TableMoreMenu from '../../../components/TableMoreMenu';
+import ConfirmationModal from 'src/components/ConfirmationModal';
 import { CreateCourseForm, UpdateCourseForm } from '../../../components/authentication/create';
 import { fDateTime } from 'src/utils/formatTime';
 
@@ -60,11 +61,27 @@ export default function Courses() {
   const [enabled, setEnabled] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const [deleteCourseId, setDeleteCourseId] = useState();
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [deleteFlag, setDeleteFlag] = useState(false);
   const [updateCourse, setUpdateCourse] = useState(null);
+
+  const deleteCourse = () => {
+    setDeleteFlag(!deleteFlag);
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses/" + deleteCourseId, {
+      method: "DELETE",
+      headers: headers,
+      body: JSON.stringify({
+        "courseId": deleteCourseId,
+      }),
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  };
 
   // Fetch data for courses.
   useEffect(() => {
@@ -92,7 +109,7 @@ export default function Courses() {
       .finally(() => {
         setLoading(false);
       });
-    }, [createModalOpen, updateModalOpen, headers]);
+    }, [createModalOpen, updateModalOpen, headers, deleteFlag]);
 
   const handleUpdateCourse = (id, index, title, contentLink, nextClassDate, isEnabled) => {
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses/" + id, {
@@ -164,6 +181,7 @@ export default function Courses() {
       });
   };
   const handleUpdateModalClose = () => setUpdateModalOpen(false);
+  const handleConfirmationModalClose = () => setConfirmationModalOpen(false);
 
   if (loading) {
     return <LoadingIcons.SpinningCircles />;
@@ -213,6 +231,7 @@ export default function Courses() {
               />
             </Box>
           </Modal>
+          <ConfirmationModal modalOpen={confirmationModalOpen} handleModalClose={handleConfirmationModalClose} handleSubmit={deleteCourse}/>
         </Stack>
 
         <Card>
@@ -258,6 +277,9 @@ export default function Courses() {
                           <TableCell align="right">
                             <TableMoreMenu openModal={() => {
                               handleUpdateModalOpen(id);
+                            }} deleteEnabled deleteHandler={() => {
+                              setDeleteCourseId(id);
+                              setConfirmationModalOpen(true);
                             }}/>
                           </TableCell>
                         </TableRow>
