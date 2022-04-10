@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Homelessness.Api.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator, Volunteer")]
     [ApiController]
     [Route("[controller]")]
     public class RolesController : ControllerBase

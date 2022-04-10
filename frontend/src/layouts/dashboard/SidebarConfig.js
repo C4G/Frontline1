@@ -32,7 +32,6 @@ export default function SidebarConfig() {
   }
 
   if (role === "Administrator") {
-    // Administrators can view the Courses page, User page, and Savings page.
     return [
       {
         title: 'Course Management',
@@ -53,11 +52,17 @@ export default function SidebarConfig() {
         title: 'Homepage Management',
         path: '/dashboard/homepage',
         icon: getIcon(homeFill)
-      }
+      },
+    ];
+  } else if (role === "Volunteer") {
+    return [
+      {
+        title: 'User Details',
+        path: '/dashboard/details',
+        icon: getIcon(peopleFill)
+      },
     ]
   }
-
-  // Regular users can view the Courses page and Savings page.
   return [
     {
       title: 'Courses',

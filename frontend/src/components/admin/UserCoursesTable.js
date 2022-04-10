@@ -101,7 +101,7 @@ export default function UserCoursesTable(props) {
       });
   }, [props.userID, headers]);
 
-  if (role !== "Administrator") {
+  if (role !== "Administrator" && role !== "Volunteer") {
     navigate('/404', { replace: true });
     return <></>;
   }
@@ -111,6 +111,7 @@ export default function UserCoursesTable(props) {
     return (
       <Checkbox
         checked={isCompleted}
+        disabled={role === "Volunteer"}
         onChange={(event) => handleIsCompletedClick(event, courseID)}
       />
     );

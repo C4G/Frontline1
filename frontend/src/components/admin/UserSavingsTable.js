@@ -81,7 +81,7 @@ export default function UserSavingsTable(props) {
       });
   }, [props.userID, headers]);
 
-  if (role !== "Administrator") {
+  if (role !== "Administrator" && role !== "Volunteer") {
     navigate('/404', { replace: true });
     return <></>;
   }
@@ -109,6 +109,7 @@ export default function UserSavingsTable(props) {
       return (
         <Checkbox
           checked={isValidated}
+          disabled={role === "Volunteer"}
           onChange={(event) => handleValidatedClick(event, file)}
         />
       );
