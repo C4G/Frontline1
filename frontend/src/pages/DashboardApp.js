@@ -1,17 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react';
 // material
-import { Box, Container, Typography } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 // components
 import Page from '../components/Page';
 import { AuthenticatedUser } from 'src/providers/UserProvider';
-import { fDateTime } from 'src/utils/formatTime';
+import { format } from 'date-fns';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardApp() {
-  const { user, headers } = useContext(AuthenticatedUser);
+  const { user, userID, headers } = useContext(AuthenticatedUser);
   const [welcomeMessage, setWelcomeMessage] = useState("");
-  // const [classSchedule, setClassSchedule] = useState();
+  const [hasNextClass, setHasNextClass] = useState(false);
+  const [title, setTitle] = useState();
+  const [date, setDate] = useState();
+
+  const parseDate = (date) => {
+    const newDate = new Date(Date.parse(date));
+    return format(newDate, 'dd MMM yyyy HH:mm');
+  };
+
   useEffect(() => {
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/WelcomeMessages", { headers: headers })
     .then(response => {
@@ -27,39 +35,47 @@ export default function DashboardApp() {
       console.log(error);
     });
 
-    // fetch(process.env.REACT_APP_API_SERVER_PATH + "/ClassSchedules", { headers: headers })
-    // .then(response => {
-    //   if (response.ok) {
-    //     return response.json();
-    //   }
-    //   throw response;
-    // })
-    // .then(classSchedule => {
-    //   setClassSchedule(classSchedule);
-    // })
-    // .catch(error => {
-    //   console.log(error);
-    // });
-  }, [headers]);
+    fetch(process.env.REACT_APP_API_SERVER_PATH + "/NextClasses/" + userID, { headers: headers })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw response;
+    })
+    .then(data => {
+      setTitle(data.title);
+      setDate(data.date);
+      setHasNextClass(true);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  }, [headers, userID]);
 
-  let firstName = "";
-  if (user) {
-    firstName = user.firstName;
-  } else {
+  if (!user) {
     return <></>;
   }
+
+  const nextClass = (hasNextClass) ? (
+    <>
+      <Typography variant="h4">Next Class</Typography>
+      <br/>
+      <Typography variant="h5">{title}</Typography>
+      <Typography>{parseDate(date)}</Typography>
+    </>
+  ) : null;
+
   return (
     <Page title="Dashboard | Financial Achievement Club">
       <Container maxWidth="xl">
-        <Box sx={{ pb: 5 }}>
-          <Typography variant="h3">Hi, Welcome back {firstName}</Typography>
-        </Box>
-        <Typography variant="h3">{welcomeMessage}</Typography>
+        <Typography variant="h4">{welcomeMessage}</Typography>
         <br/>
         <br/>
-        {/* <Typography variant="h3">{classSchedule ? "Next Class" : ""}</Typography>
-        <Typography variant="h3">{classSchedule ? classSchedule.description : ""}</Typography>
-        <Typography variant="h3">{classSchedule ? fDateTime(classSchedule.scheduledDate) : ""}</Typography> */}
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        {nextClass}
       </Container>
     </Page>
   );

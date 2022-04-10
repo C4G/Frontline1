@@ -1,15 +1,19 @@
-import React, { useContext} from 'react';
+import React, { useContext, useState } from 'react';
 import { AuthenticatedUser } from 'src/providers/UserProvider';
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
 import { Stack, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-
+import DateTimePicker from '@mui/lab/DateTimePicker';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 // ----------------------------------------------------------------------
 
 export default function UpdateCourseForm(props) {
   const { headers } = useContext(AuthenticatedUser);
+  const [nextClassDate, setNextClassDate] = useState(props.course.nextClassDate);
+  const [dateDirty, setDateDirty] = useState(false);
   const UpdateSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     contentLink: Yup.string().required('Content link is required'),
@@ -30,6 +34,7 @@ export default function UpdateCourseForm(props) {
           "index": getFieldProps('index').value,
           "title": getFieldProps('title').value,
           "contentLink": getFieldProps('contentLink').value,
+          "nextClassDate": nextClassDate,
           "isEnabled": props.course.isEnabled,
         }),
       })
@@ -44,6 +49,11 @@ export default function UpdateCourseForm(props) {
       });
     }
   });
+
+  const handleTimeChange = (newTime) => {
+    setNextClassDate(newTime);
+    setDateDirty(true);
+  };
 
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps, dirty } = formik;
 
@@ -75,13 +85,21 @@ export default function UpdateCourseForm(props) {
             error={Boolean(touched.index && errors.index)}
             helperText={touched.index && errors.index}
           />
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DateTimePicker
+              label="Next Class Date"
+              value={nextClassDate}
+              onChange={handleTimeChange}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
           <LoadingButton
             fullWidth
             size="large"
             type="submit"
             variant="contained"
             loading={isSubmitting}
-            disabled={!dirty}
+            disabled={!dirty && !dateDirty}
           >
             Update Course
           </LoadingButton>

@@ -28,13 +28,16 @@ import Scrollbar from '../../../components/Scrollbar';
 import TableListHead from '../../../components/TableListHead';
 import TableMoreMenu from '../../../components/TableMoreMenu';
 import { CreateCourseForm, UpdateCourseForm } from '../../../components/authentication/create';
+import { fDateTime } from 'src/utils/formatTime';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'title', label: 'Title', alignRight: false },
+  { id: 'courseNumber', label: 'Course Number', alignRight: false },
   { id: 'link', label: 'Link', alignRight: false },
   { id: 'isEnabled', label: 'Enabled', alignRight: false },
+  { id: 'nextClassDate', label: 'Next Class Date', alignRight: false },
   { id: '' }
 ];
 
@@ -91,7 +94,7 @@ export default function Courses() {
       });
     }, [createModalOpen, updateModalOpen, headers]);
 
-  const handleUpdateCourse = (id, index, title, contentLink, isEnabled) => {
+  const handleUpdateCourse = (id, index, title, contentLink, nextClassDate, isEnabled) => {
     fetch(process.env.REACT_APP_API_SERVER_PATH + "/Courses/" + id, {
       method: "PUT",
       headers: headers,
@@ -99,12 +102,13 @@ export default function Courses() {
         title: title,
         index: index,
         contentLink: contentLink,
+        nextClassDate: nextClassDate,
         isEnabled: isEnabled,
       }),
     });
   }
 
-  const handleEnabledClick = (event, id, index, title, contentLink) => {
+  const handleEnabledClick = (event, id, index, title, contentLink, nextClassDate) => {
     // Update checkbox.
     const enabledIndex = enabled.indexOf(id);
     let newEnabled = [];
@@ -122,11 +126,18 @@ export default function Courses() {
     }
     setEnabled(newEnabled);
     const isItemEnabled = newEnabled.indexOf(id) !== -1;
-    handleUpdateCourse(id, index, title, contentLink, isItemEnabled);
+    handleUpdateCourse(id, index, title, contentLink, nextClassDate, isItemEnabled);
   };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+  };
+
+  const displayNextClassDate = (nextClassDate) => {
+    if (nextClassDate === null) {
+      return "-";
+    }
+    return fDateTime(nextClassDate);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -215,7 +226,7 @@ export default function Courses() {
                   {courses
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, index, title, contentLink } = row;
+                      const { id, index, title, contentLink, nextClassDate } = row;
                       const isItemEnabled = enabled.indexOf(id) !== -1;
                       return (
                         <TableRow
@@ -235,13 +246,15 @@ export default function Courses() {
                               {title}
                             </Link>
                           </TableCell>
+                          <TableCell align="left">{index}</TableCell>
                           <TableCell align="left">{contentLink}</TableCell>
                           <TableCell align="left">
                             <Checkbox
                               checked={isItemEnabled}
-                              onChange={(event) => handleEnabledClick(event, id, index, title, contentLink)}
+                              onChange={(event) => handleEnabledClick(event, id, index, title, contentLink, nextClassDate)}
                             />
                           </TableCell>
+                          <TableCell align="left">{displayNextClassDate(nextClassDate)}</TableCell>
                           <TableCell align="right">
                             <TableMoreMenu openModal={() => {
                               handleUpdateModalOpen(id);

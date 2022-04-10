@@ -6,7 +6,7 @@ import { AuthenticatedUser } from 'src/providers/UserProvider';
 import Page from '../../../components/Page';
 import CourseQuestionsTable from 'src/components/_dashboard/courses/CourseQuestions';
 import CourseResourcesTable from 'src/components/_dashboard/courses/CourseResources';
-import { Typography, Container } from '@mui/material';
+import { Typography } from '@mui/material';
 // ----------------------------------------------------------------------
 
 export default function CourseDetail() {

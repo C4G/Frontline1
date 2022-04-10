@@ -119,6 +119,9 @@ export default function UserCoursesTable(props) {
   const displayCompletedTime = (courseID, updatedDate) => {
     const isCompleted = isCompletedMap.get(courseID);
     if (isCompleted) {
+      if (updatedDate === null) {
+        return fDateTime(Date.now());
+      }
       return fDateTime(updatedDate);
     }
     return "-";

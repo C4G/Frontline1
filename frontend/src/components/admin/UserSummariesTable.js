@@ -23,7 +23,6 @@ import { AuthenticatedUser } from 'src/providers/UserProvider';
 
 const TABLE_HEAD = [
   { id: 'user', label: 'User', alightRight: false },
-  { id: 'coursesCompleted', label: 'Courses Completed', alignRight: false },
   { id: 'totalSaved', label: 'Total Saved', alignRight: false },
   { id: 'latestCreditScore', label: 'Latest Credit Score', alignRight: false },
   { id: 'latestIncome', label: 'Latest Income', alignRight: false },
@@ -225,7 +224,6 @@ export default function UserSummariesTable() {
                             {getUserName(id)}
                           </Typography>
                         </TableCell>
-                        <TableCell align="left">-</TableCell>
                         <TableCell align="left">${totalSavings}</TableCell>
                         <TableCell align="left">{displayValue(latestCreditScore)}</TableCell>
                         <TableCell align="left">{displayValue(latestIncome)}</TableCell>

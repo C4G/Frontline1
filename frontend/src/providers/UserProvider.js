@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 
 import jwt_decode from 'jwt-decode';
 
@@ -20,6 +21,7 @@ export const AuthenticatedUser = React.createContext(defaultUser);
 // ----------------------------------------------------------------------
 
 export function AuthenticatedUserProvider({ children }) {
+  const navigate = useNavigate();
   const userJson = localStorage.getItem("user");
   const user = JSON.parse(userJson);
   const authToken = user ? jwt_decode(user.authToken) : null;
@@ -33,13 +35,13 @@ export function AuthenticatedUserProvider({ children }) {
   if (user && authToken) {
     const tokenExpiryMs = authToken[EXPIRY_CLAIM] * 1000;
     if (tokenExpiryMs < Date.now()) {
-      refreshToken(user);
+      refreshToken(navigate, user);
     }
   }
   return <AuthenticatedUser.Provider value={{ user: user, userID: userID, role: role, headers: headers }}>{children}</AuthenticatedUser.Provider>;
 };
 
-function refreshToken(user) {
+function refreshToken(navigate, user) {
   fetch(process.env.REACT_APP_API_SERVER_PATH + '/Token/refresh', {
     method: "POST",
     headers: {
@@ -64,5 +66,8 @@ function refreshToken(user) {
   })
   .catch(error => {
     console.error(error);
+    localStorage.removeItem("user");
+    navigate('/dashboard/app');
+    window.location.reload(true);
   });
 }
