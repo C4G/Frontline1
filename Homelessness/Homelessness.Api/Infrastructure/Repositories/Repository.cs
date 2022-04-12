@@ -180,6 +180,7 @@ namespace Homelessness.Api.Infrastructure.Repositories
             }
 
             context.Update<T>(entity);
+
             return await context.SaveChangesAsync();
         }
 
