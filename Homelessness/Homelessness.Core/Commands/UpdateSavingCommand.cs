@@ -12,6 +12,6 @@ namespace Homelessness.Core.Commands
 
         public SavingsTypes SavingsType { get; set; }
 
-        public List<IFormFile> Files { get; set; }
+        public List<IFormFile> Files { get; set; } = new List<IFormFile>();
     }
 }
