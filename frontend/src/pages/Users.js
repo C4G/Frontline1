@@ -175,7 +175,7 @@ export default function Users() {
   users.sort((a, b) => a.id - b.id);
   return (
     <Page title="Users | Financial Achievement Club">
-      <Container  sx={{minWidth: 1500}}>
+      <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h3" gutterBottom>
             User Management
@@ -217,7 +217,7 @@ export default function Users() {
 
         <Card>
           <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
+            <TableContainer>
               <Table>
                 <TableListHead
                   headLabel={TABLE_HEAD}

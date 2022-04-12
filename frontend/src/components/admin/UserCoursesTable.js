@@ -167,7 +167,7 @@ export default function UserCoursesTable(props) {
   });
 
   return (
-      <Container sx={{minWidth: 1500}}>
+      <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h3" gutterBottom>
             Courses

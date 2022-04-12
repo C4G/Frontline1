@@ -22,7 +22,8 @@ import {
 // components
 import Scrollbar from './Scrollbar';
 import TableListHead from './TableListHead';
-import { CreateSavingsForm } from './authentication/create';
+import TableMoreMenu from './TableMoreMenu';
+import { CreateSavingsForm, UpdateSavingsForm } from './authentication/create';
 import { fDateTime } from 'src/utils/formatTime';
 
 // ----------------------------------------------------------------------
@@ -65,6 +66,8 @@ export default function UserSavings() {
   const { userID, headers } = useContext(AuthenticatedUser);
   const [page, setPage] = useState(0);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [updateSavings, setUpdateSavings] = useState();
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [savings, setSavings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -89,7 +92,7 @@ export default function UserSavings() {
       .finally(() => {
         setLoading(false);
       });
-    }, [createModalOpen, headers, userID]);
+    }, [createModalOpen, updateModalOpen, headers, userID]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -102,6 +105,7 @@ export default function UserSavings() {
 
   const handleCreateModalOpen = () => setCreateModalOpen(true);
   const handleCreateModalClose = () => setCreateModalOpen(false);
+  const handleUpdateModalClose = () => setUpdateModalOpen(false);
 
   if (loading) {
     return <LoadingIcons.SpinningCircles />;
@@ -115,7 +119,7 @@ export default function UserSavings() {
   });
 
   return (
-      <Container sx={{ minWidth: 1500 }}>
+      <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h3" gutterBottom>
             Savings
@@ -137,6 +141,16 @@ export default function UserSavings() {
               <CreateSavingsForm onSubmitHandler={handleCreateModalClose}/>
             </Box>
           </Modal>
+          <Modal
+            open={updateModalOpen}
+            onClose={handleUpdateModalClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={modalStyle}>
+              <UpdateSavingsForm savings={updateSavings} onSubmitHandler={handleUpdateModalClose}/>
+            </Box>
+          </Modal>
         </Stack>
 
         <Card>
@@ -151,7 +165,6 @@ export default function UserSavings() {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                       const { id, createdDate, value, savingsType, files } = row;
-                      console.log(value, savingsType);
                       return (
                         <TableRow
                           hover
@@ -163,6 +176,12 @@ export default function UserSavings() {
                           <TableCell align="left">{savingTypes[savingsType]}</TableCell>
                           <TableCell align="left">{value}</TableCell>
                           <TableCell align="left">{displayValidated(files, 0)}</TableCell>
+                          <TableCell align="right">
+                            <TableMoreMenu openModal={() => {
+                              setUpdateSavings(row);
+                              setUpdateModalOpen(true);
+                            }}/>
+                          </TableCell>
                         </TableRow>
                       );
                     })}

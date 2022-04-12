@@ -89,7 +89,7 @@ export default function UserCourses() {
 
         <Card>
           <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
+            <TableContainer>
               <Table>
                 <TableListHead
                   headLabel={TABLE_HEAD}

@@ -196,7 +196,7 @@ export default function Courses() {
 
   return (
     <Page title="Courses | Financial Achievement Club">
-      <Container sx={{minWidth: 1500}}>
+      <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h3" gutterBottom>
             Course Management
@@ -236,7 +236,7 @@ export default function Courses() {
 
         <Card>
           <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
+            <TableContainer>
               <Table>
                 <TableListHead
                   headLabel={TABLE_HEAD}

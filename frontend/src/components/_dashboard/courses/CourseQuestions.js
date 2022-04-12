@@ -116,7 +116,7 @@ export default function CourseQuestionsTable(props) {
   });
 
   return (
-      <Container sx={{minWidth: 1500}}>
+      <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1}>
           <Typography variant="h4">
             Questions
