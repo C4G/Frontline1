@@ -37,6 +37,11 @@ namespace Homelessness.Core.Handlers
             user.LastName = request.LastName;
             user.IsApproved = request.IsApproved;
 
+            if (request.PhoneNumber is not null)
+            {
+                user.PhoneNumber = request.PhoneNumber;
+            }
+
             var updateResult = await userRepository.UpdateAsync(user);
 
             bool isUserRoleUser = await authService.IsUserRoleUser(user.Id);

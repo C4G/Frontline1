@@ -60,6 +60,7 @@ namespace Homelessness.Core.Handlers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
                 IsApproved = user.IsApproved,
                 UserCourses = userCourses,
                 CreatedDate = user.CreatedDate,

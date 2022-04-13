@@ -1,5 +1,6 @@
 ﻿using Homelessness.Models.Responses;
 using MediatR;
+using System.ComponentModel.DataAnnotations;
 
 namespace Homelessness.Core.Commands
 {
@@ -19,6 +20,7 @@ namespace Homelessness.Core.Commands
 
         public string? UserName { get; set; }
 
+        [Phone]
         public string? PhoneNumber { get; set; }
     }
 }

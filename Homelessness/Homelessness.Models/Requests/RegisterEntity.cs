@@ -30,6 +30,7 @@ namespace Homelessness.Models.Requests
 
         public string? UserName { get; set; }
 
+        [Phone]
         public string? PhoneNumber { get; set; }
     }
 }
