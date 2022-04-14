@@ -65,6 +65,7 @@ export default function Users() {
   const [updateId, setUpdateId] = useState("");
   const [updateFirstName, setUpdateFirstName] = useState("");
   const [updateLastName, setUpdateLastName] = useState("");
+  const [updatePhoneNumber, setUpdatePhoneNumber] = useState("");
   const [updateIsApproved, setUpdateIsApproved] = useState("");
 
   const { headers } = useContext(AuthenticatedUser);
@@ -158,11 +159,12 @@ export default function Users() {
 
   const handleCreateModalOpen = () => setCreateModalOpen(true);
   const handleCreateModalClose = () => setCreateModalOpen(false);
-  const handleUpdateModalOpen = (id, firstName, lastName, isApproved) => {
+  const handleUpdateModalOpen = (id, firstName, lastName, phoneNumber, isApproved) => {
     setUpdateModalOpen(true);
     setUpdateId(id);
     setUpdateFirstName(firstName);
     setUpdateLastName(lastName);
+    setUpdatePhoneNumber(phoneNumber);
     setUpdateIsApproved(isApproved);
   };
   const handleUpdateModalClose = () => setUpdateModalOpen(false);
@@ -209,6 +211,7 @@ export default function Users() {
                 id={updateId}
                 firstName={updateFirstName}
                 lastName={updateLastName}
+                phoneNumber={updatePhoneNumber}
                 isApproved={updateIsApproved}
               />
             </Box>
@@ -226,7 +229,7 @@ export default function Users() {
                   {users
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, firstName, lastName, roleId, email, refreshTokenExpiryTime } = row;
+                      const { id, firstName, lastName, roleId, phoneNumber, email, refreshTokenExpiryTime } = row;
                       let loginDate;
                       if (refreshTokenExpiryTime === "0001-01-01T00:00:00") {
                         loginDate = 0;
@@ -255,7 +258,7 @@ export default function Users() {
                           <TableCell align="left">{fDateTime(loginDate)}</TableCell>
                           <TableCell align="right">
                             <TableMoreMenu openModal={() => {
-                              handleUpdateModalOpen(id, firstName, lastName, isItemVerified);
+                              handleUpdateModalOpen(id, firstName, lastName, phoneNumber, isItemVerified);
                             }}/>
                           </TableCell>
                         </TableRow>

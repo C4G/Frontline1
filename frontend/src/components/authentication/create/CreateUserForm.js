@@ -44,6 +44,7 @@ export default function CreateUserForm(props) {
       .required('First name required'),
     lastName: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Last name required'),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
+    phoneNumber: Yup.string(),
     password: Yup.string().required('Password is required').matches(
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,}$/,
       "Must be at least 5 characters, contain One Uppercase, One Lowercase, One Number, and one special case Character"
@@ -57,23 +58,29 @@ export default function CreateUserForm(props) {
       firstName: '',
       lastName: '',
       email: '',
+      phoneNumber: '',
       password: '',
       confirmPassword: '',
       roleId: '',
     },
     validationSchema: CreateSchema,
     onSubmit: () => {
+      const body = {
+        "email": getFieldProps('email').value,
+        "password": getFieldProps('password').value,
+        "confirmPassword": getFieldProps('confirmPassword').value,
+        "firstName": getFieldProps('firstName').value,
+        "lastName": getFieldProps('lastName').value,
+        "roleId": getFieldProps('roleId').value,
+      };
+      const phoneNumber = getFieldProps('phoneNumber').value;
+      if (phoneNumber) {
+        body["phoneNumber"] = phoneNumber;
+      }
       fetch(process.env.REACT_APP_API_SERVER_PATH + "/Users", {
         method: "POST",
         headers: headers,
-        body: JSON.stringify({
-          "email": getFieldProps('email').value,
-          "password": getFieldProps('password').value,
-          "confirmPassword": getFieldProps('confirmPassword').value,
-          "firstName": getFieldProps('firstName').value,
-          "lastName": getFieldProps('lastName').value,
-          "roleId": getFieldProps('roleId').value,
-        }),
+        body: JSON.stringify(body),
       })
       .then(response => {
         if (!response.ok) {
@@ -82,12 +89,18 @@ export default function CreateUserForm(props) {
         props.onSubmitHandler();
       })
       .then(error => {
-        throw error;
+        if (error) {
+          throw error;
+        }
       })
       .catch(error => {
         setAlertVisible(true);
         setSubmitting(false);
-        setAlertText(error);
+        if (typeof error === "string") {
+          setAlertText(error);
+        } else {
+          setAlertText(error["errors"]["PhoneNumber"][0]);
+        }
       });
     }
   });
@@ -128,6 +141,15 @@ export default function CreateUserForm(props) {
             {...getFieldProps('email')}
             error={Boolean(touched.email && errors.email)}
             helperText={touched.email && errors.email}
+          />
+
+          <TextField
+            fullWidth
+            autoComplete="phoneNumber"
+            label="Phone number"
+            {...getFieldProps('phoneNumber')}
+            error={Boolean(touched.phoneNumber && errors.phoneNumber)}
+            helperText={touched.phoneNumber && errors.phoneNumber}
           />
 
           <TextField

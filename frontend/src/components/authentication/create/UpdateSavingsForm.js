@@ -3,7 +3,7 @@ import { AuthenticatedUser } from 'src/providers/UserProvider';
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
-import { Input, InputLabel, MenuItem, Select, Typography, TextField } from '@mui/material';
+import { Alert, Collapse, Input, InputLabel, MenuItem, Select, Typography, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 const KEY_VALUE = "value";
@@ -16,11 +16,10 @@ export default function UpdateSavingsForm(props) {
   const { headers } = useContext(AuthenticatedUser);
   const [selectedType, setSelectedType] = useState(props.savings.savingsType);
   const savingTypes = ["Income", "Credit Score", "Savings"];
-  const types = ['image/png', 'image/jpeg'];
+  const [alertVisible, setAlertVisible] = useState(false);
 
   const UpdateSchema = Yup.object().shape({
     value: Yup.number().required('Value is required'),
-    file: Yup.mixed().test('fileType', "Unsupported File Format", value => { if (value) return types.includes(value.type)} ),
   });
 
   const formik = useFormik({
@@ -37,7 +36,9 @@ export default function UpdateSavingsForm(props) {
       body.append(KEY_VALUE, value);
 
       const file = getFieldProps('file').value;
-      body.append(KEY_FILES, file);
+      if (file) {
+        body.append(KEY_FILES, file);
+      }
 
       const savingsTypeId = getFieldProps('savingsTypeId').value;
       body.append(KEY_SAVINGS_TYPE, savingsTypeId);
@@ -67,7 +68,13 @@ export default function UpdateSavingsForm(props) {
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue } = formik;
 
   const handleFileChange = (event) => {
-    setFieldValue("file", event.currentTarget.files[0]);
+    const file = event.currentTarget.files[0];
+    const allowedTypes = ['image/png', 'image/jpeg'];
+    if (allowedTypes.includes(file.type)) {
+        setFieldValue("file", file);
+    } else {
+        setAlertVisible(true);
+    }
   };
 
   const handleTypeChange = (event) => {
@@ -97,7 +104,7 @@ export default function UpdateSavingsForm(props) {
           type="text"
           label="Value"
           {...getFieldProps('value')}
-          error={Boolean(touched.amount && errors.amount)}
+          error={Boolean(touched.value && errors.value)}
           required={true}
         />
         <br/>
@@ -108,7 +115,6 @@ export default function UpdateSavingsForm(props) {
         <br/>
         <Input
           fullWidth
-          required
           type="file"
           id="file"
           name="file"
@@ -117,15 +123,16 @@ export default function UpdateSavingsForm(props) {
         />
         <br/>
         <br/>
+        <Collapse in={alertVisible}>
+          <Alert severity="error" onClose={() => {setAlertVisible(false);}}>Please select a .png or .jpeg file</Alert>
+        </Collapse>
+        <br/>
         <LoadingButton
           fullWidth
           size="large"
           type="submit"
           variant="contained"
           loading={isSubmitting}
-          disabled={
-            !getFieldProps('value').value ||
-            !getFieldProps('file').value}
         >
           Update Savings
         </LoadingButton>
