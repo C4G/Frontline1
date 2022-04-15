@@ -103,6 +103,23 @@ namespace Homelessness.Api.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPut("{id}/ChangePassword")]
+        public async Task<IActionResult> ChangePassword(Guid id, ChangePasswordCommand command)
+        {
+            command.UserId = id;
+
+            try
+            {
+                return Ok(await mediator.Send(command));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
         [Authorize(Roles = "Administrator")]
         [HttpPut]
         public async Task<IActionResult> Put(UserBulkEditCommand command)
