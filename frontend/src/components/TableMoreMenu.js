@@ -1,6 +1,7 @@
 import { Icon } from '@iconify/react';
 import { useRef, useState } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
+import lockFill from '@iconify/icons-eva/lock-fill';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
@@ -8,7 +9,7 @@ import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/mat
 
 // ----------------------------------------------------------------------
 
-export default function TableMoreMenu({openModal, deleteEnabled = false, deleteHandler = null}) {
+export default function TableMoreMenu({openModal, deleteEnabled = false, deleteHandler = null, passwordEnabled = false, passwordHandler = null}) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -18,11 +19,20 @@ export default function TableMoreMenu({openModal, deleteEnabled = false, deleteH
   };
 
   const deleteMenu = deleteEnabled ? (
-    <MenuItem sx={{ color: 'text.secondary' }}>
+    <MenuItem onClick={deleteHandler} sx={{ color: 'text.secondary' }}>
       <ListItemIcon>
-        <Icon icon={trash2Outline} width={24} height={24} onClick={deleteHandler}/>
+        <Icon icon={trash2Outline} width={24} height={24} />
       </ListItemIcon>
-      <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} onClick={deleteHandler}/>
+      <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }}/>
+    </MenuItem>
+  ): null;
+
+  const passwordMenu = passwordEnabled ? (
+    <MenuItem onClick={passwordHandler} sx={{ color: 'text.secondary' }}>
+      <ListItemIcon>
+        <Icon icon={lockFill} width={24} height={24}  />
+      </ListItemIcon>
+      <ListItemText primary="Change Password" primaryTypographyProps={{ variant: 'body2' }} />
     </MenuItem>
   ): null;
 
@@ -42,13 +52,18 @@ export default function TableMoreMenu({openModal, deleteEnabled = false, deleteH
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
+
         {deleteMenu}
+
         <MenuItem onClick={onEdit} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
+
+        {passwordMenu}
+
       </Menu>
     </>
   );

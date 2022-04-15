@@ -25,7 +25,7 @@ import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import TableListHead from '../components/TableListHead';
 import TableMoreMenu from '../components/TableMoreMenu';
-import { CreateUserForm, UpdateUserForm } from '../components/authentication/create';
+import { CreateUserForm, UpdateUserForm, UpdateUserPasswordForm } from '../components/authentication/create';
 import { fDateTime } from 'src/utils/formatTime';
 
 // ----------------------------------------------------------------------
@@ -57,6 +57,7 @@ export default function Users() {
   const [verified, setVerified] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -168,6 +169,11 @@ export default function Users() {
     setUpdateIsApproved(isApproved);
   };
   const handleUpdateModalClose = () => setUpdateModalOpen(false);
+  const handlePasswordModalOpen = (id) => {
+    setUpdateId(id);
+    setPasswordModalOpen(true);
+  };
+  const handlePasswordModalClose = () => setPasswordModalOpen(false);
 
   if (loading) {
     return <LoadingIcons.SpinningCircles />;
@@ -216,6 +222,19 @@ export default function Users() {
               />
             </Box>
           </Modal>
+          <Modal
+            open={passwordModalOpen}
+            onClose={handlePasswordModalClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={modalStyle}>
+              <UpdateUserPasswordForm
+                onSubmitHandler={handlePasswordModalClose}
+                id={updateId}
+              />
+            </Box>
+          </Modal>
         </Stack>
 
         <Card>
@@ -259,7 +278,7 @@ export default function Users() {
                           <TableCell align="right">
                             <TableMoreMenu openModal={() => {
                               handleUpdateModalOpen(id, firstName, lastName, phoneNumber, isItemVerified);
-                            }}/>
+                            }} passwordEnabled passwordHandler={() => {handlePasswordModalOpen(id)}}/>
                           </TableCell>
                         </TableRow>
                       );
