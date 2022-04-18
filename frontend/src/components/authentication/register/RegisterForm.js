@@ -46,7 +46,7 @@ export default function RegisterForm() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          "Email": getFieldProps('email').value,
+          "Email": getFieldProps('email').value.toLowerCase(),
           "Password": getFieldProps('password').value,
           "ConfirmPassword": getFieldProps('confirmPassword').value,
           "FirstName": getFieldProps('firstName').value,

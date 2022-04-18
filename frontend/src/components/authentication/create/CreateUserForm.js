@@ -66,7 +66,7 @@ export default function CreateUserForm(props) {
     validationSchema: CreateSchema,
     onSubmit: () => {
       const body = {
-        "email": getFieldProps('email').value,
+        "email": getFieldProps('email').value.toLowerCase(),
         "password": getFieldProps('password').value,
         "confirmPassword": getFieldProps('confirmPassword').value,
         "firstName": getFieldProps('firstName').value,

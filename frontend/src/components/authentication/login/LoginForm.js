@@ -44,7 +44,7 @@ export default function LoginForm() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          "Email": getFieldProps('email').value,
+          "Email": getFieldProps('email').value.toLowerCase(),
           "Password": getFieldProps('password').value,
         }),
       })
