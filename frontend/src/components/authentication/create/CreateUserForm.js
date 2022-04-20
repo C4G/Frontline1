@@ -46,8 +46,8 @@ export default function CreateUserForm(props) {
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     phoneNumber: Yup.string(),
     password: Yup.string().required('Password is required').matches(
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,}$/,
-      "Must be at least 5 characters, contain One Uppercase, One Lowercase, One Number, and one special case Character"
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/,
+      "Must be at least 6 characters, contain One Uppercase, One Lowercase, One Number, and one special case Character"
     ),
     confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match'),
     roleId: Yup.string().required(),

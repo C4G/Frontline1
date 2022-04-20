@@ -6,18 +6,20 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 // material
-import { Stack, TextField, IconButton, InputAdornment } from '@mui/material';
+import { Alert, Collapse, Stack, TextField, IconButton, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 // ----------------------------------------------------------------------
 
 export default function UpdateUserPasswordForm(props) {
   const { headers } = useContext(AuthenticatedUser);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertText, setAlertText] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const UpdateSchema = Yup.object().shape({
     password: Yup.string().required('Password is required').matches(
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,}$/,
-      "Must be at least 5 characters, contain One Uppercase, One Lowercase, One Number, and one special case Character"
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/,
+      "Must be at least 6 characters, contain One Uppercase, One Lowercase, One Number, and one special case Character"
     ),
     confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match'),
   });
@@ -50,53 +52,59 @@ export default function UpdateUserPasswordForm(props) {
         }
       })
       .catch(error => {
-        console.error(error);
+        setAlertVisible(true);
+        setSubmitting(false);
+        setAlertText(error);
       });
     }
   });
 
-  const { errors, touched, handleSubmit, isSubmitting, getFieldProps, dirty } = formik;
+  const { errors, touched, handleSubmit, isSubmitting, setSubmitting, getFieldProps, dirty } = formik;
 
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Stack spacing={3}>
-            <TextField
-                fullWidth
-                autoComplete="current-password"
-                type={showPassword ? 'text' : 'password'}
-                label="New Password"
-                {...getFieldProps('password')}
-                InputProps={{
-                endAdornment: (
-                    <InputAdornment position="end">
-                    <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
-                        <Icon icon={showPassword ? eyeFill : eyeOffFill} />
-                    </IconButton>
-                    </InputAdornment>
-                )
-                }}
-                error={Boolean(touched.password && errors.password)}
-                helperText={touched.password && errors.password}
-            />
+          <TextField
+            fullWidth
+            autoComplete="current-password"
+            type={showPassword ? 'text' : 'password'}
+            label="New Password"
+            {...getFieldProps('password')}
+            InputProps={{
+            endAdornment: (
+                <InputAdornment position="end">
+                <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                    <Icon icon={showPassword ? eyeFill : eyeOffFill} />
+                </IconButton>
+                </InputAdornment>
+            )
+            }}
+            error={Boolean(touched.password && errors.password)}
+            helperText={touched.password && errors.password}
+          />
 
-            <TextField
-                fullWidth
-                type={showPassword ? 'text' : 'password'}
-                label="Confirm New Password"
-                {...getFieldProps('confirmPassword')}
-                InputProps={{
-                endAdornment: (
-                    <InputAdornment position="end">
-                    <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
-                        <Icon icon={showPassword ? eyeFill : eyeOffFill} />
-                    </IconButton>
-                    </InputAdornment>
-                )
-                }}
-                error={Boolean(touched.confirmPassword && errors.confirmPassword)}
-                helperText={touched.confirmPassword && errors.confirmPassword}
-            />
+          <TextField
+            fullWidth
+            type={showPassword ? 'text' : 'password'}
+            label="Confirm New Password"
+            {...getFieldProps('confirmPassword')}
+            InputProps={{
+            endAdornment: (
+                <InputAdornment position="end">
+                <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                    <Icon icon={showPassword ? eyeFill : eyeOffFill} />
+                </IconButton>
+                </InputAdornment>
+            )
+            }}
+            error={Boolean(touched.confirmPassword && errors.confirmPassword)}
+            helperText={touched.confirmPassword && errors.confirmPassword}
+          />
+
+          <Collapse in={alertVisible}>
+            <Alert onClose={() => {setAlertVisible(false);}} severity="error">{alertText}</Alert>
+          </Collapse>
 
           <LoadingButton
             fullWidth

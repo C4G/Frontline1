@@ -1,15 +1,17 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { AuthenticatedUser } from 'src/providers/UserProvider';
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
-import { Stack, TextField } from '@mui/material';
+import { Alert, Collapse, Stack, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 // ----------------------------------------------------------------------
 
 export default function CreateCourseForm(props) {
   const { headers } = useContext(AuthenticatedUser);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertText, setAlertText] = useState("");
   const CreateSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     contentLink: Yup.string().required('Content link is required'),
@@ -35,17 +37,24 @@ export default function CreateCourseForm(props) {
       })
       .then(response => {
         if (!response.ok) {
-          throw response;
+          return response.json();
         }
         props.onSubmitHandler();
       })
+      .then(error => {
+        if (error) {
+          throw error;
+        }
+      })
       .catch(error => {
-        console.error(error);
+        setAlertVisible(true);
+        setSubmitting(false);
+        setAlertText(error);
       });
     }
   });
 
-  const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
+  const { errors, touched, handleSubmit, isSubmitting, setSubmitting, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>
@@ -75,6 +84,11 @@ export default function CreateCourseForm(props) {
             error={Boolean(touched.index && errors.index)}
             helperText={touched.index && errors.index}
           />
+
+          <Collapse in={alertVisible}>
+            <Alert onClose={() => {setAlertVisible(false);}} severity="error">{alertText}</Alert>
+          </Collapse>
+
           <LoadingButton
             fullWidth
             size="large"

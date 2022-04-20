@@ -17,6 +17,7 @@ export default function UpdateSavingsForm(props) {
   const [selectedType, setSelectedType] = useState(props.savings.savingsType);
   const savingTypes = ["Income", "Credit Score", "Savings"];
   const [alertVisible, setAlertVisible] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const UpdateSchema = Yup.object().shape({
     value: Yup.number().required('Value is required'),
@@ -71,9 +72,11 @@ export default function UpdateSavingsForm(props) {
     const file = event.currentTarget.files[0];
     const allowedTypes = ['image/png', 'image/jpeg'];
     if (allowedTypes.includes(file.type)) {
-        setFieldValue("file", file);
+      setFieldValue("file", file);
+      setDisabled(false);
     } else {
-        setAlertVisible(true);
+      setDisabled(true);
+      setAlertVisible(true);
     }
   };
 
@@ -106,6 +109,7 @@ export default function UpdateSavingsForm(props) {
           {...getFieldProps('value')}
           error={Boolean(touched.value && errors.value)}
           required={true}
+          helperText={errors.value && "Please enter a number."}
         />
         <br/>
         <br/>
@@ -133,6 +137,7 @@ export default function UpdateSavingsForm(props) {
           type="submit"
           variant="contained"
           loading={isSubmitting}
+          disabled={disabled}
         >
           Update Savings
         </LoadingButton>

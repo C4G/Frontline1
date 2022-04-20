@@ -3,7 +3,7 @@ import { AuthenticatedUser } from 'src/providers/UserProvider';
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
-import { Input, InputLabel, MenuItem, Select, Typography, TextField } from '@mui/material';
+import { Alert, Collapse, Input, InputLabel, MenuItem, Select, Typography, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 const KEY_VALUE = "value";
@@ -17,6 +17,8 @@ export default function CreateSavingsForm(props) {
   const [selectedType, setSelectedType] = useState(2);
   const savingTypes = ["Income", "Credit Score", "Savings"];
   const types = ['image/png', 'image/jpeg'];
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const CreateSchema = Yup.object().shape({
     value: Yup.number().required('Value is required'),
@@ -67,7 +69,15 @@ export default function CreateSavingsForm(props) {
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue } = formik;
 
   const handleFileChange = (event) => {
-    setFieldValue("file", event.currentTarget.files[0]);
+    const file = event.currentTarget.files[0];
+    const allowedTypes = ['image/png', 'image/jpeg'];
+    if (allowedTypes.includes(file.type)) {
+      setFieldValue("file", file);
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+      setAlertVisible(true);
+    }
   };
 
   const handleTypeChange = (event) => {
@@ -99,6 +109,7 @@ export default function CreateSavingsForm(props) {
           {...getFieldProps('value')}
           error={Boolean(touched.amount && errors.amount)}
           required={true}
+          helperText={errors.value && "Please enter a number."}
         />
         <br/>
         <br/>
@@ -117,6 +128,10 @@ export default function CreateSavingsForm(props) {
         />
         <br/>
         <br/>
+        <Collapse in={alertVisible}>
+          <Alert severity="error" onClose={() => {setAlertVisible(false);}}>Please select a .png or .jpeg file</Alert>
+        </Collapse>
+        <br/>
         <LoadingButton
           fullWidth
           size="large"
@@ -125,7 +140,8 @@ export default function CreateSavingsForm(props) {
           loading={isSubmitting}
           disabled={
             !getFieldProps('value').value ||
-            !getFieldProps('file').value
+            !getFieldProps('file').value ||
+            disabled
           }
         >
           Submit
