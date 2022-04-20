@@ -34,6 +34,7 @@ namespace Homelessness.Core.Handlers
             var courses = user.UserCourses
                 .Where(uc => !uc.IsCompleted)
                 .Select(uc => uc.Course)
+                .Where(c => !c.IsDeleted)
                 .OrderBy(c => c.Index);
 
             foreach (var course in courses)
