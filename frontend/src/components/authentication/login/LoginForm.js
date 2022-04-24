@@ -1,19 +1,18 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useFormik, ErrorMessage, Form, FormikProvider } from 'formik';
+import { useNavigate } from 'react-router-dom';
+import { useFormik, Form, FormikProvider } from 'formik';
 import { Icon } from '@iconify/react';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 // material
 import {
-  Link,
+  Alert,
+  Collapse,
   Stack,
-  Checkbox,
   TextField,
   IconButton,
   InputAdornment,
-  FormControlLabel
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
@@ -22,7 +21,9 @@ import { LoadingButton } from '@mui/lab';
 export default function LoginForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertText, setAlertText] = useState('');
+
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
@@ -48,20 +49,19 @@ export default function LoginForm() {
           "Password": getFieldProps('password').value,
         }),
       })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
+      .then(r =>  r.json().then(data => ({status: r.status, body: data})))
+      .then((response) => {
+        if (response.status >= 400) {
+          throw response.body;
+        } else {
+          localStorage.setItem("user", JSON.stringify(response.body));
+          navigate('/dashboard/app');
+          window.location.reload(true);
         }
-        throw response;
-      })
-      .then((user) => {
-        localStorage.setItem("user", JSON.stringify(user));
-        navigate('/dashboard/app');
-        window.location.reload(true);
       })
       .catch(error => {
-        console.error(error);
-        setErrorMessage(error.statusText);
+        setAlertText(error);
+        setAlertVisible(true);
       });
     }
   });
@@ -86,8 +86,6 @@ export default function LoginForm() {
             helperText={touched.email && errors.email}
           />
 
-          <ErrorMessage name="name" />
-
           <TextField
             fullWidth
             autoComplete="current-password"
@@ -106,29 +104,20 @@ export default function LoginForm() {
             error={Boolean(touched.password && errors.password)}
             helperText={touched.password && errors.password}
           />
+
+          <Collapse in={alertVisible}>
+            <Alert onClose={() => {setAlertVisible(false);}} severity="error">{alertText}</Alert>
+          </Collapse>
+
+          <LoadingButton
+            fullWidth
+            size="large"
+            type="submit"
+            variant="contained"
+          >
+            Login
+          </LoadingButton>
         </Stack>
-
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-          <FormControlLabel
-            control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}
-            label="Remember me"
-          />
-
-          <Link component={RouterLink} variant="subtitle2" to="#">
-            Forgot password?
-          </Link>
-        </Stack>
-        
-        <p className="error">{errorMessage}</p>
-
-        <LoadingButton
-          fullWidth
-          size="large"
-          type="submit"
-          variant="contained"
-        >
-          Login
-        </LoadingButton>
       </Form>
     </FormikProvider>
   );
