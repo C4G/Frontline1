@@ -16,7 +16,7 @@ export default function CreateSavingsForm(props) {
   const { userID, headers } = useContext(AuthenticatedUser);
   const [selectedType, setSelectedType] = useState(2);
   const savingTypes = ["Income", "Credit Score", "Savings"];
-  const types = ['image/png', 'image/jpeg'];
+  const types = ['image/png', 'image/jpeg', 'application/pdf'];
   const [alertVisible, setAlertVisible] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
