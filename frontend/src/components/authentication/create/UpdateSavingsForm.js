@@ -70,7 +70,7 @@ export default function UpdateSavingsForm(props) {
 
   const handleFileChange = (event) => {
     const file = event.currentTarget.files[0];
-    const allowedTypes = ['image/png', 'image/jpeg'];
+    const allowedTypes = ['image/png', 'image/jpeg', 'application/pdf'];
     if (allowedTypes.includes(file.type)) {
       setFieldValue("file", file);
       setDisabled(false);
@@ -114,7 +114,7 @@ export default function UpdateSavingsForm(props) {
         <br/>
         <br/>
         <Typography>
-          Upload a JPG or PNG image to verify savings amount:
+          Upload a JPG or PNG image or PDF to verify savings amount:
         </Typography>
         <br/>
         <Input
@@ -128,7 +128,7 @@ export default function UpdateSavingsForm(props) {
         <br/>
         <br/>
         <Collapse in={alertVisible}>
-          <Alert severity="error" onClose={() => {setAlertVisible(false);}}>Please select a .png or .jpeg file</Alert>
+          <Alert severity="error" onClose={() => {setAlertVisible(false);}}>Please select a .pdf, .png, or .jpeg file</Alert>
         </Collapse>
         <br/>
         <LoadingButton
