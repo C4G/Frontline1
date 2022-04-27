@@ -3,7 +3,7 @@ import { AuthenticatedUser } from 'src/providers/UserProvider';
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
-import { Stack, TextField } from '@mui/material';
+import { Alert, Collapse, Stack, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -14,6 +14,8 @@ export default function UpdateCourseForm(props) {
   const { headers } = useContext(AuthenticatedUser);
   const [nextClassDate, setNextClassDate] = useState(props.course.nextClassDate);
   const [dateDirty, setDateDirty] = useState(false);
+  const [dateError, setDateError] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
   const UpdateSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     contentLink: Yup.string().required('Content link is required'),
@@ -90,16 +92,22 @@ export default function UpdateCourseForm(props) {
               label="Next Class Date"
               value={nextClassDate}
               onChange={handleTimeChange}
+              errorText="hello"
+              onError={() => { setAlertVisible(true); setDateError(true); }}
+              onAccept={() => { setAlertVisible(false); setDateError(false); }}
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
+          <Collapse in={alertVisible}>
+            <Alert severity="error" onClose={() => {setAlertVisible(false);}}>Please select a date and time with the calendar icon.</Alert>
+          </Collapse>
           <LoadingButton
             fullWidth
             size="large"
             type="submit"
             variant="contained"
             loading={isSubmitting}
-            disabled={!dirty && !dateDirty}
+            disabled={(!dirty && !dateDirty) || dateError}
           >
             Update Course
           </LoadingButton>
