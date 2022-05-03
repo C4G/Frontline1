@@ -23,7 +23,7 @@ namespace Homelessness.Core.Handlers
         public async Task<UserDataResponse> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
         {
             var user = await userRepository.GetSingleOrDefaultAsync(
-                predicate: u => u.Id == request.UserId, 
+                predicate: u => u.Id == request.UserId && u.IsApproved, 
                 include: i => i.Include(u => u.UserCourses)
                                .ThenInclude(uc => uc.Course)
                                .ThenInclude(c => c.Questions)
