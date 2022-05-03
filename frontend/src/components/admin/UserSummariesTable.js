@@ -162,7 +162,7 @@ export default function UserSummariesTable() {
   });
 
   let regularUsers = users.filter((user) => {
-    return userRole ? user.roleId === userRole.id : false;
+    return userRole ? user.roleId === userRole.id && user.isApproved: false;
   });
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - regularUsers.length) : 0;
