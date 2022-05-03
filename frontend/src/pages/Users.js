@@ -34,7 +34,7 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'email', label: 'Email', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
+  { id: 'isVerified', label: 'Approved', alignRight: false },
   { id: 'lastLoginDate', label: 'Last Login Date', alignRight: false },
   { id: '' }
 ];

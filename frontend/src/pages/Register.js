@@ -1,9 +1,7 @@
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
-import { Link, Container, Typography } from '@mui/material';
-// layouts
-import AuthLayout from '../layouts/AuthLayout';
+import { Link, Container, Typography, Stack } from '@mui/material';
 // components
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
@@ -21,7 +19,6 @@ const ContentStyle = styled('div')(({ theme }) => ({
   maxWidth: 480,
   margin: 'auto',
   display: 'flex',
-  minHeight: '100vh',
   flexDirection: 'column',
   justifyContent: 'center',
   padding: theme.spacing(12, 0)
@@ -32,28 +29,15 @@ const ContentStyle = styled('div')(({ theme }) => ({
 export default function Register() {
   return (
     <RootStyle title="Register | Financial Achievement Club">
-      <AuthLayout>
-        Already have an account? &nbsp;
-        <Link underline="none" variant="subtitle2" component={RouterLink} to="/login">
-          Login
-        </Link>
-      </AuthLayout>
-
       <Container>
         <ContentStyle>
-
-          {/* <AuthSocial /> */}
-
-          <RegisterForm />
-
-          <MHidden width="smUp">
-            <Typography variant="subtitle2" sx={{ mt: 3, textAlign: 'center' }}>
-              Already have an account?&nbsp;
-              <Link to="/login" component={RouterLink}>
-                Login
-              </Link>
+          <Stack sx={{ mb: 5 }}>
+            <Typography variant="h4" gutterBottom>
+              Create an account
             </Typography>
-          </MHidden>
+            <Typography sx={{ color: 'text.secondary' }}>Enter your details below.</Typography>
+          </Stack>
+          <RegisterForm />
         </ContentStyle>
       </Container>
     </RootStyle>

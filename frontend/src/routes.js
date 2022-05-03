@@ -1,7 +1,6 @@
 import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
-import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -63,7 +62,7 @@ export default function Router() {
     },
     {
       path: '/',
-      element: <LogoOnlyLayout />,
+      element: <DashboardLayout />,
       children: [
         { path: 'login', element: <Login /> },
         { path: 'register', element: <Register /> },
